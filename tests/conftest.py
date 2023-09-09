@@ -8,7 +8,9 @@
 """
 
 import pytest
-
+__author__ = "OOXXXXOO"
+__copyright__ = "OOXXXXOO"
+__license__ = "MIT"
 
 # if __name__ == "__main__":
 #     pytest.main()

@@ -1,4 +1,4 @@
-# Copyright 2023 winshare
+# Copyright 2023 undefined
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,3 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ananke.base.base_object import BaseFlow
+
+class Flow(BaseFlow):
+    def __init__(self):
+        super().__init__()
+        self.name = "Flow"
+        self.logger.info(f"Initialized {self.name}.")
+        

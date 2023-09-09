@@ -1,4 +1,4 @@
-# Copyright 2023 winshare
+# Copyright 2023 undefined
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,53 +12,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from ananke.base.base_object import BaseStorage
-
-
-class ChromaStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "ChromaStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-        
-        
-class Neo4jStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "Neo4jStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-        
-class RedisStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "RedisStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
+from ananke.base.base_object import BaseModule
 
 
-class SqliteStorage(BaseStorage):
+class LLMGraphGenerator(BaseModule):
     def __init__(self):
         super().__init__()
-        self.name = "SqliteStorage"
+        self.name = "LLMGraphGenerator"
         self.logger.info(f"Initialized {self.name}.")
         
         
-class NebulaStorage(BaseStorage):
+        
+class EmebeddingGenerator(BaseModule):
     def __init__(self):
         super().__init__()
-        self.name = "NebulaStorage"
+        self.name = "EmebeddingGenerator"
         self.logger.info(f"Initialized {self.name}.")
         
         
-class MariaDBStorage(BaseStorage):
+class RepresentationConstructor(BaseModule):
     def __init__(self):
         super().__init__()
-        self.name = "MariaDBStorage"
+        self.name = "RepresentationConstructor"
         self.logger.info(f"Initialized {self.name}.")
         
+        
+        
+class Syncer(BaseModule):
+    def __init__(self):
+        super().__init__()
+        self.name = "Syncer"
+        self.logger.info(f"Initialized {self.name}.")
+        
+class Preprocessor(BaseModule):
+    def __init__(self):
+        super().__init__()
+        self.name = "Preprocessor"
+        self.logger.info(f"Initialized {self.name}.")
+        
+class Serializer(BaseModule):
+    def __init__(self):
+        super().__init__()
+        self.name = "Serializer"
+        self.logger.info(f"Initialized {self.name}.")
+
+
+        
+class CustomModule(BaseModule):
+    def __init__(self):
+        super().__init__()
+        self.name = "CustomModule"
+        self.logger.info(f"Initialized {self.name}.")
         
