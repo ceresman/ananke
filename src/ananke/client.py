@@ -18,7 +18,7 @@
 # ---------------------------------------------------------------------------- #
 
 
-from ananke.base.base_object import BaseClient
+from ananke.base import BaseClient
 import requests
 
 

@@ -12,11 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base.base_object import BaseFlow
+from ananke.base import BaseStorage
 
-class Flow(BaseFlow):
+
+class vector_storage(BaseStorage):
     def __init__(self):
         super().__init__()
-        self.name = "Flow"
+        self.name = "vector_storage"
         self.logger.info(f"Initialized {self.name}.")
         
+class kg_storage(BaseStorage):
+    def __init__(self):
+        super().__init__()
+        self.name = "kg_storage"
+        self.logger.info(f"Initialized {self.name}.")
+        
+class relation_storage(BaseStorage):
+    def __init__(self):
+        super().__init__()
+        self.name = "relation_storage"
+        self.logger.info(f"Initialized {self.name}.")

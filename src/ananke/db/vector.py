@@ -12,35 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base import BaseConfig
+from ananke.db import vector_storage
 
-YAML_CONFIG_TEMPLATE="""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-class YamlConfig(BaseConfig):
-    def __init__(self, name):
-        super().__init__(name)
-        self.config_template = YAML_CONFIG_TEMPLATE
+class ChromaStorage(vector_storage):
+    def __init__(self):
+        super().__init__()
+        self.name = "ChromaStorage"
+        self.logger.info(f"Initialized {self.name}.")
+        
+        

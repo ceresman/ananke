@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base.base_object import BaseChunk,BaseDocument,BaseFile,BaseMedia,BaseMeta,BaseRelation,BaseNode
-
+from typing import Any
+from ananke.base import BaseChunk,BaseDocument,BaseFile,BaseMedia,BaseMeta,BaseRelation,BaseNode
+from dataclasses import dataclass
 
 # ---------------------------------------------------------------------------- #
 #                           Current DataType Support                           #
@@ -137,6 +138,27 @@ class LaTeXDocument(BaseDocument):
 # ---------------------------------------------------------------------------- #
 #                                 Core DataType                                #
 # ---------------------------------------------------------------------------- #
+
+
+
+@dataclass
+class structed_chunk:
+    metadata: dict = None
+    graph: Any = None
+    vector: Any = None
+    relation_db_index: Any = None
+    chunk_id: Any = None
+    chunk_type: Any = None
+    chunk_content: Any = None
+    chunk_content_type: Any = None
+    chunk_content_encoding: Any = None
+    chunk_content_language: Any = None
+    chunk_content_length: Any = None
+    chunk_content_encoding: Any = None
+
+
+
+
         
 class StructuredChunks(BaseChunk):
     def __init__(self):
@@ -159,19 +181,55 @@ class StructuredChunks(BaseChunk):
         super().__init__()
         self.name = "StructuredChunks"
         self.logger.info(f"Initialized {self.name}.")
+        self.batch = []
+    
+    
+    
+    
+    # ---------------------------------------------------------------------------- #
+    #                                   Operation                                  #
+    # ---------------------------------------------------------------------------- #
+    
+    
         
+    def __str__(self):
+        return f"StructuredChunks({self.chunk_id})"
+    
+    def __repr__(self):
+        return f"StructuredChunks({self.chunk_id})"
+    
+    def __eq__(self, other):
+        return self.chunk_id == other.chunk_id
+    
+    def __hash__(self):
+        return hash(self.chunk_id)
+    
+    def __lt__(self, other):
+        return self.chunk_id < other.chunk_id
+    
+    def __gt__(self, other):
+        return self.chunk_id > other.chunk_id
+    
+    def __le__(self, other):
+        return self.chunk_id <= other.chunk_id
+    def __ge__(self, other):
+        return self.chunk_id >= other.chunk_id
+    def __ne__(self, other):
+        return self.chunk_id != other.chunk_id
+    def __contains__(self, item):
+        return item in self.chunk_content
+    def __len__(self):
+        return len(self.chunk_content)
+    
+    def __getitem__(self, item):
+        return self.chunk_content[item]
+    def __setitem__(self, key, value):
+        self.chunk_content[key] = value
         
-        self.metadata = None
-        self.graph = None
-        self.vector = None
-        self.relation_db_index = None
-        self.chunk_id = None
-        self.chunk_type = None
-        self.chunk_content = None
-        self.chunk_content_type = None
-        self.chunk_content_encoding = None
-        self.chunk_content_language = None
-        self.chunk_content_length = None
-        self.chunk_content_encoding = None
-        
-        
+    def __delitem__(self, key):
+        del self.chunk_content[key]
+    def __iter__(self):
+        return iter(self.chunk_content)    
+    
+    def __name__(self):
+        return self.name

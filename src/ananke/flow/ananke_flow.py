@@ -12,35 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base import BaseConfig
+from ananke.flow import Flow
 
-YAML_CONFIG_TEMPLATE="""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-class YamlConfig(BaseConfig):
-    def __init__(self, name):
-        super().__init__(name)
-        self.config_template = YAML_CONFIG_TEMPLATE
+class ananke_flow(Flow):
+    def __init__(self):
+        super().__init__()
+        self.name = "ananke_flow"
+        self.logger.info(f"Initialized {self.name}.")

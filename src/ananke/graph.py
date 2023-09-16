@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base.base_object import BaseGraph,BaseRelation,BaseNode
+from ananke.base import BaseGraph,BaseRelation,BaseNode
 
 class Neo4JGraph(BaseGraph):
     def __init__(self, name):

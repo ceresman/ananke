@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base.base_object import BaseModule
+from ananke.base import BaseModule
 
 
 class LLMGraphGenerator(BaseModule):

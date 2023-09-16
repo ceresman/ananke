@@ -12,35 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base import BaseConfig
-
-YAML_CONFIG_TEMPLATE="""
+from ananke.db import kg_storage
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-class YamlConfig(BaseConfig):
-    def __init__(self, name):
-        super().__init__(name)
-        self.config_template = YAML_CONFIG_TEMPLATE
+class Neo4jStorage(kg_storage):
+    def __init__(self):
+        super().__init__()
+        self.name = "Neo4jStorage"
+        self.logger.info(f"Initialized {self.name}.")
+class NebulaStorage(kg_storage):
+    def __init__(self):
+        super().__init__()
+        self.name = "NebulaStorage"
+        self.logger.info(f"Initialized {self.name}.")       

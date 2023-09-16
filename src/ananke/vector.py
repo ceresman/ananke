@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base.base_object import BaseStorage,BaseChunk,BaseVector
+from ananke.base import BaseStorage,BaseChunk,BaseVector
 
 
 class Vector(BaseVector):

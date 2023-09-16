@@ -12,3 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="My custom command line tool")
+    parser.add_argument("--input", help="input file")
+    parser.add_argument("--server", help="server address")
+    args = parser.parse_args()
+    
+    # Your command line tool logic here
+    if args.input:
+        print(f"Processing input file: {args.input}")
+    else:
+        print("No input file specified.")
+
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,4 @@
-# Copyright 2023 winshare
+# Copyright 2023 undefined
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,28 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from ananke.db import relation_storage
 
-from ananke.base.base_object import BaseStorage
 
-
-class ChromaStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "ChromaStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-        
-        
-class Neo4jStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "Neo4jStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-        
-class RedisStorage(BaseStorage):
+class RedisStorage(relation_storage):
     def __init__(self):
         super().__init__()
         self.name = "RedisStorage"
@@ -41,21 +23,15 @@ class RedisStorage(BaseStorage):
         
 
 
-class SqliteStorage(BaseStorage):
+class SqliteStorage(relation_storage):
     def __init__(self):
         super().__init__()
         self.name = "SqliteStorage"
         self.logger.info(f"Initialized {self.name}.")
         
+    
         
-class NebulaStorage(BaseStorage):
-    def __init__(self):
-        super().__init__()
-        self.name = "NebulaStorage"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-class MariaDBStorage(BaseStorage):
+class MariaDBStorage(relation_storage):
     def __init__(self):
         super().__init__()
         self.name = "MariaDBStorage"

@@ -15,7 +15,7 @@
 # ---------------------------------------------------------------------------- #
 #                           FastAPI server definition                          #
 # ---------------------------------------------------------------------------- #
-from ananke.base.base_object import BaseServer
+from ananke.base import BaseServer
 from fastapi import FastAPI
 
 
