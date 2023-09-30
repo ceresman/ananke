@@ -15,8 +15,8 @@
 from ananke.base import BaseGraph,BaseRelation,BaseNode
 
 class Neo4JGraph(BaseGraph):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self,**kwargs):
+        super().__init__()
         self._driver = None
         self._session = None
         self._tx = None
@@ -74,8 +74,8 @@ class Neo4JGraph(BaseGraph):
 
 
 class NebulaGraph(BaseGraph):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self,**kwargs):
+        super().__init__()
         self._driver = None
         self._session = None
         self._tx = None
@@ -118,22 +118,8 @@ class NebulaGraph(BaseGraph):
             self._session = None
             
 
-class Node(BaseNode):
-    def __init__(self, name):
-        super().__init__(name)
-        self._properties = {}
-        self._labels = []
-        self._graph = None
-        self._id = None
-        self._created = None
-        self._update
-        
-class Relation(BaseRelation):
-    def __init__(self, name):
-        super().__init__(name)
-        self._properties = {}
-        self._labels = []
-        self._graph = None
-        self._id = None
-        self._created = None
-        self._update
+# ---------------------------------------------------------------------------- #
+#                              DATA TYPE INTERFACE                             #
+# ---------------------------------------------------------------------------- #
+
+

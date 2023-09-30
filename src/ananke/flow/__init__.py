@@ -16,7 +16,7 @@
 from ananke.base import BaseFlow
 
 class Flow(BaseFlow):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
         self.name = "Flow"
         self.logger.info(f"Initialized {self.name}.")

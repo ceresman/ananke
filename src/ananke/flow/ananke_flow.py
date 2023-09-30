@@ -16,6 +16,23 @@ from ananke.flow import Flow
 
 class ananke_flow(Flow):
     def __init__(self):
+        """
+
+        
+        
+        
+        
+        
+        
+        """
         super().__init__()
         self.name = "ananke_flow"
         self.logger.info(f"Initialized {self.name}.")
+        
+        
+        
+        
+        
+class custom_flow(Flow):
+    def __init__(self,**kwargs):
+        super().__init__()

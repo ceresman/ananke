@@ -20,16 +20,16 @@ from fastapi import FastAPI
 
 
 class Server(BaseServer):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "Server"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "Server"
+        self.logger.info(f"Initialized {self.type}.")
         self.app = FastAPI()
 
     def run(self):
-        self.logger.info(f"Running {self.name}.")
+        self.logger.info(f"Running {self.type}.")
         self.app.run()
 
     def stop(self):
-        self.logger.info(f"Stopping {self.name}.")
+        self.logger.info(f"Stopping {self.type}.")
         self.app.stop()

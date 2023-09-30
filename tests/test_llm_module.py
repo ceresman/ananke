@@ -19,19 +19,19 @@ __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
 
 
-class YourSubclass(BaseObject):
-    def __init__(self, name):
-        super().__init__(name)
-def test_your_subclass_logging():
-    obj = YourSubclass("TestObject")
-    assert obj.name == "TestObject"
+# class YourSubclass(BaseObject):
+#     def __init__(self, name):
+#         super().__init__(name)
+# def test_your_subclass_logging():
+#     obj = YourSubclass("TestObject")
+#     # assert obj.name == "TestObject"
     
-    # 检查是否正确设置了 logger
-    assert obj.logger.name == "TestObject"
+#     # 检查是否正确设置了 logger
+#     # assert obj.logger.name == "TestObject"
     
-    # 检查是否能够正常记录不同级别的日志
-    obj.logger.debug("This is a debug message.")
-    obj.logger.info("This is an info message.")
-    obj.logger.warning("This is a warning message.")
-    obj.logger.error("This is an error message.")
-    obj.logger.critical("This is a critical message.")
+#     # 检查是否能够正常记录不同级别的日志
+#     obj.logger.debug("This is a debug message.")
+#     obj.logger.info("This is an info message.")
+#     obj.logger.warning("This is a warning message.")
+#     obj.logger.error("This is an error message.")
+#     obj.logger.critical("This is a critical message.")

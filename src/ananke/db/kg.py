@@ -16,12 +16,12 @@ from ananke.db import kg_storage
 
 
 class Neo4jStorage(kg_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "Neo4jStorage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "Neo4jStorage"
+        self.logger.info(f"Initialized {self.type}.")
 class NebulaStorage(kg_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "NebulaStorage"
-        self.logger.info(f"Initialized {self.name}.")       
+        self.type = "NebulaStorage"
+        self.logger.info(f"Initialized {self.type}.")       

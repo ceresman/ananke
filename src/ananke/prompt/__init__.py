@@ -21,11 +21,11 @@ import re
 
 class Prompt(BasePrompt):
     def __init__(self,init_template=None,forward_template=None):
-        super().__init__("Prompt")
+        super().__init__(name="Prompt")
         self.init_prompt_template = None
         self.forward_prompt_template = None
         self.set_template(init_template, forward_template)
-        self.logger.info(f"Initialized {self.name}.")
+        # self.logger.info(f"Initialized {self.type}.")
 
     def set_template(self, init_template, forward_template):
         self.init_prompt_template = init_template

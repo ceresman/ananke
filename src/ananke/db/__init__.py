@@ -16,19 +16,19 @@ from ananke.base import BaseStorage
 
 
 class vector_storage(BaseStorage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "vector_storage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "vector_storage"
+        self.logger.info(f"Initialized {self.type}.")
         
 class kg_storage(BaseStorage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "kg_storage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "kg_storage"
+        self.logger.info(f"Initialized {self.type}.")
         
 class relation_storage(BaseStorage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "relation_storage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "relation_storage"
+        self.logger.info(f"Initialized {self.type}.")

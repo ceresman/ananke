@@ -13,126 +13,13 @@
 # limitations under the License.
 
 from typing import Any
-from ananke.base import BaseChunk,BaseDocument,BaseFile,BaseMedia,BaseMeta,BaseRelation,BaseNode
+from ananke.base import BaseChunk
 from dataclasses import dataclass
 
-# ---------------------------------------------------------------------------- #
-#                           Current DataType Support                           #
-# ---------------------------------------------------------------------------- #
-
-
-class Paper(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "Paper"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class WordDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "WordDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class ExcelDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "ExcelDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class PowerPointDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "PowerPointDocument"
-        self.logger.info(f"Initialized {self.name}.")
-class PDFDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "PDFDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class TextDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "TextDocument"
-        self.logger.info(f"Initialized {self.name}.")
-
-
-class MarkdownDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "MarkdownDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class CSVDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "CSVDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-class WebPageDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "WebPageDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class ImageDocument(BaseMedia):
-    def __init__(self):
-        super().__init__()
-        self.name = "ImageDocument"
-        self.logger.info(f"Initialized {self.name}.")
-                
-class VideoDocument(BaseMedia):
-    def __init__(self):
-        super().__init__()
-        self.name = "VideoDocument"
-        self.logger.info(f"Initialized {self.name}.")
-                
-class AudioDocument(BaseMedia):
-    def __init__(self):
-        super().__init__()
-        self.name = "AudioDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class CodeDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "CodeDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
-class LaTeXDocument(BaseDocument):
-    def __init__(self):
-        super().__init__()
-        self.name = "LaTeXDocument"
-        self.logger.info(f"Initialized {self.name}.")
-        
         
 
-# TODO: Add more file types        
-        
-# class BinaryDocument(BaseDocument):
-#     def __init__(self):
-#         super().__init__()
-#         self.name = "BinaryDocument"
-#         self.logger.info(f"Initialized {self.name}.")
-        
-# class ExecutableDocument(BaseDocument):
-#     def __init__(self):
-#         super().__init__()
-#         self.name = "ExecutableDocument"
-#         self.logger.info(f"Initialized {self.name}.")
-   
-# class CompressedDocument(BaseDocument):
-#     def __init__(self):
-#         super().__init__()
-#         self.name = "CompressedDocument"
-#         self.logger.info(f"Initialized {self.name}.")
-        
-# class EncryptedDocument(BaseDocument):
-#     def __init__(self):
-#         super().__init__()
-#         self.name = "EncryptedDocument"
-#         self.logger.info(f"Initialized {self.name}.")
+
+
 
 
 # ---------------------------------------------------------------------------- #
@@ -179,8 +66,8 @@ class StructuredChunks(BaseChunk):
         * chunk_content: content of the chunk.
         """
         super().__init__()
-        self.name = "StructuredChunks"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "StructuredChunks"
+        
         self.batch = []
     
     
@@ -232,4 +119,4 @@ class StructuredChunks(BaseChunk):
         return iter(self.chunk_content)    
     
     def __name__(self):
-        return self.name
+        return self.type

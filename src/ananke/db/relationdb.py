@@ -16,25 +16,25 @@ from ananke.db import relation_storage
 
 
 class RedisStorage(relation_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "RedisStorage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "RedisStorage"
+        self.logger.info(f"Initialized {self.type}.")
         
 
 
 class SqliteStorage(relation_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "SqliteStorage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "SqliteStorage"
+        self.logger.info(f"Initialized {self.type}.")
         
     
         
 class MariaDBStorage(relation_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "MariaDBStorage"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "MariaDBStorage"
+        self.logger.info(f"Initialized {self.type}.")
         
         

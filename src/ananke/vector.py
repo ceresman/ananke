@@ -16,8 +16,8 @@ from ananke.base import BaseStorage,BaseChunk,BaseVector
 
 
 class Vector(BaseVector):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "Vector"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "Vector"
+        self.logger.info(f"Initialized {self.type}.")
         

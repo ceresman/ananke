@@ -15,7 +15,7 @@
 from ananke.db import vector_storage
 
 class ChromaStorage(vector_storage):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
         self.name = "ChromaStorage"
         self.logger.info(f"Initialized {self.name}.")

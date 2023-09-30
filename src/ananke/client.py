@@ -23,10 +23,10 @@ import requests
 
 
 class Client(BaseClient):
-    def __init__(self):
+    def __init__(self,**kwargs):
         super().__init__()
-        self.name = "Client"
-        self.logger.info(f"Initialized {self.name}.")
+        self.type = "Client"
+        self.logger.info(f"Initialized {self.type}.")
 
     def get(self, url):
         return requests.get(url)

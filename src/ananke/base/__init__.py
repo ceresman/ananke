@@ -23,13 +23,23 @@ import logging
 # ---------------------------------------------------------------------------- #
 
 
-class BaseLogger(ABC):
-    def __init__(self):
+
+class BaseConfig():
+    """Base class for all config objects in Ananke."""
+    def __init__(self, **kwargs):
+        pass
+
+class YAMLCONFIG(BaseConfig):
+    def __init__(self,**kwargs):
+        super().__init__()
+
+class BaseObject(ABC):
+    def __init__(self, **kwargs):
+        # self.config = YAMLCONFIG(config)
         self.logger = self.setup_logger()
 
-
     def setup_logger(self):
-        logger = logging.getLogger(self.name)
+        logger = logging.getLogger(self.__class__.__name__)  # 使用当前类的名称作为日志名称
         logger.setLevel(logging.DEBUG)
 
         formatter = ColoredFormatter(
@@ -50,24 +60,6 @@ class BaseLogger(ABC):
         return logger
 
 
-class InstructLogger(BaseLogger):
-    """Base log class for all instruct objects in Ananke."""
-    def __init__(self,name):
-        self.name = name
-        super().__init__()
-
-
-class BaseConfig(ABC):
-    """Base class for all config objects in Ananke."""
-
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
-
-
-
-
 
 
 
@@ -78,88 +70,74 @@ class BaseConfig(ABC):
 
 
 
-class BaseObject(ABC):
-    """Base class for all objects in Ananke."""
-
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
 
 
-class BaseChunk(ABC):
+class BaseChunk(BaseObject):
     """Base class for all chunks in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
-class BaseDocument(ABC):
+class BaseDocument(BaseObject):
     """Base class for all documents in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
+        self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
         
-class BaseMeta(ABC):
+    @abstractmethod
+    def read(self,**kwargs):
+        pass
+    @abstractmethod
+    def write(self,**kwargs):
+        pass
+    
+    def close(self):
+        pass
+        
+class BaseMeta(BaseObject):
     """Base class for all meta in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
-class BaseGraph(ABC):
+class BaseGraph(BaseObject):
     """Base class for all graphs in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
-class BaseNode(ABC):
+class BaseNode(BaseObject):
     """Base class for all nodes in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
-class BaseRelation(ABC):
+class BaseRelation(BaseObject):
     """Base class for all relations in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
-class BaseVector(ABC):
+class BaseVector(BaseObject):
     """Base class for all vectors in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
-class BaseMedia(ABC):
+class BaseMedia(BaseObject):
     """Base class for all media in Ananke."""
 
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
         
 
-class BaseFile(ABC):
+class BaseFile(BaseObject):
     """Base class for all files in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
 
@@ -169,35 +147,27 @@ class BaseFile(ABC):
 
 
 
-class BaseStorage(ABC):
+class BaseStorage(BaseObject):
     """Base class for all storage in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
         
         
-class BaseLocalLLM(ABC):
+class BaseLocalLLM(BaseObject):
     """Base class for all Local LLM in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
         
-class BaseRemoteLLM(ABC):
+class BaseRemoteLLM(BaseObject):
     """Base class for all Remote LLM in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
-class BasePrompt(ABC):
+class BasePrompt(BaseObject):
     """Base class for all prompts in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
     @abstractmethod
     def forward(self, **kwargs):
         """
@@ -218,16 +188,15 @@ class BasePrompt(ABC):
 # The Flow that consist of list of Module is the basic unit of info flow in Ananke.
 
 
-class BaseModule(ABC):
+class BaseModule(BaseObject):
     """Base class for all modules in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
+        
     @abstractmethod
     def forward(self, **kwargs):
         """
-        Module forward process interface.
+        Module forward process logic interface.
         """
         pass
     @abstractmethod
@@ -238,13 +207,11 @@ class BaseModule(ABC):
         pass
 
 
-class BaseFlow(ABC):
+class BaseFlow(BaseObject):
     """Base class for all info compression in Ananke."""
-    def __init__(self, name):
+    def __init__(self, config):
         
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+        super().__init__(config)
     
     
     @abstractmethod
@@ -266,30 +233,23 @@ class BaseFlow(ABC):
 # ---------------------------------------------------------------------------- #
 
 
-class BasePlugin(ABC):
+class BasePlugin(BaseObject):
     """Base class for all plugins in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        
-        
-class BaseUtils(ABC):
+    def __init__(self,**kwargs):
+        super().__init__()
+             
+class BaseUtils(BaseObject):
     """Base class for all utils in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
         
         
-class BaseServer(ABC):
+class BaseServer(BaseObject):
     """Base class for all servers in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()
         
-class BaseClient(ABC):
+class BaseClient(BaseObject):
     """Base class for all clients in Ananke."""
-    def __init__(self, name):
-        self.name = name
-        self.instruct = InstructLogger(name)
-        self.logger = self.instruct.logger
+    def __init__(self,**kwargs):
+        super().__init__()

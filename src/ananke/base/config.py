@@ -41,6 +41,6 @@ YAML_CONFIG_TEMPLATE="""
 """
 
 class YamlConfig(BaseConfig):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self,**kwargs):
+        super().__init__()
         self.config_template = YAML_CONFIG_TEMPLATE
