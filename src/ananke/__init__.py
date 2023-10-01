@@ -7,10 +7,47 @@ else:
     from importlib_metadata import PackageNotFoundError, version  # pragma: no cover
 
 try:
-    # Change here if project is renamed and does not equal the package name
+    # Change here if project is renamed and does not equal the package config
     dist_name = __name__
     __version__ = version(dist_name)
 except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+
+
+
+from ananke.base import BaseGraph,BaseRelation,BaseNode
+
+
+class Node(BaseNode):
+    def __init__(self, config):
+        """
+        Base Structure Interface of GraphNodes
+        """
+        super().__init__(config)
+        
+class Relation(BaseRelation):
+    def __init__(self, config):
+        """
+        Base Structure Interface of GraphRelations
+        """
+        super().__init__(config)
+        
+
+class Graph(BaseGraph):
+    def __init__(self,**kwargs):
+        super().__init__()
+        
+        
+        
+from ananke.base import BaseStorage,BaseChunk,BaseVector
+
+
+class Vector(BaseVector):
+    def __init__(self,**kwargs):
+        super().__init__()
+        self.type = "Vector"
+        self.logger.info(f"Initialized {self.type}.")
+        
