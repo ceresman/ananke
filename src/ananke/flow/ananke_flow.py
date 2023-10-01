@@ -17,13 +17,7 @@ from ananke.flow import Flow
 class ananke_flow(Flow):
     def __init__(self):
         """
-
-        
-        
-        
-        
-        
-        
+        The core part of ananke
         """
         super().__init__()
         self.name = "ananke_flow"

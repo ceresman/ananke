@@ -16,7 +16,8 @@
 from abc import ABC,abstractmethod
 from colorlog import ColoredFormatter
 import logging
-
+import platform
+import os
 
 # ---------------------------------------------------------------------------- #
 #                               System Operation                               #
@@ -60,7 +61,29 @@ class BaseObject(ABC):
         return logger
 
 
-
+    def get_system_info(self):
+        system = platform.system()
+        architecture = platform.architecture()[0]
+        self.system=system
+        self.architecture=architecture
+        
+        if system == "Windows":
+            return f"Windows {architecture}"
+        elif system == "Darwin":
+            return f"macOS {architecture}"
+        elif system == "Linux":
+            distro = ""
+            # Linux Release（Debian、CentOS、Ubuntu etc）
+            if os.path.exists("/etc/os-release"):
+                with open("/etc/os-release", "r") as file:
+                    lines = file.readlines()
+                    for line in lines:
+                        if line.startswith("ID="):
+                            distro = line.strip().split("=")[1].strip('"')
+                            break
+            return f"Linux ({distro}) {architecture}"
+        else:
+            return "Unrecognized System Label"
 
 
 # ---------------------------------------------------------------------------- #
@@ -187,43 +210,59 @@ class BasePrompt(BaseObject):
 # The Module is basic unit of info compression in Ananke. 
 # The Flow that consist of list of Module is the basic unit of info flow in Ananke.
 
+class BaseModule(ABC):
+    """Base class for all modules in the Ananke framework."""
+    def __init__(self, **kwargs):
+        """
+        Initialize the module.
 
-class BaseModule(BaseObject):
-    """Base class for all modules in Ananke."""
-    def __init__(self,**kwargs):
-        super().__init__()
+        Args:
+            **kwargs: Optional arguments.
+        """
+        super().__init__(**kwargs)
         
     @abstractmethod
     def forward(self, **kwargs):
         """
-        Module forward process logic interface.
+        Abstract method: Execute the forward propagation logic of the module.
+
+        Args:
+            **kwargs: Input parameters.
         """
         pass
-    @abstractmethod
-    def init(self, **kwargs):
-        """
-        Module Init process interface.
-        """
-        pass
-
-
-class BaseFlow(BaseObject):
-    """Base class for all info compression in Ananke."""
-    def __init__(self, config):
-        
-        super().__init__(config)
-    
     
     @abstractmethod
     def init(self, **kwargs):
         """
-        Flow init process interface.
+        Abstract method: Execute the initialization logic of the module.
+
+        Args:
+            **kwargs: Initialization parameters.
         """
         pass
-    @abstractmethod
-    def forward(self, **kwargs):
+
+class BaseFlow(ABC):
+    """Base class for all information compression flows in the Ananke framework."""
+    def __init__(self, **kwargs):
         """
-        Flow forward process interface.
+        Initialize the information compression flow.
+
+        Args:
+            **kwargs: Optional keyword arguments.
+
+        Attributes:
+            modules (OrderedDict): An ordered dictionary to store modules.
+        """
+        super().__init__(**kwargs)
+        self.modules = OrderedDict()
+
+    @abstractmethod
+    def execute(self, **kwargs):
+        """
+        Abstract method: Execute the information compression flow.
+
+        Args:
+            **kwargs: Input parameters.
         """
         pass
         

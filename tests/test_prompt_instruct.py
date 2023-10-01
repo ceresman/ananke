@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import pytest
-from ananke.prompt import Prompt,KG_SENTENCES_RELATED_FORWARD,KG_SENTENCES_RELATED_INIT
+from ananke.prompt import Prompt
 
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
@@ -20,7 +20,7 @@ __license__ = "MIT"
 
 
 def test_prompt_pack():
-    prompt_handler = Prompt()
+    prompt = Prompt()
 
     instructed_init_prompt = """
     The below text is you need to process
@@ -46,10 +46,10 @@ def test_prompt_pack():
     {user_input}
     """
 
-    prompt_handler.set_template(instructed_init_prompt, instructed_forward_prompt)
+    prompt.set_template(instructed_init_prompt, instructed_forward_prompt)
 
-    init_formatted_prompt = prompt_handler.init(text="Sample text to process", extra_param="Extra parameter")
-    forward_formatted_prompt = prompt_handler(nodes="Node data", relationships="Relationship data", user_input="User input")
+    init_formatted_prompt = prompt.init(text="Sample text to process", extra_param="Extra parameter")
+    forward_formatted_prompt = prompt(nodes="Node data", relationships="Relationship data", user_input="User input")
 
     print("Initialized Prompt:")
     print(init_formatted_prompt)
