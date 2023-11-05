@@ -18,6 +18,9 @@ finally:
 
 
 
+
+# TODO : Implement a first level data type may be need as interface of @dataclass 
+
 from ananke.base import BaseGraph,BaseRelation,BaseNode
 
 

@@ -17,7 +17,7 @@ from ananke.base import BaseStorage,BaseChunk,BaseVector
 
 class Vector(BaseVector):
     def __init__(self,**kwargs):
+        # TODO : Vector Embedding Data Class 
         super().__init__()
-        self.type = "Vector"
-        self.logger.info(f"Initialized {self.type}.")
+        self.logger.info(f"Initialized {self.__class__.__name__}.")
         

@@ -6,7 +6,7 @@
 #    By: Winshare Tom <tanwenxuan@live.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/29 21:45:15 by Winshare To       #+#    #+#              #
-#    Updated: 2023/10/01 18:38:40 by Winshare To      ###   ########.fr        #
+#    Updated: 2023/10/27 15:06:43 by Winshare To      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,4 +31,6 @@ class HuggingfaceModel(ABC):
     def embedding(self,**kwargs):
         pass
         
-    
+    @abstractmethod
+    def run(self, **kwargs):
+        pass
