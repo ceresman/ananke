@@ -1,10 +1,51 @@
 # Prompt Design
 
 
+## Usage
+以下是这个类的使用案例，每个案例都覆盖了不同的函数：
+
+```python
+# Import the Prompt class
+from your_module import Prompt
+
+# Create an instance of the Prompt class with templates
+init_template = "Initialize the system with mode: {mode}"
+forward_template = "Perform action: {action} in mode: {mode}"
+my_prompt = Prompt(init_template, forward_template)
+
+# Define keyword arguments
+init_args = {"mode": "safe"}
+forward_args = {"action": "start", "mode": "normal"}
+
+# Example 1: Set the templates and validate_parameters
+my_prompt.set_template(init_template, forward_template)
+
+# Example 2: Format an initialization prompt
+init_prompt = my_prompt.init(**init_args)
+print("Initialization Prompt:", init_prompt)
+
+# Example 3: Format a forward prompt
+forward_prompt = my_prompt.forward(**forward_args)
+print("Forward Prompt:", forward_prompt)
+
+# Example 4: Call the Prompt instance to generate a forward prompt
+forward_prompt = my_prompt(**forward_args)
+print("Forward Prompt (via __call__):", forward_prompt)
+```
+
+In this example:
+
+1. We create an instance of the `Prompt` class with initialization and forward templates.
+2. We define keyword arguments for both initialization and forward prompts.
+3. We demonstrate setting templates using `set_template` method.
+4. We format an initialization prompt using the `init` method.
+5. We format a forward prompt using the `forward` method.
+6. We also call the `Prompt` instance as a function to generate a forward prompt, which internally uses the `forward` method.
+
+These examples cover the usage of each function in the `Prompt` class.
 
 
-
-example:
+## prompt example:
     
 The below text is you need to process
 ```markdown

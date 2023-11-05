@@ -16,52 +16,12 @@ from ananke.base import BaseGraph,BaseRelation,BaseNode
 
 class Neo4JGraph(BaseGraph):
     def __init__(self,**kwargs):
+        # TODO ： Add Neo4J Server Support
         super().__init__()
         self._driver = None
         self._session = None
-        self._tx = None
-        self._node_cache = {}
-        self._relation_cache = {}
-        self._node_class = None
-        self._relation_class = None
-        self._node_label = None
-        self._relation_label = None
-        self._node_key = None
-        self._relation_key = None
-        self._node_key_type = None
-        self._relation_key_type = None
-        self._node_key_index = None
-        self._relation_key_index = None
-        self._node_key_index_name = None
-        self._relation_key_index_name = None
-        self._node_key_index_type = None
-        self._relation_key_index_type = None
-        self._node_key_index_unique = None
-        self._relation_key_index_unique = None
-        self._node_key_index_primary = None
-        self._relation_key_index_primary = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
+        self.logger.info(f"Initialized {self.__class__.__name__}.")
+
     def __del__(self):
         self.close()
     def close(self):
@@ -75,38 +35,13 @@ class Neo4JGraph(BaseGraph):
 
 class NebulaGraph(BaseGraph):
     def __init__(self,**kwargs):
+        # TODO : Add Nebular Server Support
         super().__init__()
         self._driver = None
         self._session = None
-        self._tx = None
-        self._node_cache = {}
-        self._relation_cache = {}
-        self._node_class = None
-        self._relation_class = None
-        self._node_label = None
-        self._relation_label = None
-        self._node_key = None
-        self._relation_key = None
-        self._node_key_type = None
-        self._relation_key_type = None
-        self._node_key_index = None
-        self._relation_key_index = None
-        self._node_key_index_name = None
-        self._relation_key_index_name = None
-        self._node_key_index_type = None
-        self._relation_key_index_type = None
-        self._node_key_index_unique = None
-        self._relation_key_index_unique = None
-        self._node_key_index_primary = None
-        self._relation_key_index_primary = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
-        self._node_key_index_drop_exist = None
-        self._relation_key_index_drop_exist = None
+        self.logger.info(f"Initialized {self.__class__.__name__}.")
+
+      
     def __del__(self):
         self.close()
     def close(self):

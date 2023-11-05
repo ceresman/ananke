@@ -15,7 +15,7 @@ class GraphRetriever(BaseRetriever):
         super().__init__()
         
         
-class StructureRetriever(BaseRetriever):
+class StructuredRetriever(BaseRetriever):
     def __init__(self,**kwargs):
         super().__init__()
         

@@ -33,7 +33,7 @@ class Flow(BaseFlow):
         else:
             self.logger.info("Initialized Flow without specifying a name.")
     @abstractmethod
-    def add_module(self, module):
+    def add_module(self, module:BaseModule, index = None):
         """
         Add a module to the information compression flow. Only instances of BaseModule can be added to the flow
         So , better to add code to check subclass like 
@@ -48,6 +48,7 @@ class Flow(BaseFlow):
         ```
         Args:
             module (BaseModule): The module instance to add.
+            index (int): The index of insert position in process sequence
 
         Raises:
             ValueError: If the module is not a subclass of BaseModule.
@@ -73,18 +74,20 @@ class Flow(BaseFlow):
     
         
     @abstractmethod    
-    def del_module(self,module):
+    def del_module(self,name=None,index=None):
         """
         delete specific module in current flow
 
         Args:
-            module (_type_): _description_
+            name (str) : The name of Module in Sequence
+            index (int) : The index of Module in Sequence
         """
         pass
         
 
-    def show(self):
+    def show(self,debug=False):
         """
-        Show all modules in current flow
+        print all module with order in process sequence.
+        if debug , print data same time. 
         """
         pass
