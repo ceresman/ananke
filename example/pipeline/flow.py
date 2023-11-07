@@ -22,41 +22,41 @@ graph = nx.DiGraph()
 def function1(data, count):
     count[0] += 1
     timestamp = time.time()
-    print(f"Function 1 - Run {count[0]} at {timestamp}")
     data["a"] += 1
     time.sleep(1)  # 模拟耗时操作
+    print(f"Function 1 - Run {count[0]} at {timestamp}")
     return data
 
 def function2(data, count):
     count[1] += 1
     timestamp = time.time()
-    print(f"Function 2 - Run {count[1]} at {timestamp}")
     data["b"] *= 2
-    time.sleep(1)  # 模拟耗时操作
+    time.sleep(2)  # 模拟耗时操作
+    print(f"Function 2 - Run {count[1]} at {timestamp}")
     return data
 
 def function3(data, count):
     count[2] += 1
     timestamp = time.time()
-    print(f"Function 3 - Run {count[2]} at {timestamp}")
     data["c"] -= 1
-    time.sleep(1)  # 模拟耗时操作
+    time.sleep(3)  # 模拟耗时操作
+    print(f"Function 3 - Run {count[2]} at {timestamp}")
     return data
 
 def function4(data, count):
     count[3] += 1
     timestamp = time.time()
-    print(f"Function 4 - Run {count[3]} at {timestamp}")
     data["d"] = data["a"] * data["b"]
     time.sleep(1)  # 模拟耗时操作
+    print(f"Function 4 - Run {count[3]} at {timestamp}")
     return data
 
 def function5(data, count):
     count[4] += 1
     timestamp = time.time()
-    print(f"Function 5 - Run {count[4]} at {timestamp}")
     data["e"] = data["a"] + data["b"] + data["c"] + data["d"]
     time.sleep(1)  # 模拟耗时操作
+    print(f"Function 5 - Run {count[4]} at {timestamp}")
     return data
 
 # 添加节点和边
@@ -81,6 +81,24 @@ data = {
 }
 count = [0, 0, 0, 0, 0]
 
+# def execute_functions(execution_order, data, count, max_workers=3):
+#     def execute_function(func, data, count):
+#         return func(data, count)
+
+#     with ThreadPoolExecutor(max_workers=max_workers) as executor:
+#         futures = {executor.submit(execute_function, node, data, count): node for node in execution_order}
+#         for future in as_completed(futures):
+#             node = futures[future]
+#             try:
+#                 data = future.result()
+#             except Exception as e:
+#                 print(f"Function {node.__name__} failed to execute: {e}")
+    
+#     return data
+
+
+
+
 def execute_functions(execution_order, data, count, max_workers=3):
     def execute_function(func, data, count):
         return func(data, count)
@@ -94,10 +112,18 @@ def execute_functions(execution_order, data, count, max_workers=3):
             except Exception as e:
                 print(f"Function {node.__name__} failed to execute: {e}")
     
+    # 检查所有依赖函数是否已经完成
+    for node in execution_order:
+        if not all([data[node] == 1 for node in list(nx.out_edges(node, graph))]):
+            print(f"Function {node.__name__} has uncompleted dependencies")
+            return None
+
     return data
 
 execution_order = list(nx.topological_sort(graph))
 
-final_data = execute_functions(execution_order, data, count, max_workers=3)
+data = execute_functions(execution_order, data, count, max_workers=8)
+data = execute_functions(execution_order, data, count, max_workers=8)
+data = execute_functions(execution_order, data, count, max_workers=8)
 
-print("Final Data:", final_data)
+print("Final Data:", data)
