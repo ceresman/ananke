@@ -1,0 +1,575 @@
+JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021
+1
+Unifying Large Language Models and
+Knowledge Graphs: A Roadmap
+Shirui Pan, Senior Member, IEEE, Linhao Luo,
+Yufei Wang, Chen Chen, Jiapu Wang, Xindong Wu, Fellow, IEEE
+Abstract—Large language models (LLMs), such as ChatGPT and GPT4, are making new waves in the field of natural language
+processing and artificial intelligence, due to their emergent ability and generalizability. However, LLMs are black-box models, which
+often fall short of capturing and accessing factual knowledge. In contrast, Knowledge Graphs (KGs), Wikipedia and Huapu for example,
+are structured knowledge models that explicitly store rich factual knowledge. KGs can enhance LLMs by providing external knowledge
+for inference and interpretability. Meanwhile, KGs are difficult to construct and evolving by nature, which challenges the existing
+methods in KGs to generate new facts and represent unseen knowledge. Therefore, it is complementary to unify LLMs and KGs
+together and simultaneously leverage their advantages. In this article, we present a forward-looking roadmap for the unification of LLMs
+and KGs. Our roadmap consists of three general frameworks, namely, 1) KG-enhanced LLMs, which incorporate KGs during the
+pre-training and inference phases of LLMs, or for the purpose of enhancing understanding of the knowledge learned by LLMs; 2)
+LLM-augmented KGs, that leverage LLMs for different KG tasks such as embedding, completion, construction, graph-to-text
+generation, and question answering; and 3) Synergized LLMs + KGs, in which LLMs and KGs play equal roles and work in a mutually
+beneficial way to enhance both LLMs and KGs for bidirectional reasoning driven by both data and knowledge. We review and
+summarize existing efforts within these three frameworks in our roadmap and pinpoint their future research directions.
+Index Terms—Natural Language Processing, Large Language Models, Generative Pre-Training, Knowledge Graphs, Roadmap,
+Bidirectional Reasoning.
+✦
+1
+INTRODUCTION
+Large language models (LLMs)1 (e.g., BERT [1], RoBERTA
+[2], and T5 [3]), pre-trained on the large-scale corpus,
+have shown great performance in various natural language
+processing (NLP) tasks, such as question answering [4],
+machine translation [5], and text generation [6]. Recently,
+the dramatically increasing model size further enables the
+LLMs with the emergent ability [7], paving the road for
+applying LLMs as Artificial General Intelligence (AGI).
+Advanced LLMs like ChatGPT2 and PaLM23, with billions
+of parameters, exhibit great potential in many complex
+practical tasks, such as education [8], code generation [9]
+and recommendation [10].
+•
+Shirui Pan is with the School of Information and Communication Tech-
+nology and Institute for Integrated and Intelligent Systems (IIIS), Griffith
+University, Queensland, Australia. Email: s.pan@griffith.edu.au;
+•
+Linhao Luo and Yufei Wang are with the Department of Data Sci-
+ence and AI, Monash University, Melbourne, Australia. E-mail: lin-
+hao.luo@monash.edu, garyyufei@gmail.com.
+•
+Chen Chen is with the Nanyang Technological University, Singapore. E-
+mail: s190009@ntu.edu.sg.
+•
+Jiapu Wang is with the Faculty of Information Technology, Beijing Uni-
+versity of Technology, Beijing, China. E-mail: jpwang@emails.bjut.edu.cn.
+•
+Xindong Wu is with the Key Laboratory of Knowledge Engineering with
+Big Data (the Ministry of Education of China), Hefei University of
+Technology, Hefei, China; He is also affiliated with the Research Center
+for Knowledge Engineering, Zhejiang Lab, Hangzhou, China. Email:
+xwu@hfut.edu.cn.
+•
+Shirui Pan and Linhao Luo contributed equally to this work.
+•
+Corresponding Author: Xindong Wu.
+1. LLMs are also known as pre-trained language models (PLMs).
+2. https://openai.com/blog/chatgpt
+3. https://ai.google/discover/palm2
+Fig. 1. Summarization of the pros and cons for LLMs and KGs. LLM
+pros: General Knowledge [11], Language Processing [12], Generaliz-
+ability [13]; LLM cons: Implicit Knowledge [14], Hallucination [15], In-
+decisiveness [16], Black-box [17], Lacking Domain-specific/New Knowl-
+edge [18]. KG pros: Structural Knowledge [19], Accuracy [20], Decisive-
+ness [21], Interpretability [22], Domain-specific Knowledge [23], Evolv-
+ing Knowledge [24]; KG cons: Incompleteness [25], Lacking Language
+Understanding [26], Unseen Facts [27].
+Despite their success in many applications, LLMs have
+been criticized for their lack of factual knowledge. Specif-
+ically, LLMs memorize facts and knowledge contained in
+the training corpus [14]. However, further studies reveal
+that LLMs are not able to recall facts and often experience
+hallucinations by generating statements that are factually
+incorrect [15], [28]. For example, LLMs might say “Ein-
+0000–0000/00$00.00 © 2021 IEEE
+arXiv:2306.08302v2  [cs.CL]  20 Jun 2023
+
+Knowledge Graphs (KGs)
+Cons:
+Pros:
+Implicit Knowledge
+Structural Knowledge
+Hallucination
+Accuracy
+Decisiveness
+Indecisiveness
+Black-box
+Interpretability
+Lacking Domain-
+Domain-specific Knowledge
+specific/New Knowledge
+Evolving Knowledge
+Cons:
+Pros:
+Incompleteness
+General Knowledge
+Lacking Language
+ Language Processing
+Understanding
+Generalizability
+Unseen Facts
+Large Language Models (LLMs)JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021
+2
+stein discovered gravity in 1687” when asked, “When did
+Einstein discover gravity?”, which contradicts the fact that
+Isaac Newton formulated the gravitational theory. This issue
+severely impairs the trustworthiness of LLMs.
+As black-box models, LLMs are also criticized for their
+lack of interpretability. LLMs represent knowledge implic-
+itly in their parameters. It is difficult to interpret or validate
+the knowledge obtained by LLMs. Moreover, LLMs perform
+reasoning by a probability model, which is an indecisive
+process [16]. The specific patterns and functions LLMs
+used to arrive at predictions or decisions are not directly
+accessible or explainable to humans [17]. Even though some
+LLMs are equipped to explain their predictions by applying
+chain-of-thought [29], their reasoning explanations also suf-
+fer from the hallucination issue [30]. This severely impairs
+the application of LLMs in high-stakes scenarios, such as
+medical diagnosis and legal judgment. For instance, in a
+medical diagnosis scenario, LLMs may incorrectly diagnose
+a disease and provide explanations that contradict medical
+commonsense. This raises another issue that LLMs trained
+on general corpus might not be able to generalize well
+to specific domains or new knowledge due to the lack of
+domain-specific knowledge or new training data [18].
+To address the above issues, a potential solution is to in-
+corporate knowledge graphs (KGs) into LLMs. Knowledge
+graphs (KGs), storing enormous facts in the way of triples,
+i.e., (head entity, relation, tail entity), are a structured and
+decisive manner of knowledge representation (e.g., Wiki-
+data [20], YAGO [31], and NELL [32]). KGs are crucial for
+various applications as they offer accurate explicit knowl-
+edge [19]. Besides, they are renowned for their symbolic
+reasoning ability [22], which generates interpretable results.
+KGs can also actively evolve with new knowledge contin-
+uously added in [24]. Additionally, experts can construct
+domain-specific KGs to provide precise and dependable
+domain-specific knowledge [23].
+Nevertheless, KGs are difficult to construct [33], and
+current approaches in KGs [25], [27], [34] are inadequate
+in handling the incomplete and dynamically changing na-
+ture of real-world KGs. These approaches fail to effectively
+model unseen entities and represent new facts. In addition,
+they often ignore the abundant textual information in KGs.
+Moreover, existing methods in KGs are often customized for
+specific KGs or tasks, which are not generalizable enough.
+Therefore, it is also necessary to utilize LLMs to address the
+challenges faced in KGs. We summarize the pros and cons
+of LLMs and KGs in Fig. 1, respectively.
+Recently, the possibility of unifying LLMs with KGs has
+attracted increasing attention from researchers and practi-
+tioners. LLMs and KGs are inherently interconnected and
+can mutually enhance each other. In KG-enhanced LLMs,
+KGs can not only be incorporated into the pre-training and
+inference stages of LLMs to provide external knowledge
+[35]–[37], but also used for analyzing LLMs and provid-
+ing interpretability [14], [38], [39]. In LLM-augmented KGs,
+LLMs have been used in various KG-related tasks, e.g., KG
+embedding [40], KG completion [26], KG construction [41],
+KG-to-text generation [42], and KGQA [43], to improve the
+performance and facilitate the application of KGs. In Syn-
+ergized LLM + KG, researchers marries the merits of LLMs
+and KGs to mutually enhance performance in knowledge
+representation [44] and reasoning [45], [46]. Although there
+are some surveys on knowledge-enhanced LLMs [47]–[49],
+which mainly focus on using KGs as an external knowledge
+to enhance LLMs, they ignore other possibilities of integrat-
+ing KGs for LLMs and the potential role of LLMs in KG
+applications.
+In this article, we present a forward-looking roadmap for
+unifying both LLMs and KGs, to leverage their respective
+strengths and overcome the limitations of each approach,
+for various downstream tasks. We propose detailed cate-
+gorization, conduct comprehensive reviews, and pinpoint
+emerging directions in these fast-growing fields. Our main
+contributions are summarized as follows:
+1)
+Roadmap. We present a forward-looking roadmap
+for integrating LLMs and KGs. Our roadmap,
+consisting of three general frameworks to unify
+LLMs and KGs, namely, KG-enhanced LLMs, LLM-
+augmented KGs, and Synergized LLMs + KGs, pro-
+vides guidelines for the unification of these two
+distinct but complementary technologies.
+2)
+Categorization and review. For each integration
+framework of our roadmap, we present a detailed
+categorization and novel taxonomies of research
+on unifying LLMs and KGs. In each category, we
+review the research from the perspectives of differ-
+ent integration strategies and tasks, which provides
+more insights into each framework.
+3)
+Coverage of emerging advances. We cover the
+advanced techniques in both LLMs and KGs. We
+include the discussion of state-of-the-art LLMs like
+ChatGPT and GPT-4 as well as the novel KGs e.g.,
+multi-modal knowledge graphs.
+4)
+Summary of challenges and future directions. We
+highlight the challenges in existing research and
+present several promising future research direc-
+tions.
+The rest of this article is organized as follows. Section
+2 first explains the background of LLMs and KGs. Section
+3 introduces the roadmap and the overall categorization of
+this article. Section 4 presents the different KGs-enhanced
+LLM approaches. Section 5 describes the possible LLM-
+augmented KG methods. Section 6 shows the approaches
+of synergizing LLMs and KGs. Section 7 discusses the
+challenges and future research directions. Finally, Section 8
+concludes this paper.
+2
+BACKGROUND
+In this section, we will first briefly introduce a few rep-
+resentative large language models (LLMs) and discuss the
+prompt engineering that efficiently uses LLMs for varieties
+of applications. Then, we illustrate the concept of knowl-
+edge graphs (KGs) and present different categories of KGs.
+2.1
+Large Language models (LLMs)
+Large language modes (LLMs) pre-trained on large-scale
+corpus have shown great potential in various NLP tasks
+[13]. As shown in Fig. 3, most LLMs derive from the Trans-
+former design [50], which contains the encoder and decoder
+modules empowered by a self-attention mechanism. Based
+
+JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021
+3
+2018
+2019
+2020
+2021
+2023
+Encoder-only
+Encoder-
+decoder
+Decoder-only
+2022
+Input Text
+Decoder
+Output Text
+Input Text
+Encoder
+Features
+Decoder
+Output Text
+Input Text
+Encoder
+Features
+BERT
+RoBERTA
+110M-340M
+125M-355M
+ALBERT
+DistillBert
+66M
+ERNIE
+ELECTRA
+DeBERTa
+114M
+14M-110M
+11M-223M
+44M-304M
+BART
+T5
+mT5
+T0
+140M
+80M-11B
+11B
+300M-13B
+GLM
+Switch
+110M-10B
+1.6T
+ST-MoE
+4.1B-269B
+GLM-130B
+UL2
+20B
+Flan-UL2
+20B
+130B
+Flan-T5
+80M-11B
+GPT-1
+110 M
+GPT-2
+117M-1.5B
+GPT-3
+175B
+ChatGPT
+GPT-4
+175B
+Unknown
+XLNet
+110M-340M
+GLaM
+1.2T
+Gopher
+280B
+LaMDA
+PaLM
+137B
+Flan PaLM
+540B
+540B
+OPT
+175B
+OPT-IML
+175B
+Bard
+137B
+LLaMa
+7B-65B
+Alpaca
+Vicuna
+7B
+7B-13B
+Open-Source
+Closed-Source
+Fig. 2. Representative large language models (LLMs) in recent years. Open-source models are represented by solid squares, while closed source
+models are represented by hollow squares.
+Encoder
+Self-Attention
+Feed Forward
+Self-Attention
+Feed Forward
+Encoder-Decoder
+Attention
+Decoder
+Linear
+Multi-head Dot-Product
+Attention
+V
+Linear
+Linear
+Q
+K
+Linear
+Concat
+Self-Attention
+Fig. 3. An illustration of the Transformer-based LLMs with self-attention
+mechanism.
+on the architecture structure, LLMs can be categorized
+into three groups: 1) encoder-only LLMs, 2) encoder-decoder
+LLMs, and 3) decoder-only LLMs. As shown in Fig. 2, we sum-
+marize several representative LLMs with different model
+architectures, model sizes, and open-source availabilities.
+2.1.1
+Encoder-only LLMs.
+Encoder-only large language models only use the encoder
+to encode the sentence and understand the relationships
+between words. The common training paradigm for these
+model is to predict the mask words in an input sentence.
+This method is unsupervised and can be trained on the
+large-scale corpus. Encoder-only LLMs like BERT [1], AL-
+BERT [51], RoBERTa [2], and ELECTRA [52] require adding
+an extra prediction head to resolve downstream tasks. These
+models are most effective for tasks that require understand-
+ing the entire sentence, such as text classification [53] and
+named entity recognition [54].
+2.1.2
+Encoder-decoder LLMs.
+Encoder-decoder large language models adopt both the
+encoder and decoder module. The encoder module is re-
+sponsible for encoding the input sentence into a hidden-
+space, and the decoder is used to generate the target output
+text. The training strategies in encoder-decoder LLMs can be
+more flexible. For example, T5 [3] is pre-trained by masking
+and predicting spans of masking words. UL2 [55] unifies
+several training targets such as different masking spans and
+masking frequencies. Encoder-decoder LLMs (e.g., T0 [56],
+ST-MoE [57], and GLM-130B [58]) are able to directly resolve
+tasks that generate sentences based on some context, such
+as summariaztion, translation, and question answering [59].
+2.1.3
+Decoder-only LLMs.
+Decoder-only large language models only adopt the de-
+coder module to generate target output text. The training
+paradigm for these models is to predict the next word in
+the sentence. Large-scale decoder-only LLMs can generally
+perform downstream tasks from a few examples or simple
+instructions, without adding prediction heads or finetun-
+ing [60]. Many state-of-the-art LLMs (e.g., Chat-GPT [61]
+and GPT-44) follow the decoder-only architecture. However,
+since these models are closed-source, it is challenging for
+academic researchers to conduct further research. Recently,
+4. https://openai.com/product/gpt-4
+
+JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021
+4
+LLMs
+Classify the text into neutral,
+negative or positive. 
+Text: This is awesome!
+Sentiment: Positive
+Text: This is bad!
+Sentiment: Negative
+Text: I think the vacation is okay.
+Sentiment:
+Instruction
+Context
+Input Text
+Prompt
+Positive
+Output
+Fig. 4. An example of sentiment classification prompt.
+Alpaca5 and Vicuna6 are released as open-source decoder-
+only LLMs. These models are finetuned based on LLaMA
+[62] and achieve comparable performance with ChatGPT
+and GPT-4.
+2.2
+Prompt Engineering
+Prompt engineering is a novel field that focuses on creating
+and refining prompts to maximize the effectiveness of large
+language models (LLMs) across various applications and re-
+search areas [63]. As shown in Fig. 4, a prompt is a sequence
+of natural language inputs for LLMs that are specified for
+the task, such as sentiment classification. A prompt could
+contain several elements, i.e., 1) Instruction, 2) Context, and
+3) Input Text. Instruction is a short sentence that instructs
+the model to perform a specific task. Context provides the
+context for the input text or few-shot examples. Input Text is
+the text that needs to be processed by the model.
+Prompt engineering seeks to improve the capacity of
+large large language models (e.g.,ChatGPT) in diverse com-
+plex tasks such as question answering, sentiment classifica-
+tion, and common sense reasoning. Chain-of-thought (CoT)
+prompt [64] enables complex reasoning capabilities through
+intermediate reasoning steps. Liu et al. [65] incorporate
+external knowledge to design better knowledge-enhanced
+prompts. Automatic prompt engineer (APE) proposes an
+automatic prompt generation method to improve the perfor-
+mance of LLMs [66]. Prompt offers a simple way to utilize
+the potential of LLMs without finetuning. Proficiency in
+prompt engineering leads to a better understanding of the
+strengths and weaknesses of LLMs.
+2.3
+Knowledge Graphs (KGs)
+Knowledge graphs (KGs) store structured knowledge as a
+collection of triples KG = {(h, r, t) ⊆ E × R × E}, where E
+and R respectively denote the set of entities and relations.
+Existing knowledge graphs (KGs) can be classified into four
+groups based on the stored information: 1) encyclopedic KGs,
+2) commonsense KGs, 3) domain-specific KGs, and 4) multi-
+modal KGs. We illustrate the examples of KGs of different
+categories in Fig. 5.
+5. https://github.com/tatsu-lab/stanford alpaca
+6. https://lmsys.org/blog/2023-03-30-vicuna/
+Wikipedia
+MarriedTo
+PoliticianOf
+LiveIn
+LocatedIn
+BornIn
+CapitalOf
+Encyclopedic
+Knowledge Graphs
+Commonsense
+Knowledge Graphs
+Barack
+Obama
+Michelle
+Obama
+USA
+Honolulu 
+Washington
+D.C.
+Wake up
+Bed
+LocatedAt
+Get out
+of bed
+Open
+eyes
+SubeventOf
+SubeventOf
+Drink
+coffee
+SubeventOf
+Awake
+Causes
+Make
+coffe
+SubeventOf
+Coffe
+IsFor
+Drink
+Is
+Kitchen
+LocatedAt
+Sugar
+Cup
+Need
+Need
+Concept: Wake up
+Domain-speciﬁc
+Knowledge Graphs
+Parkinson's
+Diease
+Sleeping
+Disorder
+Cause
+PINK1
+Cause
+Motor
+Symptom
+Lead
+Tremor
+Lead
+Anxiety
+Cause
+Pervasive
+Developmental
+Disorder
+Lead
+Language
+Undevelopment
+Lead
+Medical Knowledge Graph
+Multi-modal
+Knowledge Graphs
+France
+Paris
+Eiffel
+Tower
+CapitalOf
+LocatedIn
+European
+Union
+MemberOf
+Emmanuel
+Macron
+PoliticianOf
+LiveIn
+Fig. 5. Examples of different categories’ knowledge graphs, i.e., encyclo-
+pedic KGs, commonsense KGs, domain-specific KGs, and multi-modal
+KGs.
+2.3.1
+Encyclopedic Knowledge Graphs.
+Encyclopedic knowledge graphs are the most ubiquitous
+KGs, which represent the general knowledge in real-world.
+Encyclopedic knowledge graphs are often constructed by
+integrating information from diverse and extensive sources,
+including human experts, encyclopedias, and databases.
+Wikidata [20] is one of the most widely used encyclopedic
+knowledge graphs, which incorporates varieties of knowl-
+edge extracted from articles on Wikipedia. Other typical
+encyclopedic knowledge graphs, like Freebase [67], Dbpedia
+[68], and YAGO [31] are also derived from Wikipedia. In
+addition, NELL [32] is a continuously improving encyclope-
+dic knowledge graph, which automatically extracts knowl-
+edge from the web, and uses that knowledge to improve
+its performance over time. There are several encyclope-
+dic knowledge graphs available in languages other than
+English such as CN-DBpedia [69] and Vikidia [70]. The
+largest knowledge graph, named Knowledge Occean (KO)
+7, currently contains 4,8784,3636 entities and 17,3115,8349
+relations in both English and Chinese.
+2.3.2
+Commonsense Knowledge Graphs.
+Commonsense knowledge graphs formulate the knowledge
+about daily concepts, e.g., objects, and events, as well
+as their relationships [71]. Compared with encyclopedic
+knowledge graphs, commonsense knowledge graphs often
+model the tacit knowledge extracted from text such as (Car,
+7. https://ko.zhonghuapu.com/
+
