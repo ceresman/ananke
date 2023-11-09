@@ -15,6 +15,8 @@
 
 from abc import ABC,abstractmethod
 from colorlog import ColoredFormatter
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from collections import OrderedDict
 import logging
 import platform
 import os
@@ -108,16 +110,7 @@ class BaseDocument(BaseObject):
         super().__init__()
         self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
         
-    @abstractmethod
-    def read(self,**kwargs):
-        pass
-    @abstractmethod
-    def write(self,**kwargs):
-        pass
-    
-    def close(self):
-        pass
-        
+
 class BaseMeta(BaseObject):
     """Base class for all meta in Ananke."""
 
@@ -210,7 +203,7 @@ class BasePrompt(BaseObject):
 # The Module is basic unit of info compression in Ananke. 
 # The Flow that consist of list of Module is the basic unit of info flow in Ananke.
 
-class BaseModule(ABC):
+class BaseModule(BaseObject):
     """Base class for all modules in the Ananke framework."""
     def __init__(self, **kwargs):
         """
@@ -219,29 +212,10 @@ class BaseModule(ABC):
         Args:
             **kwargs: Optional arguments.
         """
-        super().__init__(**kwargs)
-        
-    @abstractmethod
-    def forward(self, **kwargs):
-        """
-        Abstract method: Execute the forward propagation logic of the module.
+        super().__init__()
 
-        Args:
-            **kwargs: Input parameters.
-        """
-        pass
-    
-    @abstractmethod
-    def init(self, **kwargs):
-        """
-        Abstract method: Execute the initialization logic of the module.
 
-        Args:
-            **kwargs: Initialization parameters.
-        """
-        pass
-
-class BaseFlow(ABC):
+class BaseFlow(BaseObject):
     """Base class for all information compression flows in the Ananke framework."""
     def __init__(self, **kwargs):
         """
@@ -253,19 +227,10 @@ class BaseFlow(ABC):
         Attributes:
             modules (OrderedDict): An ordered dictionary to store modules.
         """
-        super().__init__(**kwargs)
+        super().__init__()
         self.modules = OrderedDict()
 
-    @abstractmethod
-    def execute(self, **kwargs):
-        """
-        Abstract method: Execute the information compression flow.
 
-        Args:
-            **kwargs: Input parameters.
-        """
-        pass
-        
 
 # ---------------------------------------------------------------------------- #
 #                                Plugins & Utils                               #
