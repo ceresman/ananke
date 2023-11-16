@@ -248,7 +248,3 @@ EXAMPLE_KG_RELATIONSHIPS = """
 # ---------------------------------------------------------------------------- #
 #                                  COLLECTION                                  #
 # ---------------------------------------------------------------------------- #
-COLLECTION = {}
-for name, value in locals().items():
-    COLLECTION[name] = value
-    

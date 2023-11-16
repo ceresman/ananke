@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import pytest
-from ananke.base import BaseObject
+from ananke.base.config import YAMLCONFIG
 
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
 
-
+def test_config():
+    config = YAMLCONFIG()

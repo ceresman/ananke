@@ -1,5 +1,5 @@
 from typing import Any
-from base import BaseModule
+from ananke.base import BaseModule
 from abc import ABC,abstractmethod
 
 
