@@ -12,11 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import pytest
-from ananke.flow import Flow
-from ananke.module import Module
+from ananke.llm.thudm import ZhiPuModel
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
 
 
 # TODO Module init & Add to Flow & Process
+def test_zhipu_model():
+    pass
+    # zp_model=ZhiPuModel()
+    # print(zp_model.invoke("Hi"))
+    
