@@ -27,7 +27,7 @@ from openai import AzureOpenAI
 from ananke.llm import RemoteLLM
 
 
-class AzureOpenAIAssistant(RemoteLLM):
+class AzureOpenAI(RemoteLLM):
     def __init__(
         self,
         api_key=None,
@@ -35,6 +35,8 @@ class AzureOpenAIAssistant(RemoteLLM):
         azure_endpoint=None,
         tokenizer=None,
         max_token=8192,
+        chat_model_name="Ananke",
+        embedding_model_name="AnankeEmbedding",
         system_prompt="You are a helpful assistant.",
     ):
         self.api_key = api_key
@@ -49,12 +51,14 @@ class AzureOpenAIAssistant(RemoteLLM):
         if tokenizer is None:
             self.tokenizer = tiktoken.get_encoding("cl100k_base")
         self.max_token = max_token
+        self.chat_model = chat_model_name
+        self.embedding_model = embedding_model_name
 
     def chat(self, user_input):
         self.conversation.append({"role": "user", "content": user_input})
 
         response = self.client.chat.completions.create(
-            model="Ananke", messages=self.conversation
+            model=self.chat_model, messages=self.conversation
         )
 
         self.conversation.append(
@@ -72,34 +76,32 @@ class AzureOpenAIAssistant(RemoteLLM):
         s = s.strip()
         return s
 
-    def embedding(self, text: str, embedding_model="AnankeEmbedding"):
+    def embedding(self, text: str):
         text = self.normalize_text(text)
         embedding = (
-            self.client.embeddings.create(input=[text], model=embedding_model)
+            self.client.embeddings.create(input=[text], model=self.embedding_model)
             .data[0]
             .embedding
         )
         print(len(embedding))
         return embedding
 
-    def embedding_df(
-        self, df: pd.DataFrame, text_column: str, embedding_model="AnankeEmbedding"
-    ):  
-      """process embedding as dataframe batch
+    def embedding_df(self, df: pd.DataFrame, text_column: str):
+        """process embedding as dataframe batch
 
-      Args:
-          df (pd.DataFrame): _description_
-          text_column (str): _description_
-          embedding_model (str, optional): _description_. Defaults to "AnankeEmbedding".
+        Args:
+            df (pd.DataFrame): _description_
+            text_column (str): _description_
+            embedding_model (str, optional): _description_. Defaults to "AnankeEmbedding".
 
-      Returns:
-          pd.Dataframe: _description_
-      """
+        Returns:
+            pd.Dataframe: _description_
+        """
         df[text_column] = df[text_column].apply(lambda x: self.normalize_text(x))
         df["n_tokens"] = df[text_column].apply(lambda x: len(self.tokenizer.encode(x)))
         df = df[df.n_tokens < self.max_token]
-        df[f"{embedding_model}"] = df[text_column].apply(
-            lambda x: self.embedding(x, embedding_model=embedding_model)
+        df[f"{self.embedding}"] = df[text_column].apply(
+            lambda x: self.embedding(x, embedding_model=self.embedding_model)
         )
         return df
 
@@ -119,36 +121,3 @@ class AzureOpenAIAssistant(RemoteLLM):
         res = df.sort_values("similarities", ascending=False).head(top_n)
         return res
 
-
-# 示例用法
-
-# assistant = AzureOpenAIAssistant(api_key, api_version, azure_endpoint)
-
-# df = pd.DataFrame(
-#     {
-#         "text": [
-#             "NASA traces its roots to the National Advisory Committee for Aeronautics (NACA). ",
-#             "Determined to regain American leadership in aviation, Congress created the Aviation Section of the U.S. Army Signal Corps in 1914 and established NACA in 1915 to foster aeronautical research and development.",
-#         ]
-#     }
-# )
-
-# df = assistant.embedding_df(df, "text")
-
-
-# print(df)
-
-# print(assistant.search_docs(df, "What is nasa root from?"))
-
-#                                                text  n_tokens                                    AnankeEmbedding
-# 0  NASA traces its roots to the National Advisory...        18  [-0.001609626691788435, -0.01872904784977436, ...
-# 1  Determined to regain American leadership in av...        43  [-0.023721234872937202, -0.02078939788043499, ...
-# 1536
-#                                                 text  ...  similarities
-# 0  NASA traces its roots to the National Advisory...  ...      0.801512
-# 1  Determined to regain American leadership in av...  ...      0.745144
-
-# [2 rows x 4 columns]
-#                                                 text  ...  similarities
-# 0  NASA traces its roots to the National Advisory...  ...      0.801512
-# 1  Determined to regain American leadership in av...  ...      0.745144

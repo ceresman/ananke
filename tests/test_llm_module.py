@@ -13,6 +13,7 @@
 # limitations under the License.
 import pytest
 from ananke.llm.thudm import ZhiPuModel
+from ananke.llm.azure import AzureOpenAI
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
@@ -23,4 +24,6 @@ def test_zhipu_model():
     pass
     # zp_model=ZhiPuModel()
     # print(zp_model.invoke("Hi"))
+    # openai_model=AzureOpenAI()
+    # print(openai_model.chat("Hi"))
     
