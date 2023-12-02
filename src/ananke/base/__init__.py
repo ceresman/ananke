@@ -87,7 +87,11 @@ class BaseObject(ABC):
 
 
 
+class BaseContext(BaseObject):
+    """Base class for all Context in Ananke."""
 
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
 class BaseChunk(BaseObject):

@@ -23,7 +23,12 @@ class ananke_flow(Flow):
         self.name = "ananke_flow"
         self.logger.info(f"Initialized {self.name}.")
         
-        
+    def __call__(self,*args,**kwargs):
+        """
+        The core part of ananke
+        """
+        self.logger.info(f"Calling {self.name}.")
+        return self.run(*args,**kwargs)
         
         
         

@@ -20,7 +20,7 @@ from fastapi import FastAPI
 
 
 class Server(BaseServer):
-    # TODO : Implement Server Class for ananke data system
+    # TODO : Implement Server Class for ananke dataframwork
     def __init__(self,**kwargs):
         super().__init__()
         self.type = "Server"
