@@ -10,3 +10,8 @@ class ExcelDocument(BaseDocument):
     def __init__(self,**kwargs):
         super().__init__()
         self.type = "ExcelDocument"
+        
+        
+        
+        
+        

@@ -1,21 +1,21 @@
-from ananke.module import BaseRetriever
+from ananke.module import Retriever
 
 
 # ---------------------------------------------------------------------------- #
 #                               Default Retriever                              #
 # ---------------------------------------------------------------------------- #
 
-class VectorRetriever(BaseRetriever):
+class VectorRetriever(Retriever):
     def __init__(self,**kwargs):
         super().__init__()
         
         
-class GraphRetriever(BaseRetriever):
+class GraphRetriever(Retriever):
     def __init__(self,**kwargs):
         super().__init__()
         
         
-class StructuredRetriever(BaseRetriever):
+class StructuredRetriever(Retriever):
     def __init__(self,**kwargs):
         super().__init__()
         
@@ -25,7 +25,7 @@ class StructuredRetriever(BaseRetriever):
 # ---------------------------------------------------------------------------- #
 
         
-class AnankeRetriever(BaseRetriever):
+class AnankeRetriever(Retriever):
     def __init__(self,**kwargs):
         super().__init__()
         
@@ -35,6 +35,6 @@ class AnankeRetriever(BaseRetriever):
 #                                CustomRetriever                               #
 # ---------------------------------------------------------------------------- #
         
-class CustomRetriever(BaseRetriever):
+class CustomRetriever(Retriever):
     def __init__(self,**kwargs):
         super().__init__()

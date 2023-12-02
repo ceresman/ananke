@@ -20,6 +20,8 @@ class Neo4jStorage(kg_storage):
         super().__init__()
         self.type = "Neo4jStorage"
         self.logger.info(f"Initialized {self.type}.")
+        
+        
 class NebulaStorage(kg_storage):
     def __init__(self,**kwargs):
         super().__init__()

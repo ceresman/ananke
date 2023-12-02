@@ -1,4 +1,4 @@
-from ananke.module import BaseContextProcess,BaseModule
+from ananke.module import BaseContextProcess,Module
 
 
 
@@ -8,17 +8,17 @@ from ananke.module import BaseContextProcess,BaseModule
 
 # --------------------- Single Module for context process -------------------- #
 
-class ContextCompressor(BaseModule):
+class ContextCompressor(Module):
     def __init__(self,**kwargs):
         super().__init__()
 
 
-class ContextTempStorage(BaseModule):
+class ContextTempStorage(Module):
     def __init__(self,**kwargs):
         super().__init__()
         
         
-class ContextStructured(BaseModule):
+class ContextStructured(Module):
     def __init__(self,**kwargs):
         super().__init__()
 
@@ -30,7 +30,7 @@ class ContextStructured(BaseModule):
 
 # ---------- The final interface of module queue to process context ---------- #
 
-class ContextPrcessor(BaseContextProcess):
+class ContextPrcessor(Module):
     def __init__(self,**kwargs):
         super().__init__()
         
