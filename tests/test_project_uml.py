@@ -13,10 +13,16 @@
 # limitations under the License.
 import pytest
 from ananke.base import BaseObject
-
+from ananke.utils.umldrawer import main
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
+
+
+def test_project_uml():
+
+    project_path = 'src/ananke'
+    main(project_path)
 
 
 # class YourSubclass(BaseObject):

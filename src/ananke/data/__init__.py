@@ -6,12 +6,12 @@
 #    By: Winshare Tom <tanwenxuan@live.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/29 22:42:10 by Winshare To       #+#    #+#              #
-#    Updated: 2023/12/02 17:15:37 by Winshare To      ###   ########.fr        #
+#    Updated: 2023/12/02 19:36:01 by Winshare To      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 from ananke.data.utils import get_loader
-from ananke.base import BaseContext
+from ananke.base import BaseContext,BaseObject,BaseDocument
 # ---------------------------------------------------------------------------- #
 #                               ananke data unit                               #
 # ---------------------------------------------------------------------------- #
@@ -47,7 +47,7 @@ import scipy as sc
 
 
 @dataclass
-class LogicExpression:
+class LogicExpression(BaseObject):
     """
     Represents a logical expression.
 
@@ -63,7 +63,7 @@ class LogicExpression:
 
 
 @dataclass
-class StructuredData:
+class StructuredData(BaseObject):
     """
     Represents structured data.
 
@@ -79,7 +79,7 @@ class StructuredData:
 
 
 @dataclass
-class MathExpression:
+class MathExpression(BaseObject):
     """
     Represents a mathematical expression.
 
@@ -97,7 +97,7 @@ class MathExpression:
 
 
 @dataclass
-class EntitySemantic:
+class EntitySemantic(BaseObject):
     """
     Represents a semantic entity in the knowledge graph.
 
@@ -113,7 +113,7 @@ class EntitySemantic:
 
 
 @dataclass
-class EntitySymbol:
+class EntitySymbol(BaseObject):
     """
     Represents a symbolic entity in the knowledge graph.
 
@@ -130,12 +130,12 @@ class EntitySymbol:
     name: str
     descriptions: List[str]
     semantics: List[EntitySemantic]
-    property: StructuredData
-    label: StructuredData
+    propertys: List[StructuredData]
+    label: List[StructuredData]
 
 
 @dataclass
-class RelationSemantic:
+class RelationSemantic(BaseObject):
     """
     Represents a semantic relation in the knowledge graph.
 
@@ -151,7 +151,7 @@ class RelationSemantic:
 
 
 @dataclass
-class RelationSymbol:
+class RelationSymbol(BaseObject):
     """
     Represents a symbol representing a relation in the knowledge graph.
 
@@ -169,7 +169,7 @@ class RelationSymbol:
 
 
 @dataclass
-class Triple:
+class Triple(BaseObject):
     """
     Represents a triple in the knowledge graph.
 
@@ -192,7 +192,7 @@ class Triple:
 
 
 @dataclass
-class StructuredSentence:
+class StructuredSentence(BaseObject):
     """
     Represents a structured sentence within a chunk.
 
@@ -214,7 +214,7 @@ class StructuredSentence:
 
 
 @dataclass
-class StructuredChunk:
+class StructuredChunk(BaseObject):
     """
     Represents a structured chunk within a document.
 
@@ -247,7 +247,7 @@ class StructuredChunk:
 
 
 @dataclass
-class Document:
+class Document(BaseDocument):
     """
     Represents a document or a file.
 
