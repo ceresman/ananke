@@ -93,12 +93,36 @@ class BaseContext(BaseObject):
     def __init__(self,**kwargs):
         super().__init__()
 
+class BaseLogical(BaseObject):
+    def __init__(self,**kwargs):
+        super().__init__()
+
+class BaseMath(BaseObject):
+    def __init__(self,**kwargs):
+        super().__init__()
+
+class BaseSentence(BaseObject):
+    """Base class for all sentence in Ananke."""
+    def __init__(self,**kwargs):
+        super().__init__()
+        self.sentece_id = ""
+        self.sentece_text = ""
+        self.embedding_id:long = 0
+        self.sentece_math: BaseMath = None
+        self.sentece_logical: BaseLogical = None
 
 class BaseChunk(BaseObject):
     """Base class for all chunks in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
+        self.chunk_id = ""
+        self.chunk_text = ""
+        self.embedding_id:long = 0
+        self.sentences: List[BaseSentence] = None
+        self.chunk_graph: BaseGraph = None
+        self.chunk_logical: BaseLogical = None
+        self.chunk_math: BaseMath = None
 
 class BaseDocument(BaseObject):
     """Base class for all documents in Ananke."""
@@ -106,14 +130,17 @@ class BaseDocument(BaseObject):
     def __init__(self,**kwargs):
         super().__init__()
         self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
-        
+        self.document_id = ""
+        self.document_text = ""
+        self.chunks:List[BaseChunk] = None
+        self.chunk_emb_collection = None
+        self.sentence_emb_collection = None
 
 class BaseMeta(BaseObject):
     """Base class for all meta in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
-
 
 class BaseGraph(BaseObject):
     """Base class for all graphs in Ananke."""
