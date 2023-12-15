@@ -1,13 +1,16 @@
 from typing import Any
-from ananke.base import BaseModule,BaseRet
+from ananke.base import BaseModule
 from abc import ABC,abstractmethod
 
 
 class Module(BaseModule):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.name = self.__class__.__name__
-        self.logger.info(self.__class__.__name)
+        if "name" not in kwargs.keys():
+            self.name = self.__class__.__name__
+        else:
+            self.name = kwargs["name"]
+        # self.logger.info(self.name)
 
     @abstractmethod
     def forward(self, data: Any, **kwargs):
@@ -24,7 +27,7 @@ class Retriever(BaseModule):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = self.__class__.__name__
-        self.logger.info(self.__class__.__name)
+        self.logger.info(self.name)
 
     @abstractmethod
     def forward(self, data: Any, **kwargs):
