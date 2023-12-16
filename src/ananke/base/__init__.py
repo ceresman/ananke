@@ -84,9 +84,6 @@ class BaseObject(ABC):
 # ---------------------------------------------------------------------------- #
 #                             Basic Data Structure                             #
 # ---------------------------------------------------------------------------- #
-
-
-
 class BaseContext(BaseObject):
     """Base class for all Context in Ananke."""
 
@@ -136,29 +133,51 @@ class BaseDocument(BaseObject):
         self.chunk_emb_collection = None
         self.sentence_emb_collection = None
 
+# class BaseTriple(BaseObject):
+#     """Base class for all documents in Ananke."""
+
+#     def __init__(self,**kwargs):
+#         super().__init__()
+#         self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
+#         self.document_id = ""
+#         self.document_text = ""
+#         self.chunks:List[BaseChunk] = None
+#         self.chunk_emb_collection = None
+#         self.sentence_emb_collection = None
+
+
 class BaseMeta(BaseObject):
     """Base class for all meta in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
 
-class BaseGraph(BaseObject):
-    """Base class for all graphs in Ananke."""
-
-    def __init__(self,**kwargs):
-        super().__init__()
 
 class BaseNode(BaseObject):
     """Base class for all nodes in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
+        self.node_name : str = ""
+        self.node_type : str = ""
+        self.node_uuid : str = ""
+        self.property : dict = {}
 
 class BaseRelation(BaseObject):
     """Base class for all relations in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
+        self.relation_name : str = ""
+        self.relation_type : str = ""
+        self.relation_uuid : str = ""
+
+class BaseGraph(BaseObject):
+    """Base class for all graphs in Ananke."""
+
+    def __init__(self,**kwargs):
+        super().__init__()
+        self.nodes  = []
 
 class BaseVector(BaseObject):
     """Base class for all vectors in Ananke."""
