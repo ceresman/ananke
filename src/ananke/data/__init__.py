@@ -58,7 +58,7 @@ class LogicExpression(BaseObject):
     """
 
     expression_id: UUID
-    expression_z3: z3.ExprRef
+    # expression_z3: z3.ExprRef
     expression_sympy: sp.Expr
 
 

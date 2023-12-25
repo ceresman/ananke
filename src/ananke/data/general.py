@@ -15,7 +15,7 @@
 #                           Current DataType Support                           #
 # ---------------------------------------------------------------------------- #
 from ananke.base import BaseDocument
-
+from ananke.utils.arxiv_dump import process_pdf
 
 class Paper(BaseDocument):
     def __init__(self,**kwargs):
@@ -29,7 +29,8 @@ class Paper(BaseDocument):
             filename (_type_): _description_
         """
         self.logger.debug(str(self.__class__.__name__)+" module read : "+str(filename))
-        pass
+        data = process_pdf(filename)
+        return data
     
     def write(self,outputname):
         self.logger.debug(str(self.__class__.__name__)+" module write : "+str(outputname))
