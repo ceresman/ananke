@@ -113,14 +113,13 @@ def get_file_extension(file_type):
 
 # 处理PDF文件的函数
 def process_pdf(file_path):
-    text = ""
-
     with open(file_path, "rb") as pdf_file:
-        pdf_reader = PyPDF2.PdfFileReader(pdf_file)
-        num_pages = pdf_reader.numPages
+        pdf_reader = PyPDF2.PdfReader(pdf_file)
+        num_pages = len(pdf_reader.pages)
+        text = ""
         for page_num in range(num_pages):
-            page = pdf_reader.getPage(page_num)
-            text += page.extractText()
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
         # 处理PDF文本
     return text
 

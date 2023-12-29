@@ -21,6 +21,7 @@ class Paper(BaseDocument):
     def __init__(self,**kwargs):
         super().__init__()
         self.type = "Paper"
+        self.text = None
         
     def read(self,filename):
         """academy article reader
@@ -28,12 +29,13 @@ class Paper(BaseDocument):
         Args:
             filename (_type_): _description_
         """
-        self.logger.debug(str(self.__class__.__name__)+" module read : "+str(filename))
+        self.logger.debug(str(self.__class__.__name__) + " module read : " + str(filename))
         data = process_pdf(filename)
+        self.text = data
         return data
     
     def write(self,outputname):
-        self.logger.debug(str(self.__class__.__name__)+" module write : "+str(outputname))
+        self.logger.debug(str(self.__class__.__name__) + " module write : " + str(outputname))
         pass
         
 class WordDocument(BaseDocument):
