@@ -50,8 +50,6 @@ class PowerPointDocument(BaseDocument):
         self.type = "PowerPointDocument"
         
         
-        
-        
 class PDFDocument(BaseDocument):
     def __init__(self,**kwargs):
         super().__init__()
