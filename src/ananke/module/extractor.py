@@ -21,11 +21,13 @@ class GraphExtractor(Module):
         super().__init__()
         pass
 
-    def extract(self, input_data: StructuredChunk):
+    def forward(self, input_data: StructuredChunk):
+        self.logger.debug(f"GraphExtractor: {input_data}")
+        self.threading_info()
         pass
 
     def __call__(self, input_data: StructuredChunk):
-        return self.extract(input_data)
+        return self.forward(input_data)
 
     def __repr__(self):
         return "GraphExtractor"
@@ -36,11 +38,13 @@ class LogicalRepresentationExtractor(Module):
         super().__init__()
         pass
 
-    def extract(self, input_data: StructuredChunk):
+    def forward(self, input_data: StructuredChunk):
+        self.logger.debug(f"LogicalRepresentationExtractor: {input_data}")
+        self.threading_info()
         pass
 
     def __call__(self, input_data: StructuredChunk):
-        return self.extract(input_data)
+        return self.forward(input_data)
 
     def __repr__(self):
         return "LogicalRepresentationExtractor"
@@ -51,11 +55,13 @@ class MathRepresentationExtractor(Module):
         super().__init__()
         pass
 
-    def extract(self, input_data: StructuredChunk):
+    def forward(self, input_data: StructuredChunk):
+        self.logger.debug(f"MathRepresentationExtractor: {input_data}")
+        self.threading_info()
         pass
 
     def __call__(self, input_data: StructuredChunk):
-        return self.extract(input_data)
+        return self.forward(input_data)
 
     def __repr__(self):
         return "MathRepresentationExtractor"
@@ -66,11 +72,13 @@ class VectorEmbeddingExtractor(Module):
         super().__init__()
         pass
 
-    def extract(self, input_data: StructuredChunk):
+    def forward(self, input_data: StructuredChunk):
+        self.logger.debug(f"VectorEmbeddingExtractor: {input_data}")
+        self.threading_info()
         pass
 
     def __call__(self, input_data: StructuredChunk):
-        return self.extract(input_data)
+        return self.forward(input_data)
 
     def __repr__(self):
         return "VectorEmbeddingExtractor"
@@ -81,11 +89,13 @@ class UserIntentExtractor(Module):
         super().__init__()
         pass
 
-    def extract(self, input_data: StructuredChunk):
+    def forward(self, input_data: StructuredChunk):
+        self.logger.debug(f"UserIntentExtractor: {input_data}")
+        self.threading_info()
         pass
 
     def __call__(self, input_data: StructuredChunk):
-        return self.extract(input_data)
+        return self.forward(input_data)
 
     def __repr__(self):
         return "UserIntentExtractor"

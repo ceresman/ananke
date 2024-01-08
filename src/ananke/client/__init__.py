@@ -12,25 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ---------------------------------------------------------------------------- #
-#                           FastAPI server definition                          #
-# ---------------------------------------------------------------------------- #
-from ananke.base import BaseServer
-from fastapi import FastAPI
+
+from ananke.base import BaseClient
+import requests
 
 
-class Server(BaseServer):
-    # TODO : Implement Server Class for ananke dataframwork
+class Client(BaseClient):
     def __init__(self,**kwargs):
         super().__init__()
-        self.type = "Server"
+        self.type = "Client"
         self.logger.info(f"Initialized {self.type}.")
-        self.app = FastAPI()
 
-    def run(self):
-        self.logger.info(f"Running {self.type}.")
-        self.app.run()
+    def get(self, url):
+        return requests.get(url)
 
-    def stop(self):
-        self.logger.info(f"Stopping {self.type}.")
-        self.app.stop()
+    def post(self, url, data):
+        return requests.post(url, data=data)
+
+    def put(self, url, data):
+        return requests.put(url, data=data)
+
+    def delete(self, url):
+        return requests.delete(url)
