@@ -17,7 +17,8 @@ from ananke.module import Module
 from ananke.flow import Flow
 from collections import Counter
 from datetime import datetime
-
+import threading
+import time
 class TestModule(Module):
     def __init__(self, name):
         super().__init__(name=name)
@@ -27,10 +28,14 @@ class TestModule(Module):
 
 
     def forward(self, **kwargs):
-        self.timestamp = datetime.now()
+        self.current_thread = threading.get_ident()
+
+        self.timestamp = time.time()
         kwargs["input_data"]["data"+str(self.index)]+=1
+        kwargs["input_data"]["data"+str(self.index)+"time"]=self.timestamp
+        kwargs["input_data"]["data"+str(self.index)+"threading"]=self.current_thread
         data= kwargs["input_data"]
-        self.logger.info(f"Processing {self.name} with data: {data} at {self.timestamp}")
+        # self.logger.debug(f"Processing {self.name} with data: {data} at {self.timestamp}")
         self.ref_count[self.index] += 1
         
 __author__ = "OOXXXXOO"
@@ -64,14 +69,15 @@ def test_flow():
 
     # 添加边以指定执行顺序
     flow.add_edge(module1, module2)
-    flow.add_edge(module2, module3)
-    flow.add_edge(module2, module4)
-    flow.add_edge(module3, module5)
-    flow.add_edge(module4, module5)
+    flow.add_edge(module1, module3)
+    flow.add_edge(module1, module4)
+    flow.add_edge(module1, module5)
+    # flow.add_edge(module4, module5)
 
     # 执行Flow
     flow.execute(input_data=input_data)
+    flow.logger.debug(input_data)
 
     # 输出每个模块的引用计数
-    for module_name, module in flow.modules.items():
-        module.logger.info(f"{module_name}: {module.ref_count}")
+    # for module_name, module in flow.modules.items():
+    #     module.logger.info(f"{module_name}: {module.ref_count}")

@@ -31,6 +31,26 @@ from ananke.module.task import (
 class UserContextFlow(Flow):
     def __init__(self):
         super().__init__()
+        
+        G=GraphExtractor()
+        L=LogicalRepresentationExtractor()
+        M=MathRepresentationExtractor()
+        V=VectorEmbeddingExtractor()
+        U=UserIntentExtractor()
+            
+        # 将模块添加到Flow中
+        self.add_module(G)
+        self.add_module(L)
+        self.add_module(M)
+        self.add_module(V)
+        self.add_module(U)
+        
+        self.add_edge(G,L)
+        self.add_edge(M,V)
+        self.add_edge(L,U)
+        self.add_edge(V,U)
+        
+        
 
 
 class DocContextFlow(Flow):

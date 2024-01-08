@@ -18,6 +18,7 @@ from abc import ABC, abstractmethod
 import logging
 import networkx as nx
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 
 class Flow(BaseFlow):
     def __init__(self, **kwargs):
@@ -50,7 +51,7 @@ class Flow(BaseFlow):
         if not issubclass(module.__class__, Module):
             raise ValueError("Only instances of Module can be added to the flow.")
         module_name = module.name
-        self.logger.info(f"Adding module '{module_name}' to the flow.")
+        # self.logger.info(f"Adding module '{module_name}' to the flow.")
         if module_name in self.graph.nodes():
             raise ValueError(f"Module with name '{module_name}' already exists in the flow.")
         self.graph.add_node(module_name)
@@ -67,7 +68,7 @@ class Flow(BaseFlow):
         with ThreadPoolExecutor() as executor:
             # 获取计算图的拓扑排序
             sorted_nodes = list(nx.topological_sort(self.graph))
-            self.logger.info(f"Executing flow in topological order: {sorted_nodes}")
+            # self.logger.info(f"Executing flow in topological order: {sorted_nodes}")
 
             # 分析计算图的并行依赖关系
             parallel_groups = self._analyze_parallel_dependencies(sorted_nodes)
@@ -94,19 +95,28 @@ class Flow(BaseFlow):
         Returns:
             并行组列表。
         """
-        parallel_groups = []
-        for i in range(len(sorted_nodes)):
-            if i == 0:
-                parallel_groups.append([sorted_nodes[i]])
-            else:
-                module_i = sorted_nodes[i]
-                for module_j in parallel_groups[-1]:
-                    if module_i not in self.graph.predecessors(module_j):
-                        parallel_groups[-1].append(module_i)
-                        break
-                else:
-                    parallel_groups.append([module_i])
-        return parallel_groups
+        # TODO : 当前分析算法无效，需要进一步研究
+        paths = dict(nx.all_pairs_shortest_path(self.graph))
+        
+        groups = []
+        for node1 in self.graph.nodes():
+            group = [node1]
+            for node2 in self.graph.nodes():
+                if node1 not in paths[node2]:
+                    group.append(node2)
+            groups.append(group)
+            
+        # 用字典存储子数组及其出现次数
+        subarray_counts = defaultdict(int)
+        for subarray in groups:
+            subarray = tuple(sorted(subarray)) # 排序后作为字典键
+            subarray_counts[subarray] += 1
+
+        # 合并结果 
+        merged_groups = []
+        for subarray, count in subarray_counts.items():
+            merged_groups.append(list(subarray))
+        return merged_groups
 
     def add_edge(self, source: Module, target: Module):
         """
