@@ -82,7 +82,7 @@ print(len(get_sentence(chunks[0])))
 
 
 
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -101,17 +101,33 @@ from typing import (
 import mysql.connector
 import pymysql
 
+
+
+@dataclass
+class Entity:
+    label: str
+    name: str
+    propertys: dict
+    descriptions: List[str]
+    entity_uuid: str
+    entity_id: long
+    entity_emb_id: long
+
+@dataclass
+class Relation:
+    name: str
+    description: str
+    relation_id: long
+    relation_uuid: str
+    relation_emb_id: long
+
 @dataclass
 class Triple:
     triple_id: long
     triple_uuid: str
-    subject_name: str
-    subject_desc: str
-    pred_name: str
-    pred_desc: str
-    object_name: str
-    object_desc: str
-
+    sub: Entity
+    pred: Relation
+    obj: Entity
 
 @dataclass
 class Sentence:
@@ -157,39 +173,164 @@ class MySQL(object):
         self.host = kwargs.get("msyql_host")
         self.user = kwargs.get("mysql_user")
         self.passwd = kwargs.get("msyql_password")
-        self.db = kwargs.get("mysql_dbname")
-        self.connect = pymysql.connect(host = self.host, user = self.user, passwd = self.passwd, database = self.db)
-    
-    def insert_document(self, docs: List[Document]):
+        self.db_name = kwargs.get("mysql_dbname")
+        self.conn = pymysql.connect(host = self.host, user = self.user, passwd = self.passwd, database = self.db_name, charset='utf8')
+        self.batch = 128
 
-        return
+    def insert_data(self, sql, data):
+        cursor = self.conn.cursor()
+        cursor.executemany(sql, data)
+        self.conn.commit()
+        auto_incre_id = cursor.lastrowid
+        cursor.close()
+        return auto_incre_id;
+
+    def insert_document(self, tenant, docs: List[Document]):
+        sql = "insert into documents(tenant, doc_uuid, doc_text, doc_emb_id, doc_meta_id) values(%s,%s,%s,%s,%s);"
+        times, remain = len(docs)/self.batch, len(docs)%self.batch
+        
+        for i in range(times):
+            data = []
+            batch_data = docs[i * self.batch : (i + 1) * self.batch]
+            auto_incre_id = -1
+            for item in batches:
+                insert = (tenant, item.doc_uuid, item.doc_text, item.doc_meta.meta_id, item.doc_emb_id)
+                data.append(insert)
+                auto_incre_id = self.insert_data(sql, data)
+
+            if auto_incre_id != -1:
+                for ix in range(i * self.bach, (i + 1) * self.batch):
+                    docs[i].doc_id = auto_incre_id
+                    auto_incre_id += 1
+
+
+        batches = docs[(i + 1) * self.batch:]
+        auto_incre_id = -1
+        for item in batches:
+            insert = (tenant, item.doc_uuid, item.doc_text, item.doc_meta.meta_id, item.doc_emb_id)
+            data.append(insert)
+            auto_incre_id = self.insert_data(sql, data)
+
+        if auto_incre_id != -1:
+            for ix in range((i + 1) * self.batch, len(docs)):
+                docs[i].doc_id = auto_incre_id
+                auto_incre_id += 1
+
+        return docs;
 
     def update_document(self, docs: List[Document]):
 
         return
 
     def delete_document(self, docs: List[Document]):
-        return
+        data = []
+        sql = "delete from documents where id in %s;"
+        for item in docs:
+            data.append(item.doc_id)
+
+        cursor = self.conn.cursor()
+        cursor.execute(sql, tuple(data))
+        self.conn.commit()
+        cursor.close()
+
+    def insert_chunks(self, tenant, chunks: List[Chunk]):
+        sql = "insert into chunks(tenant, chunk_uuid, chunk_text, chunk_summary, chunk_emb_id, parent_doc_id) values(%s,%s,%s,%s,%s,%s);"
+        times, remain = len(chunks)/self.batch, len(chunks)%self.batch
+        
+        for i in range(times):
+            data = []
+            batch_data = chunks[i * self.batch : (i + 1) * self.batch]
+            auto_incre_id = -1
+            for item in batches:
+                insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
+                data.append(insert)
+                auto_incre_id = self.insert_data(sql, data)
+
+            if auto_incre_id != -1:
+                for ix in range(i * self.bach, (i + 1) * self.batch):
+                    chunks[i].chunk_id = auto_incre_id
+                    auto_incre_id += 1
 
 
-    def insert_chunks(self, chunks: List[Chunk]):
-        return
+        batches = chunks[(i + 1) * self.batch:]
+        auto_incre_id = -1
+        for item in batches:
+            insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
+            data.append(insert)
+            auto_incre_id = self.insert_data(sql, data)
+
+        if auto_incre_id != -1:
+            for ix in range((i + 1) * self.batch, len(chunks)):
+                chunks[i].chunk_id = auto_incre_id
+                auto_incre_id += 1
+
+        return chunks;
+
 
     def update_chunks(self, chunks: List[Chunk]):
         return
 
 
     def delete_chunks(self, chunks: List[Chunks]):
-        return
+        data = []
+        sql = "delete from chunks where id in %s;"
+        for item in docs:
+            data.append(item.chunk_id)
+
+        cursor = self.conn.cursor()
+        cursor.execute(sql, tuple(data))
+        self.conn.commit()
+        cursor.close()
+
 
     def insert_sents(self, sents: List[Sentence]):
-        return
+        sql = "insert into sents(tenant, sent_uuid, sent_text, sent_emb_id, parent_chunk_id, parent_doc_id) values(%s,%s,%s,%s,%s, %s);"
+        times, remain = len(sents)/self.batch, len(sents)%self.batch
+        
+        for i in range(times):
+            data = []
+            batch_data = sents[i * self.batch : (i + 1) * self.batch]
+            auto_incre_id = -1
+            for item in batches:
+                insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
+                data.append(insert)
+                auto_incre_id = self.insert_data(sql, data)
+
+            if auto_incre_id != -1:
+                for ix in range(i * self.bach, (i + 1) * self.batch):
+                    sent[i].sent_id = auto_incre_id
+                    auto_incre_id += 1
+
+
+        batches = sent[(i + 1) * self.batch:]
+        auto_incre_id = -1
+        for item in batches:
+            insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
+            data.append(insert)
+            auto_incre_id = self.insert_data(sql, data)
+
+        if auto_incre_id != -1:
+            for ix in range((i + 1) * self.batch, len(sents)):
+                sents[i].sent_id = auto_incre_id
+                auto_incre_id += 1
+
+        return sent;
+
 
     def update_sents(self, sents: List[Sentence]):
         return
 
     def delete_sents(self, sents: List[Sentence]):
-        return
+        data = []
+        sql = "delete from sents where id in %s;"
+        for item in docs:
+            data.append(item.sent_id)
+
+        cursor = self.conn.cursor()
+        cursor.execute(sql, tuple(data))
+        self.conn.commit()
+        cursor.close()
+
 
     def insert_triples(self, triples: List[Triple]):
         return
@@ -198,24 +339,49 @@ class MySQL(object):
         return
 
     def delete_triples(self, triples: List[Triple]):
+        data = []
+        sql = "delete from triples where id in %s;"
+        for item in docs:
+            data.append(item.triple_id)
+
+        cursor = self.conn.cursor()
+        cursor.execute(sql, tuple(data))
+        self.conn.commit()
+        cursor.close()
+
         return
 
 
 import py2neo
+from py2neo import Graph, Node, Relationship, NodeMatche
 
 class Graph(object):
     def __init__(self, **kwargs):
         self.host = kwargs.get("neo4j_host")
         self.user = kwargs.get("neo4j_user")
         self.passwd = kwargs.get("neo4j_passwd")
-        self.graph = py2neo.Graph(host = host, auth = (self.user, self.passwd))
+        self.db = kwargs.get("neo4j_db")
+        self.graph = py2neo.Graph(host = host, auth = (self.user, self.passwd), name = self.db)
 
-# mydb = mysql.connector.connect(
-#   host="localhost",
-#   user="root",
-#   passwd="123456",
-#   database="runoob_db"
-# )
-# mycursor = mydb.cursor()
- 
-# mycursor.execute("CREATE TABLE sites (name VARCHAR(255), url VARCHAR(255))")
+    def insert(self, triples: List[Triple]):
+        for triple in triples:
+            sub_label, sub_name = triple.sub.label, triple.sub.name
+            obj_label, obj_name = triple.obj.label, triple.obj.name
+            node_sub = Node(sub_label, name = sub_name)
+            node_obj = Node(obj_label, name = obj_name)
+
+            self.graph.create(node_sub)
+            self.graph.create(node_obj)
+            node_sub.update(triple.sub.propertys)
+            node_obj.update(triple.obj.propertys)
+            self.graph.push(node_sub)
+            self.graph.push(node_obj)
+
+            realtion = Relationship(node_sub, triple.pred.name, node_obj)
+            self.graph.create(realtion)
+
+    def delete(self,):
+        pass
+
+    def match(self,):
+        pass
