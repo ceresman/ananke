@@ -47,6 +47,9 @@ class ChromaStorage(vector_storage):
                 self.logger.error("collection name {} not exist".format(name))
                 return
 
+        if len(metadatas) == 0:
+            metadatas = [{"id": item} for item in ids]
+
         collection.add(embeddings = embs, documents = docs, metadatas = metadatas, ids = ids)
         
 
@@ -65,7 +68,6 @@ class MilvusStorage(vector_storage):
         self.name = "MilvusStorage"
         self.logger.info(f"Initialized {self.name}.")
         self.collection_cache = {}
-        self.db = 
 
     def create_collection(self, name):
         pass

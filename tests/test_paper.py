@@ -65,10 +65,10 @@ class Entity:
     label: str
     name: str
     propertys: dict
-    descriptions: List[str]
     entity_uuid: str
     entity_id: int
     entity_emb_id: int
+    descriptions: List[str] = None
 
 @dataclass
 class Relation:
@@ -94,7 +94,7 @@ class Sentence:
     sent_emb_id: int
     parent_chunk_id: int 
     parent_doc_id: int
-    triples: List[Triple]
+    triples: List[Triple] = None
 
 @dataclass
 class Chunk:
@@ -104,8 +104,8 @@ class Chunk:
     chunk_summary: str
     chunk_emb_id: int
     parent_doc_id: int
-    sents: List[Sentence]
-    triples: List[Triple]
+    sents: List[Sentence] = None
+    triples: List[Triple] = None
 
 @dataclass
 class Meta:
@@ -122,6 +122,7 @@ class Document:
     doc_text: str
     doc_meta: Meta
     doc_emb_id: int
+    chunks: List[Chunk] = None
 
 def get_sentence(chunk):
     sents = []
@@ -149,191 +150,6 @@ def get_chunks(docs:List[Document], start_id = 0, size = 8000, overlap = 256, se
             sents.extend(chunk.sents)
     return chunks, sents
 
-class MySQL(object):
-    def __init__(self, **kwargs):
-        self.host = kwargs.get("msyql_host")
-        self.user = kwargs.get("mysql_user")
-        self.passwd = kwargs.get("msyql_password")
-        self.db_name = kwargs.get("mysql_dbname")
-        self.conn = pymysql.connect(host = self.host, user = self.user, passwd = self.passwd,
-                    port = 3306, database = self.db_name, charset='utf8')
-        self.batch = 2
-
-    def insert_data(self, sql, data):
-        cursor = self.conn.cursor()
-        cursor.executemany(sql, data)
-        self.conn.commit()
-        auto_incre_id = cursor.lastrowid
-        cursor.close()
-        return auto_incre_id;
-
-    def insert_document(self, tenant, docs: List[Document]):
-        sql = "insert into documents(tenant, doc_uuid, doc_text, doc_emb_id, doc_meta_id) values(%s,%s,%s,%s,%s);"
-        times, remain = len(docs)//self.batch, len(docs)%self.batch
-
-        for i in range(times):
-            data = []
-            auto_incre_id = -1
-            batches = docs[i * self.batch : (i + 1) * self.batch]
-            for item in batches:
-                insert = (tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
-                data.append(insert)
-
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(i * self.batch, (i + 1) * self.batch):
-                docs[ix].doc_id = auto_incre_id
-                auto_incre_id += 1
-
-        if remain != 0:        
-            data = []
-            batches = docs[times * self.batch:]
-            for item in batches:
-                insert = (tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
-                data.append(insert)
-
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(times * self.batch, len(docs)):
-                docs[ix].doc_id = auto_incre_id
-                auto_incre_id += 1
-
-        return docs;
-
-    def update_document(self, docs: List[Document]):
-
-        return
-
-    def delete_document(self, docs: List[Document]):
-        data = []
-        sql = "delete from documents where id in %s;"
-        for item in docs:
-            data.append(item.doc_id)
-        print(data)
-        cursor = self.conn.cursor()
-        cursor.execute(sql, [data])
-        self.conn.commit()
-        cursor.close()
-
-    def insert_chunks(self, tenant, chunks: List[Chunk]):
-        sql = "insert into chunks(tenant, chunk_uuid, chunk_text, chunk_summary, chunk_emb_id, parent_doc_id) values(%s,%s,%s,%s,%s,%s);"
-        times, remain = len(chunks)//self.batch, len(chunks)%self.batch
-       
-        for i in range(times):
-            data = []
-            auto_incre_id = -1
-            batches = chunks[i * self.batch : (i + 1) * self.batch]
-            for item in batches:
-                insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
-                data.append(insert)
-
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(i * self.bach, (i + 1) * self.batch):
-                chunks[ix].chunk_id = auto_incre_id
-                auto_incre_id += 1
-
-
-        data = []
-        auto_incre_id = -1
-        batches = chunks[times * self.batch:]
-        for item in batches:
-            insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
-            data.append(insert)
-        
-        auto_incre_id = self.insert_data(sql, data)
-        for ix in range(times * self.batch, len(chunks)):
-            chunks[ix].chunk_id = auto_incre_id
-            auto_incre_id += 1
-
-        return chunks;
-
-
-    def update_chunks(self, chunks: List[Chunk]):
-        return
-
-
-    def delete_chunks(self, chunks: List[Chunk]):
-        data = []
-        sql = "delete from chunks where id in %s;"
-        for item in docs:
-            data.append(item.chunk_id)
-
-        cursor = self.conn.cursor()
-        cursor.execute(sql, tuple(data))
-        self.conn.commit()
-        cursor.close()
-
-
-    def insert_sents(self, sents: List[Sentence]):
-        sql = "insert into sents(tenant, sent_uuid, sent_text, sent_emb_id, parent_chunk_id, parent_doc_id) values(%s,%s,%s,%s,%s, %s);"
-        times, remain = len(sents)//self.batch, len(sents)%self.batch
-        
-        for i in range(times):
-            data = []
-            batches = sents[i * self.batch : (i + 1) * self.batch]
-            auto_incre_id = -1
-            for item in batches:
-                insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
-                data.append(insert)
-
-            auto_incre_id = self.insert_data(sql, data)
-            if auto_incre_id != -1:
-                for ix in range(i * self.bach, (i + 1) * self.batch):
-                    sent[ix].sent_id = auto_incre_id
-                    auto_incre_id += 1
-
-        data = []
-        auto_incre_id = -1
-        batches = sent[times * self.batch:]
-        for item in batches:
-            insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
-            data.append(insert)
-        
-        auto_incre_id = self.insert_data(sql, data)
-        if auto_incre_id != -1:
-            for ix in range((i + 1) * self.batch, len(sents)):
-                sents[ix].sent_id = auto_incre_id
-                auto_incre_id += 1
-
-        return sent;
-
-
-    def update_sents(self, sents: List[Sentence]):
-        return
-
-    def delete_sents(self, sents: List[Sentence]):
-        data = []
-        sql = "delete from sents where id in %s;"
-        for item in docs:
-            data.append(item.sent_id)
-
-        cursor = self.conn.cursor()
-        cursor.execute(sql, [data])
-        self.conn.commit()
-        cursor.close()
-
-
-    def insert_triples(self, triples: List[Triple]):
-        return
-
-    def update_triples(self, triples: List[Triple]):
-        return
-
-    def delete_triples(self, triples: List[Triple]):
-        data = []
-        sql = "delete from triples where id in %s;"
-        for item in docs:
-            data.append(item.triple_id)
-
-        cursor = self.conn.cursor()
-        cursor.execute(sql, [data])
-        self.conn.commit()
-        cursor.close()
-
-        return
-
-    def create_tables(self, sql):
-        cursor = self.conn.cursor()
-        cursor.execute(sql)
-        cursor.close()
 
 import py2neo
 from py2neo import Graph, Node, Relationship, NodeMatch
@@ -425,12 +241,11 @@ for sent in sents:
     texts.append(sent.sent_text)
 
 # print(len(texts))
-# embs = ernie_model.embedding(model, texts[0:16])
+embs = ernie_model.embedding(model, texts[0:16])
 # assert(len(ems) == len(texts))
 
 # sql = "create table documents(id BIGINT AUTO_INCREMENT, tenant varchar(36), doc_uuid varchar(36), doc_text LONGTEXT, doc_emb_id BIGINT, doc_meta_id BIGINT, PRIMARY KEY  (`id`)) ENGINE=InnoDB character set utf8;"
 
-mysql = MySQL(msyql_host = "localhost", mysql_user = "root", msyql_password = "123456", mysql_dbname = "anake")
 
 # mysql.create_tables(sql)
 
@@ -450,6 +265,9 @@ doc.doc_id = 60
 doc2.doc_id = 61
 doc3.doc_id = 62
 docs = [doc, doc2, doc3]
+# mysql = MySQL(msyql_host = "localhost", mysql_user = "root", msyql_password = "123456", mysql_dbname = "anake")
+# mysql.create_tables(sql)
+
 # docs = mysql.insert_document("houyu", docs)
 
 # # print("doc_1 - {}".format(doc.doc_id))
@@ -457,4 +275,53 @@ docs = [doc, doc2, doc3]
 # for item in docs:
 #     print(item.doc_id)
 
-mysql.delete_document(docs)
+# mysql.delete_document(docs)
+
+# print(len(embs))
+# print([str(i) for i in range(len(embs))])
+# # print(texts[0])
+# vector_db = ChromaStorage()
+# vector_db.delete_collection("houyu")
+# vector_db.create_collection("houyu")
+# vector_db.add("houyu", embs, [], [str(i) for i in range(len(embs))], texts[0:16])
+# search_result = vector_db.query("houyu", embs[0], top_n = 2)
+# print(search_result)
+
+prompt = """
+Your goal is to build a graph database. Your task is to extract information from a given text content and convert it into a graph database.
+Provide a set of Nodes in the form [ENTITY_ID, TYPE, PROPERTIES] and a set of relationships in the form [ENTITY_ID_1, RELATIONSHIP, ENTITY_ID_2, PROPERTIES].
+It is important that the ENTITY_ID_1 and ENTITY_ID_2 exists as nodes with a matching ENTITY_ID. If you can't pair a relationship with a pair of nodes don't add it.
+When you find a node or relationship you want to add try to create a generic TYPE for it that describes the entity you can also think of it as a label.
+Here , I give you an example of the task:
+
+Example Text Input:
+
+```markdown
+Data: Alice lawyer and is 25 years old and Bob is her roommate since 2001. Bob works as a journalist. Alice owns a the webpage www.alice.com and Bob owns the webpage www.bob.com.
+```
+
+Example Nodes & Relationships Output:
+
+Nodes: 
+```json
+["alice", "Person", {"age": 25, "occupation": "lawyer", "name":"Alice"}], ["bob", "Person", {"occupation": "journalist", "name": "Bob"}], ["alice.com", "Webpage", {"url": "www.alice.com"}], ["bob.com", "Webpage", {"url": "www.bob.com"}]
+```
+Relationships: 
+```json
+["alice", "roommate", "bob", {"start": 2021}], ["alice", "owns", "alice.com", {}], ["bob", "owns", "bob.com", {}] 
+```
+OK, here is the end of the task example.
+please output with the given example format. If you understand your mission rules , tell me you are ready."""
+
+content = """
+The below text is you need to process
+```markdown
+The National Aeronautics and Space Administration (NASA /ˈnæsə/) is an independent agency of the U.S. federal government responsible for the civil space program, aeronautics research, and space research. Established in 1958, NASA succeeded the National Advisory Committee for Aeronautics (NACA) to give the U.S. space development effort a distinctly civilian orientation, emphasizing peaceful applications in space science.([4])([5])([6]) NASA has since led most American space exploration, including Project Mercury, Project Gemini, the 1968–1972 Apollo Moon landing missions, the Skylab space station, and the Space Shuttle. NASA currently supports the International Space Station and oversees the development of the Orion spacecraft and the Space Launch System for the crewed lunar Artemis program, the Commercial Crew spacecraft, and the planned Lunar Gateway space station.
+NASA's science is focused on: better understanding Earth through the Earth Observing System;([7]) advancing heliophysics through the efforts of the Science Mission Directorate's Heliophysics Research Program;([8]) exploring bodies throughout the Solar System with advanced robotic spacecraft such as New Horizons and planetary rovers such as Perseverance;([9]) and researching astrophysics topics, such as the Big Bang, through the James Webb Space Telescope, and the Great Observatories and associated programs.([10]) NASA's Launch Services Program provides oversight of launch operations and countdown management for its uncrewed launches.
+```"""
+
+messages = [{"role": "user", "content": prompt + content}]
+model = "ernie-3.5"
+
+entities = ernie_model.chat(model, messages)
+print(entities)
