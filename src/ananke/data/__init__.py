@@ -57,7 +57,8 @@ class LogicExpression(BaseObject):
         expression_sympy (sp.Expr): The logic expression as a SymPy expression.
     """
 
-    expression_id: UUID
+    expression_id: int
+    expression_uuid: str
     expression_z3: z3.ExprRef
     expression_sympy: sp.Expr
 

@@ -186,3 +186,17 @@ class MySQL(relation_storage):
                 auto_incre_id += 1
 
         return sent
+
+    def insert_logic(self):
+        pass
+
+    def insert_math(self):
+        pass
+
+    def update_logci(self):
+        pass
+    def update_match(self):
+        pass
+
+    def delete_logic(self):
+        pass
