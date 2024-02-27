@@ -18,4 +18,7 @@
 
 > "For thee, Ananke, we adore, the Queen of all, divine, in thought profound, chaos profound, obscure and dark unsearched, brought forth through thee in number infinite. Fierce Discord, and unlovely Anarchy."
 > ——  The Orphic Hymns 
+**** 
+Framework realtime structure
 
+![](uml_graph.png)

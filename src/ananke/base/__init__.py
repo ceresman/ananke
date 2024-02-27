@@ -24,21 +24,14 @@ import os
 # ---------------------------------------------------------------------------- #
 #                               System Operation                               #
 # ---------------------------------------------------------------------------- #
+from ananke.base.config import YAMLCONFIG
 
 
 
-class BaseConfig():
-    """Base class for all config objects in Ananke."""
-    def __init__(self, **kwargs):
-        pass
-
-class YAMLCONFIG(BaseConfig):
-    def __init__(self,**kwargs):
-        super().__init__()
 
 class BaseObject(ABC):
     def __init__(self, **kwargs):
-        # self.config = YAMLCONFIG(config)
+        self.config = YAMLCONFIG()
         self.logger = self.setup_logger()
 
     def setup_logger(self):
@@ -94,7 +87,11 @@ class BaseObject(ABC):
 
 
 
+class BaseContext(BaseObject):
+    """Base class for all Context in Ananke."""
 
+    def __init__(self,**kwargs):
+        super().__init__()
 
 
 class BaseChunk(BaseObject):

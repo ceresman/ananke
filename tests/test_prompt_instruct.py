@@ -51,8 +51,8 @@ def test_prompt_pack():
     init_formatted_prompt = prompt.init(text="Sample text to process", extra_param="Extra parameter")
     forward_formatted_prompt = prompt(nodes="Node data", relationships="Relationship data", user_input="User input")
 
-    print("Initialized Prompt:")
-    print(init_formatted_prompt)
+    # print("Initialized Prompt:")
+    # print(init_formatted_prompt)
 
-    print("\nForward Prompt:")
-    print(forward_formatted_prompt)
+    # print("\nForward Prompt:")
+    # print(forward_formatted_prompt)

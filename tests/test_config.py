@@ -11,22 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
+from ananke.base.config import YAMLCONFIG
 
-from ananke.flow import Flow
+__author__ = "OOXXXXOO"
+__copyright__ = "OOXXXXOO"
+__license__ = "MIT"
 
-class ananke_flow(Flow):
-    def __init__(self):
-        """
-        The core part of ananke
-        """
-        super().__init__()
-        self.name = "ananke_flow"
-        self.logger.info(f"Initialized {self.name}.")
-        
-        
-        
-        
-        
-class custom_flow(Flow):
-    def __init__(self,**kwargs):
-        super().__init__()
+def test_config():
+    config = YAMLCONFIG()

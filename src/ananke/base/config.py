@@ -12,35 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base import BaseConfig
-
-YAML_CONFIG_TEMPLATE="""
-
+import yaml
+from pprint import pprint
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-class YamlConfig(BaseConfig):
+class YAMLCONFIG():
     def __init__(self,**kwargs):
         super().__init__()
-        self.config_template = YAML_CONFIG_TEMPLATE
+        # from template
+        # self.config_template = YAML_CONFIG_TEMPLATE
+        # from yaml file
+        # self.config_file = kwargs.get("config_file",None)
+        self.default_config_file="./src/ananke/base/config.yaml"
+        if kwargs.get("config_file",None) is None:
+            self.config_file=self.default_config_file
+        else:
+            self.config_file=kwargs.get("config_file",None)
+        with open(self.config_file, 'r') as file:
+            self.config = yaml.safe_load(file)
+            pprint(self.config, width=30)
+
+        
+            

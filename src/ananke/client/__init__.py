@@ -12,12 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ananke.base import BaseStorage,BaseChunk,BaseVector
+
+from ananke.base import BaseClient
+import requests
 
 
-class Vector(BaseVector):
+class Client(BaseClient):
     def __init__(self,**kwargs):
-        # TODO : Vector Embedding Data Class 
         super().__init__()
-        self.logger.info(f"Initialized {self.__class__.__name__}.")
-        
+        self.type = "Client"
+        self.logger.info(f"Initialized {self.type}.")
+
+    def get(self, url):
+        return requests.get(url)
+
+    def post(self, url, data):
+        return requests.post(url, data=data)
+
+    def put(self, url, data):
+        return requests.put(url, data=data)
+
+    def delete(self, url):
+        return requests.delete(url)

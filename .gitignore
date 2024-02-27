@@ -21,6 +21,7 @@ __pycache__/*
 .settings
 .idea
 .vscode
+.env
 tags
 
 # Package files
@@ -52,3 +53,7 @@ MANIFEST
 .venv*/
 .conda*/
 .python-version
+example/pipeline/.ipynb_checkpoints/
+.ipynb_checkpoints/
+uml_graph.png
+uml_graph

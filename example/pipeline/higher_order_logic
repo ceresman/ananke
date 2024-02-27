@@ -1,0 +1,10 @@
+digraph {
+	"P(x)" [label="P(x)"]
+	"Q(x)" [label="Q(x)"]
+	"P(x)" -> "Q(x)" [label="->"]
+	Forall_x [label="∀x"]
+	"P(x)" [label="P(x)"]
+	"Q(x)" [label="Q(x)"]
+	"P(x)" -> "Q(x)" [label="->"]
+	Forall_x -> "P(x)"
+}

@@ -11,11 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import pytest
-from ananke.base import BaseObject
+
 
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
 
-
+def test_user_interaction_pipeline():
+    pass
