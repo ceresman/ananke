@@ -108,16 +108,6 @@ class Entity:
     descriptions: List[str] = None
 
 @dataclass
-class Entity:
-    label: str
-    name: str
-    propertys: dict
-    entity_uuid: str
-    entity_id: int
-    entity_emb_id: int
-    descriptions: List[str] = None
-
-@dataclass
 class Relation:
     name: str
     description: str
