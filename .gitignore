@@ -55,5 +55,3 @@ MANIFEST
 .python-version
 example/pipeline/.ipynb_checkpoints/
 .ipynb_checkpoints/
-uml_graph.png
-uml_graph
