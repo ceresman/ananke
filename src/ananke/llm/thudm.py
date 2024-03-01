@@ -12,74 +12,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from ananke.llm import RemoteLLM
-import zhipuai
-import json
+from zhipuai import ZhipuAI
 
-import zhipuai
 
-class ZhiPuModel(RemoteLLM):
-    def __init__(self, api_key=None):
+class ZhiPu(RemoteLLM):
+    def __init__(self,model="glm-4", api_key=None):
         super().__init__()
-        self.logger.debug(self.config.config["ZHIPU"][0]["KEY"])
-        zhipuai.api_key = self.config.config["ZHIPU"][0]["KEY"]
-        self.conversation_history = []
+        if api_key is None:
+            self.api_key=self.config()["ZHIPU"]["KEY"]
+            self.model=self.config()["ZHIPU"]["MODEL"]
+        else:
+            self.api_key=api_key
+            self.model=model
+        self.client = ZhipuAI(api_key=self.api_key)
+        self.history = [
+             {"role": "system", "content": "你是一个乐于解答各种问题的助手，你的任务是为用户提供专业、准确、有见地的建议。"}
+        ]
 
-    def update_history(self, role, content):
-        self.conversation_history.append({"role": role, "content": content})
-
-    def invoke(self, prompt, top_p=0.7, temperature=0.9):
-        response = zhipuai.model_api.invoke(
-            model="chatglm_turbo",
-            prompt=[{"role": "user", "content": prompt}],
-            top_p=top_p,
-            temperature=temperature,
+    def chat(self, messages):
+        self.history.append(
+            {"role": "user", "content":messages}
         )
-        self.update_history("user", prompt)
-        return response
-
-    def async_invoke(self, prompt, top_p=0.7, temperature=0.9):
-        response = zhipuai.model_api.async_invoke(
-            model="chatglm_turbo",
-            prompt=[{"role": "user", "content": prompt}],
-            top_p=top_p,
-            temperature=temperature,
+        response = self.client.chat.completions.create(
+            model=self.model, messages=self.history
         )
-        self.update_history("user", prompt)
-        return response
+        self.history.append(
+            {"role": "system", "content":response.choices[0].message}
+        )
+        return response.choices[0].message
 
-    def sse_invoke(self, prompt, top_p=0.7, temperature=0.9):
-        response = zhipuai.model_api.sse_invoke(
-            model="chatglm_turbo",
-            prompt=[{"role": "user", "content": prompt}],
-            top_p=top_p,
-            temperature=temperature,
+    def stream_chat(self, messages):
+        self.history.append(
+            {"role": "user", "content":messages}
+        )
+        response = self.client.chat.completions.create(
+            model=self.model, messages=self.history, stream=True
         )
 
-        for event in response.events():
-            if event.event == "add":
-                self.update_history("bot", event.data)
-            elif event.event == "error" or event.event == "interrupted":
-                print(event.data)
-            elif event.event == "finish":
-                self.update_history("bot", event.data)
-                print(event.meta)
-            else:
-                print(event.data)
-
-    def query_async_invoke_result(self, task_id):
-        response = zhipuai.model_api.query_async_invoke_result(task_id, api_key=self.api_key)
-        return response
-# # Example usage:
-# api_key = "your_api_key"
-# zhipuai_wrapper = ZhipuaiModelWrapper(api_key)
-
-# prompt = "你能自我介绍一下吗"
-# # invoke_response = zhipuai_wrapper.invoke(prompt)
-# # async_invoke_response = zhipuai_wrapper.async_invoke(prompt)
-# sse_invoke_response = zhipuai_wrapper.sse_invoke(prompt)
-# # query_result_response = zhipuai_wrapper.query_async_invoke_result("your_task_id")
-
-# print("Invoke Response:", invoke_response)
-# print("Async Invoke Response:", async_invoke_response)
-# print("SSE Invoke Response:", sse_invoke_response)
-# print("Query Result Response:", query_result_response)
+        for chunk in response:
+            yield chunk.choices[0].delta
+        self.history.append(
+            {"role": "system", "content":response.choices[0].message}
+        )

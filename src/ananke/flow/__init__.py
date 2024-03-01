@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from ananke.base import BaseFlow
 from ananke.module import Module
-from abc import ABC,abstractmethod
-
+from abc import ABC, abstractmethod
 import logging
 import networkx as nx
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 
 class Flow(BaseFlow):
     def __init__(self, **kwargs):
@@ -40,27 +39,19 @@ class Flow(BaseFlow):
 
     def add_module(self, module: Module, index=None):
         """
-        Add a module to the information compression flow. Only instances of Module can be added to the flow
-        So , better to add code to check subclass like 
-        ```python
-        if not issubclass(module.__class__, Module):
-            raise ValueError("Only instances of Module can be added to the flow.")
-        module_name = module.name
-        if module_name in self.graph.nodes():
-            raise ValueError(f"Module with name '{module_name}' already exists in the flow.")
-        self.graph.add_node(module_name)
-        self.logger.info(f"Added module '{module_name}' to the flow.")
-        ```
+        Add a module to the information compression flow.
+
         Args:
             module (Module): The module instance to add.
             index (int): The index of insert position in process sequence
 
         Raises:
-            ValueError: If the module is not a subclass of Module.
+            ValueError: If the module is not a subclass of Module or the module with the same name already exists in the flow.
         """
         if not issubclass(module.__class__, Module):
             raise ValueError("Only instances of Module can be added to the flow.")
         module_name = module.name
+        # self.logger.info(f"Adding module '{module_name}' to the flow.")
         if module_name in self.graph.nodes():
             raise ValueError(f"Module with name '{module_name}' already exists in the flow.")
         self.graph.add_node(module_name)
@@ -70,28 +61,64 @@ class Flow(BaseFlow):
     def execute(self, **kwargs):
         """
         Execute the information compression flow by processing the added modules sequentially.
-        here is a sample to execute each module in queue
-        ```python
-        for name, module in self.modules.items():
-        self.logger.info(f"Executing module '{name}'...")
-        module.init(**kwargs)
-        module.forward(**kwargs)
-        self.logger.info(f"Module '{name}' executed successfully.")
-        ```
+
         Args:
             **kwargs: Input parameters.
         """
         with ThreadPoolExecutor() as executor:
-            futures = {executor.submit(self.modules[module_name].forward, **kwargs): module_name for module_name in self.graph.nodes()}
-            for future in as_completed(futures):
-                module_name = futures[future]
-                try:
-                    future.result()
-                    self.logger.info(f"Module '{module_name}' executed successfully.")
-                except Exception as e:
-                    self.logger.error(f"Module '{module_name}' failed to execute: {e}")
+            # 获取计算图的拓扑排序
+            sorted_nodes = list(nx.topological_sort(self.graph))
+            # self.logger.info(f"Executing flow in topological order: {sorted_nodes}")
 
-    def add_edge(self, source : Module, target:Module):
+            # 分析计算图的并行依赖关系
+            parallel_groups = self._analyze_parallel_dependencies(sorted_nodes)
+            self.logger.info(f"Found {len(parallel_groups)} parallel groups: {parallel_groups}")
+
+            # 在每个组内并行执行模块
+            for parallel_group in parallel_groups:
+                futures = {executor.submit(self.modules[module_name].forward, **kwargs): module_name for module_name in parallel_group}
+                for future in as_completed(futures):
+                    module_name = futures[future]
+                    try:
+                        future.result()
+                        self.logger.info(f"Module '{module_name}' executed successfully.")
+                    except Exception as e:
+                        self.logger.error(f"Module '{module_name}' failed to execute: {e}")
+
+    def _analyze_parallel_dependencies(self, sorted_nodes):
+        """
+        分析计算图的并行依赖关系。
+
+        Args:
+            sorted_nodes: 计算图的拓扑排序。
+
+        Returns:
+            并行组列表。
+        """
+        # TODO : 当前分析算法无效，需要进一步研究
+        paths = dict(nx.all_pairs_shortest_path(self.graph))
+        
+        groups = []
+        for node1 in self.graph.nodes():
+            group = [node1]
+            for node2 in self.graph.nodes():
+                if node1 not in paths[node2]:
+                    group.append(node2)
+            groups.append(group)
+            
+        # 用字典存储子数组及其出现次数
+        subarray_counts = defaultdict(int)
+        for subarray in groups:
+            subarray = tuple(sorted(subarray)) # 排序后作为字典键
+            subarray_counts[subarray] += 1
+
+        # 合并结果 
+        merged_groups = []
+        for subarray, count in subarray_counts.items():
+            merged_groups.append(list(subarray))
+        return merged_groups
+
+    def add_edge(self, source: Module, target: Module):
         """
         Add an edge between two modules in the flow.
 
@@ -112,7 +139,9 @@ class Flow(BaseFlow):
 
     def show(self, debug=False):
         """
-        print all module with order in process sequence.
-        if debug , print data same time. 
+        Print all modules with their order in the process sequence. If debug is True, print data as well.
+
+        Args:
+            debug (bool): Whether to print data or not.
         """
         pass

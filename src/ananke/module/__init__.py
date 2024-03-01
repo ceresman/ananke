@@ -1,18 +1,24 @@
 from typing import Any
-from ananke.base import BaseModule,BaseRet
+from ananke.base import BaseModule
 from abc import ABC,abstractmethod
-
+import threading
 
 class Module(BaseModule):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.name = self.__class__.__name__
-        self.logger.info(self.__class__.__name)
+        if "name" not in kwargs.keys():
+            self.name = self.__class__.__name__
+        else:
+            self.name = kwargs["name"]
+        self.logger.info("base module init"+self.name)
 
     @abstractmethod
     def forward(self, data: Any, **kwargs):
         raise NotImplementedError("Implement the forward method in the module class.")
     
+    
+    def threading_info(self):
+        self.logger.debug("threading:"+str(threading.current_thread().name))
     
     def __call__(self, data : Any, **kwargs: Any) -> Any:
         return self.forward(data, **kwargs)
@@ -24,7 +30,7 @@ class Retriever(BaseModule):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.name = self.__class__.__name__
-        self.logger.info(self.__class__.__name)
+        self.logger.info(self.name)
 
     @abstractmethod
     def forward(self, data: Any, **kwargs):

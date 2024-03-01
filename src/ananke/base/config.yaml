@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 # 
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE2.0
 # 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,4 +12,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # parse config from
-# https://u58313tmis.feishu.cn/wiki/MuEXwZ0AciXWAQk5hjwcIzDCnvc?appStyle=UI4&domain=www.feishu.cn&locale=zh-CN&refresh=1&tabName=space&userId=7163550866534973443
+# https://u58313tmis.feishu.cn/wiki/MuEXwZ0AciXWAQk5hjwcIzDCnvc?appStyle=UI4&domain=www.feishu.cn&locale=zhCN&refresh=1&tabName=space&userId=7163550866534973443
+
+
+
+ZHIPU:
+  MODEL: "glm-4"
+  KEY : "6d1e089b49d9a1fc9f251240af39d2ff.sEjOi7HBGjQML5pf"
+
+ERNIE:
+  ERNIE4:
+    API_KEY : d0a03a377c528fdde7775b089298e31a218b8708
+    MODEL : "erniebot4"
+    API_TYPE : "aistudio"
+
+Moonshot:
+  KEY:Y2tpZDRzMXAyazFkdGwxcTRoazA6bXNrLVlJMG9yOWJsYmp0U0hkeFFlQUNXd2lMOXFDaDI=
+
+
+    
+OPENAI:
+  Ananke4-1106-US-WEST:
+    ENDPOINT : "https://anankeus.openai.azure.com/"
+    KEY : "61bc1aab37364618ae0df70bf5f340dd"
+    API_VERSION : "2024-02-15-preview"
+    API_TYPE : "azure"
+    MODEL : "gpt4turbo"
+    ENGINE : "Ananke4-1106-US-WEST"
+  Ananke3-1106-US-WEST:
+    ENDPOINT : "https://anankeus.openai.azure.com/"
+    KEY : "61bc1aab37364618ae0df70bf5f340dd"
+    API_VERSION : "2024-02-15-preview"
+    API_TYPE : "azure"
+    MODEL : "gpt35turbo"
+    ENGINE : "Ananke3-1106-US-WEST"
+  AnankeEmbedding-US-WEST:
+    ENDPOINT : "https://anankeus.openai.azure.com/"
+    KEY : "61bc1aab37364618ae0df70bf5f340dd"
+    API_VERSION : "2024-02-15-preview"
+    API_TYPE : "azure"
+    MODEL : "textembeddingada002"
+    ENGINE : "AnankeEmbedding-US-WEST"
+  AnankeVision-US:
+    ENDPOINT : "https://anankeus.openai.azure.com/"
+    KEY : "61bc1aab37364618ae0df70bf5f340dd"
+    API_VERSION : "2024-02-15-preview"
+    API_TYPE : "azure"
+    MODEL : "gpt4visionpreview"
+    ENGINE : "AnankeVision-US"

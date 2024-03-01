@@ -12,20 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import pytest
-from ananke.llm.thudm import ZhiPuModel
-from ananke.llm.azure import AzureOpenAI
-from ananke.llm.ernie import ErnieModel
+from ananke.llm.thudm import ZhiPu
+from ananke.llm.azure import Azure
+from ananke.llm.ernie import Ernie
 __author__ = "OOXXXXOO"
 __copyright__ = "OOXXXXOO"
 __license__ = "MIT"
 
 
 # TODO Module init & Add to Flow & Process
-def test_zhipu_model():
-    pass
-    # ernie_bot = ErnieModel()
+def test_llm_model():
+    
+    # ----------------------------------- ERNIR ---------------------------------- #
+    
+    # ernie_bot = Ernie()
 
     # Chat completion example
+    
     # chat_messages = [
     #     {'role': 'user', 'content': "hi"}
     # ]
@@ -33,6 +36,7 @@ def test_zhipu_model():
     # ernie_bot.logger.info(chat_result)
 
     # Text embedding example
+    
     # embedding_input = [
     #     "hi"
     # ]
@@ -40,9 +44,11 @@ def test_zhipu_model():
     # ernie_bot.logger.info(embedding_result)
 
     
-    # pass
-    # zp_model=ZhiPuModel()
-    # print(zp_model.invoke("Hi"))
-    # openai_model=AzureOpenAI()
-    # print(openai_model.chat("Hi"))
+    # ----------------------------------- ZHIPU ---------------------------------- #
+    zp_model=ZhiPu()
+    zp_model.logger.debug(zp_model.chat("Hi"))
+    
+    # ----------------------------------- Azure ---------------------------------- #
+    openai_model=Azure(chat_model_name="Ananke3-1106-US-WEST")
+    openai_model.logger.debug(openai_model.chat("Hi"))
     
