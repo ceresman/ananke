@@ -79,7 +79,7 @@ class Azure(RemoteLLM):
         self.conversation.append({"role": "user", "content": user_input})
 
         response = self.client.chat.completions.create(
-            model=self.chat_model, messages=self.conversation
+            model=self.chat_model, messages=self.conversation, response_format={"type": "json_object"},
         )
 
         self.conversation.append(
