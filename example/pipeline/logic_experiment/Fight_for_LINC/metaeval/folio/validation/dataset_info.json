@@ -1,0 +1,66 @@
+{
+  "builder_name": "json",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "folio",
+  "dataset_size": 828751,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/metaeval/folio@7d5f4f77b0d7a6e2706d6677e03adfbf366b6968/train.jsonl": {
+      "num_bytes": 751762,
+      "checksum": null
+    },
+    "hf://datasets/metaeval/folio@7d5f4f77b0d7a6e2706d6677e03adfbf366b6968/validation.jsonl": {
+      "num_bytes": 157095,
+      "checksum": null
+    }
+  },
+  "download_size": 908857,
+  "features": {
+    "conclusion": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "premises": {
+      "feature": {
+        "dtype": "string",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "premises-FOL": {
+      "feature": {
+        "dtype": "string",
+        "_type": "Value"
+      },
+      "_type": "Sequence"
+    },
+    "label": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 1737608,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 685481,
+      "num_examples": 1004,
+      "dataset_name": "folio"
+    },
+    "validation": {
+      "name": "validation",
+      "num_bytes": 143270,
+      "num_examples": 204,
+      "dataset_name": "folio"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
