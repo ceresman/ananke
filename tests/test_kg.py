@@ -31,38 +31,8 @@ from typing import (
     TypeVar,
 )
 
-
-@dataclass
-class Props:
-    id: int
-    uid: int
-    uuid: str
-    genre: int # 0 - triple 1 - sub  2 - obj  3 - pred
-    doc_id: int
-    chunk_id: int
-    sent_id: int
-    emb_id: int    
-    descs: List[str] = None
-
-@dataclass
-class Entity:
-    label: str
-    name:  str
-    propertys: dict
-
-@dataclass
-class Relation:
-    label: str
-    name:  str
-    propertys: dict
-
-@dataclass
-class Triple:
-    triple_id: int
-    triple_uuid: str
-    sub: Entity
-    pred: Relation
-    obj: Entity
+from ananke.data import Entity, Relation, Triple
+from ananke.data import Chunk, Document
 
 class Neo4jGraph(object):
     def __init__(self, **kwargs):
@@ -244,3 +214,55 @@ triples = get_triples(0, 1, 2, 3, names, relation)
 # print(triples)
 print(len(relation))
 print(len(triples))
+
+
+import threading
+
+class AutoIds(object):
+    def __init__(self, **kwargs):
+        self.doc = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+        self.chunk = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+        self.sent = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+        self.node = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+        self.rel = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+        self.triple = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
+
+        self.names2id = {"doc": self.doc, "chunk": self.chunk, "sent": self.sent,
+                        "node": self.node, "rel": self.rel, "triple": self.triple}
+
+    def get_doc_ids(self, length):
+        return self.get_ids(length, "doc")
+
+    def get_chunk_ids(self, length):
+        return self.get_ids(length, "chunk")
+
+    def get_sent_ids(self, length):
+        return self.get_ids(length, "sent")
+
+    def get_node_ids(self, length):
+        return self.get_ids(length, "node")
+
+    def get_rel_ids(self, length):
+        return self.get_ids(length, "rel")
+
+    def get_triple_ids(self, length):
+        return self.get_ids(length, "triple")
+
+    def get_ids(self, length: int, key = "doc"):
+        start_id = 0
+        item = self.names2id.get(key)
+        item.get("lock").acquire()
+        start_id =  item["id"]
+        item["id"] += length
+        print(self.names2id.get(key).get("id"))
+        item.get("lock").release()
+
+        return start_id
+
+
+
+auto_ids = AutoIds()
+
+doc_id = auto_ids.get_doc_ids(10)
+
+print(doc_id)

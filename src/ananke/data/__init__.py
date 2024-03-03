@@ -98,22 +98,28 @@ class MathExpression(BaseObject):
     expression_wolfram: str
 
 @dataclass
+class Props:
+    id: int
+    uid: int
+    uuid: str
+    genre: int # 0 - triple 1 - sub  2 - obj  3 - pred
+    doc_id: int
+    chunk_id: int
+    sent_id: int
+    emb_id: int    
+    descs: List[str] = None
+
+@dataclass
 class Entity:
     label: str
-    name: str
+    name:  str
     propertys: dict
-    entity_uuid: str
-    entity_id: int
-    entity_emb_id: int
-    descriptions: List[str] = None
 
 @dataclass
 class Relation:
-    name: str
-    description: str
-    relation_id: int
-    relation_uuid: str
-    relation_emb_id: int
+    label: str
+    name:  str
+    propertys: dict
 
 @dataclass
 class Triple:
@@ -233,22 +239,22 @@ class RelationSymbol(BaseObject):
     semantics: RelationSemantic
 
 
-@dataclass
-class Triple(BaseObject):
-    """
-    Represents a triple in the knowledge graph.
+# @dataclass
+# class Triple(BaseObject):
+#     """
+#     Represents a triple in the knowledge graph.
 
-    Attributes:
-        triple_id (UUID): Unique identifier for the triple.
-        subject (EntitySymbol): The subject entity in the triple.
-        predicate (RelationSymbol): The predicate or relationship between subject and object.
-        obj (EntitySymbol): The object entity in the triple.
-    """
+#     Attributes:
+#         triple_id (UUID): Unique identifier for the triple.
+#         subject (EntitySymbol): The subject entity in the triple.
+#         predicate (RelationSymbol): The predicate or relationship between subject and object.
+#         obj (EntitySymbol): The object entity in the triple.
+#     """
 
-    triple_id: UUID
-    subject: EntitySymbol
-    predicate: RelationSymbol
-    obj: EntitySymbol
+#     triple_id: UUID
+#     subject: EntitySymbol
+#     predicate: RelationSymbol
+#     obj: EntitySymbol
 
 
 # ---------------------------------------------------------------------------- #

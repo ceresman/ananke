@@ -59,70 +59,8 @@ from typing import (
     TypeVar,
 )
 
-
-@dataclass
-class Entity:
-    label: str
-    name: str
-    propertys: dict
-    entity_uuid: str
-    entity_id: int
-    entity_emb_id: int
-    descriptions: List[str] = None
-
-@dataclass
-class Relation:
-    name: str
-    description: str
-    relation_id: int
-    relation_uuid: str
-    relation_emb_id: int
-
-@dataclass
-class Triple:
-    triple_id: int
-    triple_uuid: str
-    sub: Entity
-    pred: Relation
-    obj: Entity
-
-@dataclass
-class Sentence:
-    sent_uuid: str
-    sent_id: int
-    sent_text: str
-    sent_emb_id: int
-    parent_chunk_id: int 
-    parent_doc_id: int
-    triples: List[Triple] = None
-
-@dataclass
-class Chunk:
-    chunk_uuid: str
-    chunk_id : int
-    chunk_text: str
-    chunk_summary: str
-    chunk_emb_id: int
-    parent_doc_id: int
-    sents: List[Sentence] = None
-    triples: List[Triple] = None
-
-@dataclass
-class Meta:
-    meta_uuid: str
-    meta_id: int
-    meta_type: str
-    meta_value: dict
-    meta_json: str
-
-@dataclass
-class Document:
-    doc_uuid: str
-    doc_id : int
-    doc_text: str
-    doc_meta: Meta
-    doc_emb_id: int
-    chunks: List[Chunk] = None
+from ananke.data import Entity, Relation, Triple
+from ananke.data import Chunk, Document
 
 def get_sentence(chunk):
     sents = []
@@ -185,13 +123,6 @@ class Graph(object):
     def match(self,):
         pass
 
-
-# class Meta:
-#     meta_id: int
-#     meta_uuid: str
-#     meta_type: str
-#     meta_value: dict
-#     meta_json: str
 
 # nltk.download('punkt')
 path = "example/data/gpt3.pdf"
