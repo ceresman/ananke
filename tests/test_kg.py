@@ -31,23 +31,30 @@ from typing import (
     TypeVar,
 )
 
+
+@dataclass
+class Props:
+    id: int
+    uid: int
+    uuid: str
+    genre: int # 0 - triple 1 - sub  2 - obj  3 - pred
+    doc_id: int
+    chunk_id: int
+    sent_id: int
+    emb_id: int    
+    descs: List[str] = None
+
 @dataclass
 class Entity:
     label: str
-    name: str
+    name:  str
     propertys: dict
-    entity_uuid: str
-    entity_id: int
-    entity_emb_id: int
-    descriptions: List[str] = None
 
 @dataclass
 class Relation:
-    name: str
-    description: str
-    relation_id: int
-    uuid: str
-    relation_emb_id: int
+    label: str
+    name:  str
+    propertys: dict
 
 @dataclass
 class Triple:
@@ -69,12 +76,6 @@ class Neo4jGraph(object):
     def update_props(self, entity: Entity) -> dict:
         entity.propertys["label"] = entity.label
         entity.propertys["name"] = entity.name
-        entity.propertys["entity_uuid"] = entity.entity_uuid
-        entity.propertys["entity_id"] = entity.entity_id
-        entity.propertys["entity_emb_id"] = entity.entity_emb_id
-        if entity.descriptions is not None:
-            entity.propertys["desc"] = "".join(entity.descriptions)
-
         return entity.propertys
 
     def insert(self, triples: List[Triple]):
@@ -166,15 +167,59 @@ client = Azure(
 # print(result)
 # print(json.loads(result))
 
-graph_dic = {'Nodes': [['nasa', 'Organization', {'type': 'government agency'}], ['naca', 'Organization', {'type': 'government agency'}], ['project_mercury', 'Project', {'type': 'space exploration'}], ['project_gemini', 'Project', {'type': 'space exploration'}], ['skylab', 'Space Station', {'type': 'space station'}], ['space_shuttle', 'Spacecraft', {'type': 'spacecraft'}], ['international_space_station', 'Space Station', {'type': 'space station'}], ['orion_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['space_launch_system', 'Spacecraft', {'type': 'spacecraft'}], ['crewed_lunar_artemis_program', 'Program', {'type': 'space exploration'}], ['commercial_crew_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['lunar_gateway_space_station', 'Space Station', {'type': 'space station'}], ['earth_observing_system', 'Science Mission', {'type': 'earth observation'}], ['heliophysics_research_program', 'Science Mission', {'type': 'heliophysics research'}], ['new_horizons', 'Spacecraft', {'type': 'space exploration'}], ['perseverance', 'Rover', {'type': 'planetary rover'}], ['james_webb_space_telescope', 'Space Telescope', {'type': 'space telescope'}], ['nasa_launch_services_program', 'Program', {'type': 'launch operations'}]], 
+graph_dic = {'Nodes': [['nasa', 'Organization', {'type': 'government agency'}], ['naca', 'Organization', {'type': 'government agency'}], 
+            ['project_mercury', 'Project', {'type': 'space exploration'}], ['project_gemini', 'Project', {'type': 'space exploration'}], ['skylab', 'Space Station', {'type': 'space station'}], ['space_shuttle', 'Spacecraft', {'type': 'spacecraft'}], ['international_space_station', 'Space Station', {'type': 'space station'}], ['orion_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['space_launch_system', 'Spacecraft', {'type': 'spacecraft'}], ['crewed_lunar_artemis_program', 'Program', {'type': 'space exploration'}], ['commercial_crew_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['lunar_gateway_space_station', 'Space Station', {'type': 'space station'}], ['earth_observing_system', 'Science Mission', {'type': 'earth observation'}], ['heliophysics_research_program', 'Science Mission', {'type': 'heliophysics research'}], ['new_horizons', 'Spacecraft', {'type': 'space exploration'}], ['perseverance', 'Rover', {'type': 'planetary rover'}], ['james_webb_space_telescope', 'Space Telescope', {'type': 'space telescope'}], ['nasa_launch_services_program', 'Program', {'type': 'launch operations'}]], 
             'Relationships': [['nasa', 'succeeded_by', 'naca', {'start': 1958}], ['nasa', 'led', 'project_mercury', {'start': 1961, 'end': 1963}], ['nasa', 'led', 'project_gemini', {'start': 1965, 'end': 1966}], ['nasa', 'led', 'apollo_moon_landing_missions', {'start': 1968, 'end': 1972}], ['nasa', 'led', 'skylab', {'start': 1973, 'end': 1979}], ['nasa', 'led', 'space_shuttle', {'start': 1981, 'end': 2011}], ['nasa', 'supports', 'international_space_station', {'start': 2000}], ['nasa', 'oversees_development_of', 'orion_spacecraft', {}], ['nasa', 'oversees_development_of', 'space_launch_system', {}], ['nasa', 'oversees_development_of', 'commercial_crew_spacecraft', {}], ['nasa', 'oversees_development_of', 'lunar_gateway_space_station', {}], ['nasa', 'science_focused_on', 'earth_observing_system', {}], ['nasa', 'science_focused_on', 'heliophysics_research_program', {}], ['nasa', 'science_focused_on', 'new_horizons', {}], ['nasa', 'science_focused_on', 'perseverance', {}], ['nasa', 'science_focused_on', 'james_webb_space_telescope', {}], ['nasa', 'launch_services_provided_by', 'nasa_launch_services_program', {}]]}
 
 
-def get_entities(doc_id, chunk_id, sentence_id, nodes):
-    entities = []
+from uuid import uuid4
+
+def get_uuid():
+    _uuid = str(uuid4())
+    _uuid = _uuid.split("-")
+    _uuid = "".join(_uuid)
+    return _uuid
+
+def set_props(props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
+    props["id"] = uid
+    props["uuid"] = get_uuid()
+    props["doc_id"] = doc_id
+    props["chunk_id"] = chunk_id
+    props["sent_id"] = sent_id
+    props["emb_id"] = emb_id
+    props["genre"] = genre
+
+    return props
+
+def get_entities(doc_id, chunk_id, sent_id, emb_id, nodes):
+    entities, names = [], {}
     for node in nodes:
         name, label, propertys = node[0].lower(), node[1].lower(), node[2]
-        entity = Entity(label, name)
+        if propertys is None:
+            propertys = {}
+        propertys = set_props(propertys, 0, doc_id, chunk_id, sent_id, emb_id, 1)
+        entity = Entity(label, name, propertys)
+        names[name] = entity
+        entities.append(entity)
+    return entities, names
+
+
+def get_triples(doc_id, chunk_id, sent_id, emb_id, names, relations):
+    triple_id = 0
+    rel_id = {}
+    triples = []
+    for rel in relations:
+        sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
+        if names.get(sub) is not None and names.get(obj) is not None:
+            props = set_props(props, rel_id, doc_id, chunk_id, sent_id, emb_id, 0)
+            sub = names.get(sub)
+            obj = names.get(obj)
+            relation = Relation("", rel_name, props)
+            triple = Triple(triple_id, get_uuid(), sub, relation, obj)
+            triples.append(triple)
+        else:
+            print(rel)
+    return triples
 
 def parse_response(doc_id, chunk_id, sentence_id, graph:dict):
     nodes, realtion = None, None
@@ -187,6 +232,15 @@ def parse_response(doc_id, chunk_id, sentence_id, graph:dict):
 
     return (nodes, realtion)
 
-nodes, realtion = parse_response(0, 0, 0, graph_dic)
-print(nodes)
-print(realtion)
+nodes, relation = parse_response(0, 0, 0, graph_dic)
+# print(nodes)
+# print(realtion)
+
+
+
+entities, names = get_entities(0, 1, 2, 3, nodes)
+triples = get_triples(0, 1, 2, 3, names, relation)
+
+# print(triples)
+print(len(relation))
+print(len(triples))
