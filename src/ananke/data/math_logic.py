@@ -1,4 +1,21 @@
 from ananke.base import BaseObject
+import pytest
+from ananke.llm.thudm import ZhiPu
+from ananke.llm.azure import Azure
+from ananke.llm.ernie import Ernie
+__author__ = "OOXXXXOO"
+__copyright__ = "OOXXXXOO"
+__license__ = "MIT"
+
+
+import re
+import nltk
+from nltk.sem import logic
+from nltk.sem import Expression
+
+logic._counter._value = 0
+read_expr = Expression.fromstring
+
 
 class Math(BaseObject):
 	def __init__(self, **kwargs):
@@ -15,6 +32,7 @@ class Logic(BaseObject):
 		pass
 
 	def handle_logic(self, user_input: str) -> str:
+        
 		pass
 
 
