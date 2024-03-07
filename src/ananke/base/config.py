@@ -23,7 +23,9 @@ class YAMLCONFIG():
         # self.config_template = YAML_CONFIG_TEMPLATE
         # from yaml file
         # self.config_file = kwargs.get("config_file",None)
-        self.default_config_file="./src/ananke/base/config.yaml"
+        # self.default_config_file="./src/ananke/base/config.yaml"
+        self.default_config_file="/workspace/huangyongfeng/hyf/ananke/src/ananke/base/config.yaml"
+
         if kwargs.get("config_file",None) is None:
             self.config_file=self.default_config_file
         else:

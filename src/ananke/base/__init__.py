@@ -31,7 +31,7 @@ from ananke.base.config import YAMLCONFIG
 
 class BaseObject(ABC):
     def __init__(self, **kwargs):
-        self.config = YAMLCONFIG()
+        self.config = YAMLCONFIG(**kwargs)
         self.logger = self.setup_logger()
 
     def setup_logger(self):

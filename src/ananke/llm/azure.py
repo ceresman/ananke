@@ -27,7 +27,7 @@ from mimetypes import guess_type
 
 # ------------------------------------- - ------------------------------------ #
 from ananke.llm import RemoteLLM
-
+# from ananke.base.config import YAMLCONFIG
 
 class Azure(RemoteLLM):
     def __init__(
@@ -43,7 +43,6 @@ class Azure(RemoteLLM):
     ):
         super().__init__()
         if api_key is None:
-       
             self.logger.debug("azure",self.config()["OPENAI"][chat_model_name])
             self.api_key = self.config()["OPENAI"][chat_model_name]["KEY"]
             self.api_version = self.config()["OPENAI"][chat_model_name]["API_VERSION"]
