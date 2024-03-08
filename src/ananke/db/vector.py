@@ -31,7 +31,7 @@ class ChromaStorage(vector_storage):
 
     def create_collection(self, name):
         if self.collection_cache.get(name, None) is None:
-            collection = self.vector_db.create_collection(name, metadata = {"hnsw:space": "cosine"})
+            collection = self.vector_db.get_or_create_collection(name, metadata = {"hnsw:space": "cosine"})
             self.collection_cache[name] = collection
             return
 
@@ -50,6 +50,7 @@ class ChromaStorage(vector_storage):
         if len(metadatas) == 0:
             metadatas = [{"id": item} for item in ids]
 
+        ids = [str(item) for item in ids]
         collection.add(embeddings = embs, documents = docs, metadatas = metadatas, ids = ids)
         
 

@@ -25,7 +25,7 @@ class Agent(BaseObject):
 		self.conversation_cache = None
 		self.logger.info("agent init")
 
-	def handle_conversation(self, conversation_id:str, user_input:str,):
+	def handle_conversation(self, conversation_id:str, user_input:str):
 		pass
 
 

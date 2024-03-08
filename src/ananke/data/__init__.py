@@ -152,11 +152,11 @@ class Chunk:
 
 @dataclass
 class Meta:
-    meta_uuid: str
     meta_id: int
+    meta_uuid: str
     meta_type: str
-    meta_value: dict
     meta_json: str
+    meta_value: dict
 
 @dataclass
 class Document:
@@ -317,23 +317,23 @@ class StructuredChunk(BaseObject):
     # Add more attributes as needed.
 
 
-@dataclass
-class Document(BaseDocument):
-    """
-    Represents a document or a file.
+# @dataclass
+# class Document(BaseDocument):
+#     """
+#     Represents a document or a file.
 
-    Attributes:
-        doc_id (UUID): Unique identifier for the document.
-        meta (StructuredData): Meta information about the document.
-        meta_embedding (np.ndarray): Embedding representation of the meta information.
-        raw_content (str): Raw content of the document.
-    """
+#     Attributes:
+#         doc_id (UUID): Unique identifier for the document.
+#         meta (StructuredData): Meta information about the document.
+#         meta_embedding (np.ndarray): Embedding representation of the meta information.
+#         raw_content (str): Raw content of the document.
+#     """
 
-    id: UUID
-    meta: StructuredData
-    meta_embedding: np.ndarray
-    raw_content: str
-    StructuredChunks: List[StructuredChunk]
+#     id: UUID
+#     meta: StructuredData
+#     meta_embedding: np.ndarray
+#     raw_content: str
+#     StructuredChunks: List[StructuredChunk]
 
 
 # ---------------------------------------------------------------------------- #

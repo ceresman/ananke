@@ -127,7 +127,7 @@ class Graph(object):
 # nltk.download('punkt')
 path = "example/data/gpt3.pdf"
 data = process_pdf(path)
-meta = Meta(1, "", "" , None, "")
+meta = Meta(1, "1", "" , "", {})
 doc = Document(get_uuid(), 1, data, meta, 1)
 # doc.text = data
 # doc.doc_uuid = get_uuid()
@@ -217,42 +217,3 @@ docs = [doc, doc2, doc3]
 # vector_db.add("houyu", embs, [], [str(i) for i in range(len(embs))], texts[0:16])
 # search_result = vector_db.query("houyu", embs[0], top_n = 2)
 # print(search_result)
-
-prompt = """
-Your goal is to build a graph database. Your task is to extract information from a given text content and convert it into a graph database.
-Provide a set of Nodes in the form [ENTITY_ID, TYPE, PROPERTIES] and a set of relationships in the form [ENTITY_ID_1, RELATIONSHIP, ENTITY_ID_2, PROPERTIES].
-It is important that the ENTITY_ID_1 and ENTITY_ID_2 exists as nodes with a matching ENTITY_ID. If you can't pair a relationship with a pair of nodes don't add it.
-When you find a node or relationship you want to add try to create a generic TYPE for it that describes the entity you can also think of it as a label.
-Here , I give you an example of the task:
-
-Example Text Input:
-
-```markdown
-Data: Alice lawyer and is 25 years old and Bob is her roommate since 2001. Bob works as a journalist. Alice owns a the webpage www.alice.com and Bob owns the webpage www.bob.com.
-```
-
-Example Nodes & Relationships Output:
-
-Nodes: 
-```json
-["alice", "Person", {"age": 25, "occupation": "lawyer", "name":"Alice"}], ["bob", "Person", {"occupation": "journalist", "name": "Bob"}], ["alice.com", "Webpage", {"url": "www.alice.com"}], ["bob.com", "Webpage", {"url": "www.bob.com"}]
-```
-Relationships: 
-```json
-["alice", "roommate", "bob", {"start": 2021}], ["alice", "owns", "alice.com", {}], ["bob", "owns", "bob.com", {}] 
-```
-OK, here is the end of the task example.
-please output with the given example format. If you understand your mission rules , tell me you are ready."""
-
-content = """
-The below text is you need to process
-```markdown
-The National Aeronautics and Space Administration (NASA /ˈnæsə/) is an independent agency of the U.S. federal government responsible for the civil space program, aeronautics research, and space research. Established in 1958, NASA succeeded the National Advisory Committee for Aeronautics (NACA) to give the U.S. space development effort a distinctly civilian orientation, emphasizing peaceful applications in space science.([4])([5])([6]) NASA has since led most American space exploration, including Project Mercury, Project Gemini, the 1968–1972 Apollo Moon landing missions, the Skylab space station, and the Space Shuttle. NASA currently supports the International Space Station and oversees the development of the Orion spacecraft and the Space Launch System for the crewed lunar Artemis program, the Commercial Crew spacecraft, and the planned Lunar Gateway space station.
-NASA's science is focused on: better understanding Earth through the Earth Observing System;([7]) advancing heliophysics through the efforts of the Science Mission Directorate's Heliophysics Research Program;([8]) exploring bodies throughout the Solar System with advanced robotic spacecraft such as New Horizons and planetary rovers such as Perseverance;([9]) and researching astrophysics topics, such as the Big Bang, through the James Webb Space Telescope, and the Great Observatories and associated programs.([10]) NASA's Launch Services Program provides oversight of launch operations and countdown management for its uncrewed launches.
-```"""
-
-messages = [{"role": "user", "content": prompt + content}]
-model = "ernie-3.5"
-
-entities = ernie_model.chat(model, messages)
-print(entities)

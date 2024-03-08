@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import pytest,json,os
+import pytest,json,os,time
 from ananke.data.general  import Paper
 from ananke.llm.azure import Azure
 from py2neo import Graph, Node, Relationship
@@ -31,8 +31,12 @@ from typing import (
     TypeVar,
 )
 
+from ananke.base import BaseObject
+from nltk.tokenize import sent_tokenize
 from ananke.data import Entity, Relation, Triple
-from ananke.data import Chunk, Document
+from ananke.data import Chunk, Document,Sentence, Meta
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from ananke.db.vector import ChromaStorage
 
 class Neo4jGraph(object):
     def __init__(self, **kwargs):
@@ -150,70 +154,65 @@ def get_uuid():
     _uuid = "".join(_uuid)
     return _uuid
 
-def set_props(props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
-    props["id"] = uid
-    props["uuid"] = get_uuid()
-    props["doc_id"] = doc_id
-    props["chunk_id"] = chunk_id
-    props["sent_id"] = sent_id
-    props["emb_id"] = emb_id
-    props["genre"] = genre
+# def set_props(props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
+#     props["id"] = uid
+#     props["uuid"] = get_uuid()
+#     props["doc_id"] = doc_id
+#     props["chunk_id"] = chunk_id
+#     props["sent_id"] = sent_id
+#     props["emb_id"] = emb_id
+#     props["genre"] = genre
 
-    return props
+#     return props
 
-def get_entities(doc_id, chunk_id, sent_id, emb_id, nodes):
-    entities, names = [], {}
-    for node in nodes:
-        name, label, propertys = node[0].lower(), node[1].lower(), node[2]
-        if propertys is None:
-            propertys = {}
-        propertys = set_props(propertys, 0, doc_id, chunk_id, sent_id, emb_id, 1)
-        entity = Entity(label, name, propertys)
-        names[name] = entity
-        entities.append(entity)
-    return entities, names
-
-
-def get_triples(doc_id, chunk_id, sent_id, emb_id, names, relations):
-    triple_id = 0
-    rel_id = {}
-    triples = []
-    for rel in relations:
-        sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
-        if names.get(sub) is not None and names.get(obj) is not None:
-            props = set_props(props, rel_id, doc_id, chunk_id, sent_id, emb_id, 0)
-            sub = names.get(sub)
-            obj = names.get(obj)
-            relation = Relation("", rel_name, props)
-            triple = Triple(triple_id, get_uuid(), sub, relation, obj)
-            triples.append(triple)
-        else:
-            print(rel)
-    return triples
-
-def parse_response(doc_id, chunk_id, sentence_id, graph:dict):
-    nodes, realtion = None, None
-    for item in graph.keys():
-        if item.lower() == "nodes":
-            nodes = graph.get(item, None)
-
-        if item.lower() == "relationships":
-            realtion = graph.get(item, None)
-
-    return (nodes, realtion)
-
-nodes, relation = parse_response(0, 0, 0, graph_dic)
-# print(nodes)
-# print(realtion)
+# def get_entities(doc_id, chunk_id, sent_id, emb_id, nodes):
+#     entities, names = [], {}
+#     for node in nodes:
+#         name, label, propertys = node[0].lower(), node[1].lower(), node[2]
+#         if propertys is None:
+#             propertys = {}
+#         propertys = set_props(propertys, 0, doc_id, chunk_id, sent_id, emb_id, 1)
+#         entity = Entity(label, name, propertys)
+#         names[name] = entity
+#         entities.append(entity)
+#     return entities, names
 
 
+# def get_triples(doc_id, chunk_id, sent_id, emb_id, names, relations):
+#     triple_id = 0
+#     rel_id = {}
+#     triples = []
+#     for rel in relations:
+#         sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
+#         if names.get(sub) is not None and names.get(obj) is not None:
+#             props = set_props(props, rel_id, doc_id, chunk_id, sent_id, emb_id, 0)
+#             sub = names.get(sub)
+#             obj = names.get(obj)
+#             relation = Relation("", rel_name, props)
+#             triple = Triple(triple_id, get_uuid(), sub, relation, obj)
+#             triples.append(triple)
+#         else:
+#             print(rel)
+#     return triples
 
-entities, names = get_entities(0, 1, 2, 3, nodes)
-triples = get_triples(0, 1, 2, 3, names, relation)
+# def parse_response(doc_id, chunk_id, sentence_id, graph:dict):
+#     nodes, realtion = None, None
+#     for item in graph.keys():
+#         if item.lower() == "nodes":
+#             nodes = graph.get(item, None)
 
-# print(triples)
-print(len(relation))
-print(len(triples))
+#         if item.lower() == "relationships":
+#             realtion = graph.get(item, None)
+
+#     return (nodes, realtion)
+
+# nodes, relation = parse_response(0, 0, 0, graph_dic)
+# entities, names = get_entities(0, 1, 2, 3, nodes)
+# triples = get_triples(0, 1, 2, 3, names, relation)
+
+# # print(triples)
+# print(len(relation))
+# print(len(triples))
 
 
 import threading
@@ -254,7 +253,7 @@ class AutoIds(object):
         item.get("lock").acquire()
         start_id =  item["id"]
         item["id"] += length
-        print(self.names2id.get(key).get("id"))
+        # print(self.names2id.get(key).get("id"))
         item.get("lock").release()
 
         return start_id
@@ -266,3 +265,279 @@ auto_ids = AutoIds()
 doc_id = auto_ids.get_doc_ids(10)
 
 print(doc_id)
+
+
+
+from ananke.utils.arxiv_dump import process_pdf
+
+def get_sentence(chunk):
+    sents = []
+    raw_sents = sent_tokenize(chunk.chunk_text)
+    for item in raw_sents:
+        sent = Sentence(sent_uuid = get_uuid(), sent_text = item,
+                    parent_doc_id = chunk.parent_doc_id,
+                    parent_chunk_id = chunk.chunk_id,
+                    sent_id = None, sent_emb_id = None, triples = None)
+        sents.append(sent)
+    return sents
+
+class DocFlow(BaseObject):
+    def __init__(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""], **kwargs):
+        super().__init__()
+        self.kwargs  = kwargs 
+        self.graph = Neo4jGraph(**kwargs)
+        self.vector = ChromaStorage(**kwargs)
+        self.id_generator = AutoIds(**kwargs)
+        self.splitter = RecursiveCharacterTextSplitter(chunk_size = size, chunk_overlap = overlap, separators = seps)
+        self.entity_prompt = entity_prompt
+        self.vector.create_collection("all-chunk")
+        self.vector.create_collection("all-sent")
+
+    def get_embedding(self, text) -> (int, List[int]):
+        open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
+        embedding = open_ai.embedding(text)
+        return embedding
+
+    def set_props(self, props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
+        if type(props) == str:
+            try:
+                props = json.loads(props)
+            except Exception:
+                props = {}
+        props["id"] = uid
+        props["uuid"] = get_uuid()
+        props["doc_id"] = doc_id
+        props["chunk_id"] = chunk_id
+        props["sent_id"] = sent_id
+        props["emb_id"] = emb_id
+        props["genre"] = genre
+
+        return props
+
+    def get_entities(self, doc_id, chunk_id, sent_id, nodes):
+        entities, names = [], {}
+        start_id = self.id_generator.get_node_ids(len(nodes))
+        for ix, node in enumerate(nodes, start = start_id):
+            name, label, propertys = node[0].lower(), node[1].lower(), node[2]
+            print("props: {}-{}".format(propertys, type(propertys)))
+            if propertys is None:
+                propertys = {}
+            propertys = self.set_props(propertys, ix, doc_id, chunk_id, sent_id, ix, 1)
+            entity = Entity(label, name, propertys)
+            names[name] = entity
+            entities.append(entity)
+        return entities, names
+
+
+    def get_triples(self, doc_id, chunk_id, sent_id, names, relations):
+        triples = []
+        if relations is None:
+            return triples
+
+        start_id = self.id_generator.get_rel_ids(len(relations))
+        for rel_id, rel in enumerate(relations, start = start_id):
+            sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
+            if names.get(sub) is not None and names.get(obj) is not None:
+                props = self.set_props(props, rel_id, doc_id, chunk_id, sent_id, rel_id, 0)
+                sub = names.get(sub)
+                obj = names.get(obj)
+                relation = Relation("", rel_name, props)
+                triple = Triple(rel_id, get_uuid(), sub, relation, obj)
+                triples.append(triple)
+            else:
+                continue
+
+        return triples
+
+    def get_entity_response(self, text):
+        time.sleep(3)
+        open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
+        chat_response = open_ai.chat(self.entity_prompt + text)
+        return chat_response
+
+    def get_sent_summary(self, text):
+        return self.get_entity_response(text)
+
+    def get_chunk_summary(self, text):
+        return self.get_entity_response(text)
+
+    def get_nodes_and_relation(self, entity_response:str):
+        nodes_dict = json.loads(entity_response)
+        nodes, realtion = None, None
+        for item in nodes_dict.keys():
+            if item.lower() == "nodes":
+                nodes = nodes_dict.get(item, None)
+
+            if item.lower() == "relationships":
+                realtion = nodes_dict.get(item, None)
+
+        return nodes, realtion
+
+    def get_chunk_triples(self, chunk_text, doc_id, chunk_id)->(str, List[Entity], List[Triple]):
+        triples = []
+        summary = self.get_chunk_summary(chunk_text)
+
+        nodes, relations = self.get_nodes_and_relation(summary)
+        entities, names = self.get_entities(doc_id, chunk_id, -1, nodes)
+        triples  = self.get_triples(doc_id, chunk_id, -1, names, relations)
+        return (summary, entities, triples)        
+
+    def get_chunk_sents(self, chunk_text, doc_id, chunk_id)->List[Sentence]:
+        sents = []
+        sent_texts, sent_ids = [], []
+        sent_embs, sent_metas = [], []
+ 
+        raw_sents = sent_tokenize(chunk_text)
+        start_id  = self.id_generator.get_sent_ids(len(raw_sents))
+        for ix, sent_text in enumerate(raw_sents, start = start_id):
+            sent_uuid = get_uuid()
+            summary, entities, triples  = self.get_sent_triples(sent_text, doc_id, chunk_id, ix)
+            sent_texts.append(sent_text)
+            sent_ids.append(ix)
+            sent_emb = self.get_embedding(sent_text)
+            sent_metas.append({"doc_id": doc_id, "chunk_id": chunk_id, "sent_id": ix})
+            sent_embs.append(sent_emb)
+            sent = Sentence(sent_uuid, sent_text, doc_id, chunk_id, ix, ix, triples)
+            sents.append(sent)
+            self.graph.insert(triples)
+
+
+        self.vector.add("all-sent", sent_embs, sent_metas, sent_ids, sent_texts)
+        return sents
+
+    def get_sent_triples(self, sent_text, doc_id, chunk_id, sent_id)->List[Triple]:
+        triples  = []
+        summary  = self.get_sent_summary(sent_text)
+
+        nodes, relations = self.get_nodes_and_relation(summary)
+        entities, names = self.get_entities(doc_id, chunk_id, sent_id, nodes)
+        triples  = self.get_triples(doc_id, chunk_id, sent_id, names, relations)
+        return (summary, entities, triples)        
+
+    def get_docs(self, doc_paths:List[str], tenant = "all")-> List[Document]:
+        docs =  []
+
+        start_id = self.id_generator.get_doc_ids(len(doc_paths))
+        for ix, item in enumerate(doc_paths, start = start_id):
+            data = process_pdf(path)
+            doc_uuid = get_uuid()
+            meta = Meta(ix, doc_uuid, "", "", {})
+            doc = Document(get_uuid(), ix, data, meta, ix)
+            docs.append(doc)
+
+        return docs
+
+    def get_chunks(self, docs: List[Document], tenant = "all")->List[Chunk]:
+        chunks = []
+
+        for doc in docs:
+            raw_texts = self.splitter.split_text(doc.doc_text)
+            chunk_start_id = self.id_generator.get_chunk_ids(len(raw_texts))
+            for chunk_id, raw_text in enumerate(raw_texts, start = chunk_start_id):
+                chunk_uuid = get_uuid()
+                chunk_summary = self.get_chunk_summary(raw_text)
+                # chunk_embedding = self.get_embedding(chunk_summary)
+                chunk = Chunk(text, ix, chunk_uuid, chunk_summary, doc.doc_id, sents = None, ix, triples = None) 
+                chunk.append(chunk)
+        return chunks
+
+    def get_chunk_embeddings(self, chunks:List[Chunk], tenant = "all"):
+        ids = []
+        meatas = []
+        embeddings = []
+        texts = []
+
+        for chunk in chunks:
+            meata = {"doc_id": doc.doc_id, "chunk_id": ix, "summary": chunk.chunk_summary}
+            ids.append(chunk.chunk_id)
+            texts.append(chunk.chunk_text)
+            meata.append(meata)
+            embeddings.append(self.get_embedding(chunk.chunk_summary))
+
+        self.vector.add("all-chunk", chunk_embs, chunk_metas, chunk_ids, chunk_texts)
+
+    def get_triples(self, summary, doc_id, chunk_id, sent_id)->(str, List[Entity], List[Triple]):
+        triples = []
+
+        nodes, relations = self.get_nodes_and_relation(summary)
+        entities, names = self.get_entities(doc_id, chunk_id, -1, nodes)
+        triples  = self.get_triples(doc_id, chunk_id, -1, names, relations)
+        return (summary, entities, triples)        
+
+    def get_chunk_triples(self, chunks:List[Chunk], tenant = "all")->List[Chunk]:
+        for chunk in chunks:
+            summary, entities, triples = self.get_triples(summary, chunk.doc_id, chunk.chunk_id, -1)
+            pass
+
+    def get_sents(self, chunks: List[Chunk], tenant = "all")->(List[Sentence], List[Chunk]):
+        sents = []
+
+        return sents
+
+    def get_chunks_and_sents(self, docs:List[Document], tenant = "all") -> (List[Chunk], List[Sentence]):
+        chunks, sents = [], []
+
+        for doc in docs:
+            doc_chunks = []
+            chunk_ids, chunk_metas = [], []
+            chunk_texts, chunk_embs = [], []
+            texts = self.splitter.split_text(doc.doc_text)
+            start_id = self.id_generator.get_chunk_ids(len(texts))
+            for ix, text in enumerate(texts, start = start_id):
+                chunk_uuid = get_uuid()
+                chunk_summary, entities, chunk_triples = self.get_chunk_triples(text, doc.doc_id, ix)
+                chunk_meta = {"doc_id": doc.doc_id, "chunk_id": ix, "summary": chunk_summary}
+                embedding = self.get_embedding(chunk_summary)
+                chunk_sents = self.get_chunk_sents(text, doc.doc_id, ix)
+                chunk = Chunk(text, ix, chunk_uuid, chunk_summary, doc.doc_id, chunk_sents, ix, triples = chunk_triples)
+                doc_chunks.append(chunk)
+                sents.extend(chunk_sents)
+                chunk_ids.append(ix)
+                chunk_metas.append(chunk_meta)
+                chunk_texts.append(text)
+                chunk_embs.append(embedding)
+                self.graph.insert(chunk_triples)
+
+            self.vector.add("all-chunk", chunk_embs, chunk_metas, chunk_ids, chunk_texts)
+            doc.chunks = doc_chunks
+            chunks.extend(doc_chunks)
+
+        return (chunks, sents)
+
+    def search(self, user_text: str):
+        user_emb = self.get_embedding(user_text)
+        search_chunks = self.vector.query("all-chunk", user_emb, top_n = 50)
+        search_sents = self.vector.query("all-sent", user_emb, top_n = 50)
+
+        print(search_chunks)
+        print(search_sents)
+
+dic = {
+  "api_key":"61bc1aab37364618ae0df70bf5f340dd",
+  "api_version":"2024-02-15-preview",
+  "endpoint":"https://anankeus.openai.azure.com/",
+  "kg_host": "localhost",
+  "kg_port": "7687",
+  "kg_user": "neo4j",
+  "kg_passwd": "123456", 
+  "kg_db": "neo4j"
+}
+
+
+doc_flow = DocFlow(size = 1024, **dic)
+
+path = "example/data/gpt3.pdf"
+
+docs = doc_flow.get_docs([path])
+docs = docs[0:1]
+# chunks, sents = doc_flow.get_chunks_and_sents(docs)
+
+# print(chunks[0])
+# print(len(docs))
+# print(docs[-1])
+
+# print(sents[0])
+
+user_text = "alice and Bob"
+print(user_text)
+doc_flow.search(user_text)

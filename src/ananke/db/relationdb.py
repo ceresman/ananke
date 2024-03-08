@@ -61,7 +61,7 @@ class MySQL(relation_storage):
         return auto_incre_id
 
     def insert_document(self, tenant, docs: List[Document]):
-        sql = "insert into documents(tenant, doc_uuid, doc_text, doc_emb_id, doc_meta_id) values(%s,%s,%s,%s,%s);"
+        sql = "insert into documents(id, tenant, doc_uuid, doc_text, doc_emb_id, doc_meta_id) values(%s,%s,%s,%s,%s,%s);"
         times, remain = len(docs)//self.batch, len(docs)%self.batch
 
         for i in range(times):
@@ -69,25 +69,19 @@ class MySQL(relation_storage):
             auto_incre_id = -1
             batches = docs[i * self.batch : (i + 1) * self.batch]
             for item in batches:
-                insert = (tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
+                insert = (item.doc_id, tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
                 data.append(insert)
 
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(i * self.batch, (i + 1) * self.batch):
-                docs[ix].doc_id = auto_incre_id
-                auto_incre_id += 1
+            self.insert_data(sql, data)
 
         if remain != 0:
             data = []
-            batches = docs[times * self.batch:]
+            batches = docs[times * self.batch:] 
             for item in batches:
-                insert = (tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
+                insert = (item.doc_id, tenant, item.doc_uuid, item.doc_text, item.doc_emb_id, item.doc_meta.meta_id)
                 data.append(insert)
 
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(times * self.batch, len(docs)):
-                docs[ix].doc_id = auto_incre_id
-                auto_incre_id += 1
+            self.insert_data(sql, data)
 
         return docs
 
@@ -107,7 +101,7 @@ class MySQL(relation_storage):
         cursor.close()
 
     def insert_chunks(self, tenant, chunks: List[Chunk]):
-        sql = "insert into chunks(tenant, chunk_uuid, chunk_text, chunk_summary, chunk_emb_id, parent_doc_id) values(%s,%s,%s,%s,%s,%s);"
+        sql = "insert into chunks(id, tenant, chunk_uuid, chunk_text, chunk_summary, chunk_emb_id, parent_doc_id) values(%s,%s,%s,%s,%s,%s,%s);"
         times, remain = len(chunks)//self.batch, len(chunks)%self.batch
 
         for i in range(times):
@@ -115,25 +109,19 @@ class MySQL(relation_storage):
             auto_incre_id = -1
             batches = chunks[i * self.batch : (i + 1) * self.batch]
             for item in batches:
-                insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
+                insert = (item.id, tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
                 data.append(insert)
 
-            auto_incre_id = self.insert_data(sql, data)
-            for ix in range(i * self.bach, (i + 1) * self.batch):
-                chunks[ix].chunk_id = auto_incre_id
-                auto_incre_id += 1
+            self.insert_data(sql, data)
 
         data = []
         auto_incre_id = -1
         batches = chunks[times * self.batch:]
         for item in batches:
-            insert = (tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
+            insert = (item.id, tenant, item.chunk_uuid, item.chunk_text, item.chunk_summary, item.chunk_emb_id, item.parent_doc_id)
             data.append(insert)
 
-        auto_incre_id = self.insert_data(sql, data)
-        for ix in range(times * self.batch, len(chunks)):
-            chunks[ix].chunk_id = auto_incre_id
-            auto_incre_id += 1
+        self.insert_data(sql, data)
 
         return chunks
 
@@ -155,7 +143,7 @@ class MySQL(relation_storage):
 
 
     def insert_sents(self, sents: List[Sentence]):
-        sql = "insert into sents(tenant, sent_uuid, sent_text, sent_emb_id, parent_chunk_id, parent_doc_id) values(%s,%s,%s,%s,%s, %s);"
+        sql = "insert into sents(id, tenant, sent_uuid, sent_text, sent_emb_id, parent_chunk_id, parent_doc_id) values(%s, %s,%s,%s,%s,%s, %s);"
         times, remain = len(sents)//self.batch, len(sents)%self.batch
 
         for i in range(times):
@@ -163,27 +151,19 @@ class MySQL(relation_storage):
             batches = sents[i * self.batch : (i + 1) * self.batch]
             auto_incre_id = -1
             for item in batches:
-                insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
+                insert = (item.id, tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
                 data.append(insert)
 
-            auto_incre_id = self.insert_data(sql, data)
-            if auto_incre_id != -1:
-                for ix in range(i * self.bach, (i + 1) * self.batch):
-                    sent[ix].sent_id = auto_incre_id
-                    auto_incre_id += 1
+            self.insert_data(sql, data)
 
         data = []
         auto_incre_id = -1
         batches = sent[times * self.batch:]
         for item in batches:
-            insert = (tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
+            insert = (item.id, tenant, item.sent_uuid, item.sent_text, item.sent_emb_id, item.parent_chunk_id, item.parent_doc_id)
             data.append(insert)
 
-        auto_incre_id = self.insert_data(sql, data)
-        if auto_incre_id != -1:
-            for ix in range((i + 1) * self.batch, len(sents)):
-                sents[ix].sent_id = auto_incre_id
-                auto_incre_id += 1
+        self.insert_data(sql, data)
 
         return sent
 
@@ -193,8 +173,9 @@ class MySQL(relation_storage):
     def insert_math(self):
         pass
 
-    def update_logci(self):
+    def update_logic(self):
         pass
+    
     def update_match(self):
         pass
 
