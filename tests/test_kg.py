@@ -116,40 +116,6 @@ OK, here is the end of the task example.
 please output with the given example json format. If you understand your mission rules , please handle now.
 """
 
-content = """
-The below text is you need to process
-```markdown
-The National Aeronautics and Space Administration (NASA /ˈnæsə/) is an independent agency of the U.S. federal government responsible for the civil space program, aeronautics research, and space research. Established in 1958, NASA succeeded the National Advisory Committee for Aeronautics (NACA) to give the U.S. space development effort a distinctly civilian orientation, emphasizing peaceful applications in space science.([4])([5])([6]) NASA has since led most American space exploration, including Project Mercury, Project Gemini, the 1968–1972 Apollo Moon landing missions, the Skylab space station, and the Space Shuttle. NASA currently supports the International Space Station and oversees the development of the Orion spacecraft and the Space Launch System for the crewed lunar Artemis program, the Commercial Crew spacecraft, and the planned Lunar Gateway space station.
-NASA's science is focused on: better understanding Earth through the Earth Observing System;([7]) advancing heliophysics through the efforts of the Science Mission Directorate's Heliophysics Research Program;([8]) exploring bodies throughout the Solar System with advanced robotic spacecraft such as New Horizons and planetary rovers such as Perseverance;([9]) and researching astrophysics topics, such as the Big Bang, through the James Webb Space Telescope, and the Great Observatories and associated programs.([10]) NASA's Launch Services Program provides oversight of launch operations and countdown management for its uncrewed launches.
-```"""
-
-api_key = "61bc1aab37364618ae0df70bf5f340dd"
-api_version = "2024-02-15-preview"
-endpoint = "https://anankeus.openai.azure.com/"
-api_chat_model = "Ananke3-1106-US-WEST"
-api_embed_model = "AnankeEmbedding-US-WEST"
-os.environ['AZURE_OPENAI_API_KEY'] = api_key
-system_prompt = "You are an AI assistant that helps people find information."
-message_text = [{"role": "system", "content": system_prompt}, {"role":"user","content": entity_prompt +content}]
-
-# message_text = [{"role":"system","content":entity_prompt}]
-# print(message_text)
-client = Azure(
-    api_key= api_key,  #密钥1或者密钥2选一个就行
-    api_version= api_version,
-    azure_endpoint= endpoint, #设定画面上的，格式如 https://xxxxx.openai.azure.com/
-    chat_model_name = api_chat_model, embedding_model_name = api_embed_model
-)
-
-# result = client.chat(entity_prompt + content)
-# print(result)
-# print(json.loads(result))
-
-graph_dic = {'Nodes': [['nasa', 'Organization', {'type': 'government agency'}], ['naca', 'Organization', {'type': 'government agency'}], 
-            ['project_mercury', 'Project', {'type': 'space exploration'}], ['project_gemini', 'Project', {'type': 'space exploration'}], ['skylab', 'Space Station', {'type': 'space station'}], ['space_shuttle', 'Spacecraft', {'type': 'spacecraft'}], ['international_space_station', 'Space Station', {'type': 'space station'}], ['orion_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['space_launch_system', 'Spacecraft', {'type': 'spacecraft'}], ['crewed_lunar_artemis_program', 'Program', {'type': 'space exploration'}], ['commercial_crew_spacecraft', 'Spacecraft', {'type': 'spacecraft'}], ['lunar_gateway_space_station', 'Space Station', {'type': 'space station'}], ['earth_observing_system', 'Science Mission', {'type': 'earth observation'}], ['heliophysics_research_program', 'Science Mission', {'type': 'heliophysics research'}], ['new_horizons', 'Spacecraft', {'type': 'space exploration'}], ['perseverance', 'Rover', {'type': 'planetary rover'}], ['james_webb_space_telescope', 'Space Telescope', {'type': 'space telescope'}], ['nasa_launch_services_program', 'Program', {'type': 'launch operations'}]], 
-            'Relationships': [['nasa', 'succeeded_by', 'naca', {'start': 1958}], ['nasa', 'led', 'project_mercury', {'start': 1961, 'end': 1963}], ['nasa', 'led', 'project_gemini', {'start': 1965, 'end': 1966}], ['nasa', 'led', 'apollo_moon_landing_missions', {'start': 1968, 'end': 1972}], ['nasa', 'led', 'skylab', {'start': 1973, 'end': 1979}], ['nasa', 'led', 'space_shuttle', {'start': 1981, 'end': 2011}], ['nasa', 'supports', 'international_space_station', {'start': 2000}], ['nasa', 'oversees_development_of', 'orion_spacecraft', {}], ['nasa', 'oversees_development_of', 'space_launch_system', {}], ['nasa', 'oversees_development_of', 'commercial_crew_spacecraft', {}], ['nasa', 'oversees_development_of', 'lunar_gateway_space_station', {}], ['nasa', 'science_focused_on', 'earth_observing_system', {}], ['nasa', 'science_focused_on', 'heliophysics_research_program', {}], ['nasa', 'science_focused_on', 'new_horizons', {}], ['nasa', 'science_focused_on', 'perseverance', {}], ['nasa', 'science_focused_on', 'james_webb_space_telescope', {}], ['nasa', 'launch_services_provided_by', 'nasa_launch_services_program', {}]]}
-
-
 from uuid import uuid4
 
 def get_uuid():
@@ -203,43 +169,35 @@ class AutoIds(object):
 
 
 
-auto_ids = AutoIds()
-
-doc_id = auto_ids.get_doc_ids(10)
-
-print(doc_id)
-
+# auto_ids = AutoIds()
+# doc_id = auto_ids.get_doc_ids(10)
+# print(doc_id)
 
 
 from ananke.utils.arxiv_dump import process_pdf
 
-def get_sentence(chunk):
-    sents = []
-    raw_sents = sent_tokenize(chunk.chunk_text)
-    for item in raw_sents:
-        sent = Sentence(sent_uuid = get_uuid(), sent_text = item,
-                    parent_doc_id = chunk.parent_doc_id,
-                    parent_chunk_id = chunk.chunk_id,
-                    sent_id = None, sent_emb_id = None, triples = None)
-        sents.append(sent)
-    return sents
-
 class DocFlow(BaseObject):
     def __init__(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""], **kwargs):
-        super().__init__()
+        super().__init__(**kwargs)
         self.kwargs  = kwargs 
         self.graph = Neo4jGraph(**kwargs)
         self.vector = ChromaStorage(**kwargs)
         self.id_generator = AutoIds(**kwargs)
-        self.splitter = RecursiveCharacterTextSplitter(chunk_size = size, chunk_overlap = overlap, separators = seps)
+        self.splitter = RecursiveCharacterTextSplitter(chunk_size = 8000, chunk_overlap = 256, separators = ["\n\n", "\n", " ", ""])
         self.entity_prompt = entity_prompt
         self.vector.create_collection("all-chunk")
         self.vector.create_collection("all-sent")
+
+
+    def set_splitter(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""]):
+        self.splitter = RecursiveCharacterTextSplitter(chunk_size = size, chunk_overlap = overlap, separators = seps)
+
 
     def get_embedding(self, text) -> (int, List[int]):
         open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
         embedding = open_ai.embedding(text)
         return embedding
+
 
     def set_props(self, props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
         if type(props) == str:
@@ -265,7 +223,6 @@ class DocFlow(BaseObject):
         start_id = self.id_generator.get_node_ids(len(nodes))
         for ix, node in enumerate(nodes, start = start_id):
             name, label, propertys = node[0].lower(), node[1].lower(), node[2]
-            print("props: {}-{}".format(propertys, type(propertys)))
             if propertys is None:
                 propertys = {}
             propertys = self.set_props(propertys, ix, doc_id, chunk_id, sent_id, ix, 1)
@@ -299,9 +256,9 @@ class DocFlow(BaseObject):
         return triples
 
     def get_entity_response(self, text):
-        time.sleep(3)
         open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
-        chat_response = open_ai.chat(self.entity_prompt + text)
+        # self.logger.info("entity-input:{}".format(self.entity_prompt + text))
+        chat_response = open_ai.get_entity(self.entity_prompt + text)
         return chat_response
 
     def get_sent_summary(self, text):
@@ -325,6 +282,11 @@ class DocFlow(BaseObject):
         triples = []
 
         nodes, relations = self.get_nodes_and_relation(nodes_dict)
+        nodes = [[item[0].lower(), item[1].lower(), item[-1]] for item in nodes]
+        relations = [[item[0].lower(), item[1].lower(), item[2].lower(), item[-1]] for item in relations]
+        self.logger.info("triples-nodes:{}".format(nodes))
+        self.logger.info("triples-relatins:{}".format(relations))
+
         entities, names = self.get_entities(doc_id, chunk_id, sent_id, nodes)
         triples  = self.__get_triples__(doc_id, chunk_id, sent_id, names, relations)
         return (entities, triples)        
@@ -432,6 +394,7 @@ class DocFlow(BaseObject):
                 continue
 
             _, triples = self.get_triples(summary, sent.parent_doc_id, sent.parent_chunk_id, sent.sent_id)
+            self.logger.info("triples: {}".format(triples))
             sent.triples = triples
             sent_trples.extend(triples)
 
@@ -440,15 +403,27 @@ class DocFlow(BaseObject):
         return sent_trples
 
 
+    def is_empty_triple(self, entity_and_rel):
+        if entity_and_rel is None:
+            return True
+
+        if type(entity_and_rel) == list and len(entity_and_rel) == 0:
+            return True
+
+
+        if type(entity_and_rel) == dict and len(entity_and_rel.keys()) == 0:
+            return True
+
+        return False
+
+
     def search(self, user_text: str, mode = "and"):
         ret = None
+        nodes, relations = [], []
+        self.logger.info("start to search!")
         user_emb = self.get_embedding(user_text)
         search_chunks = self.vector.query("all-chunk", user_emb, top_n = 50)
         search_sents = self.vector.query("all-sent", user_emb, top_n = 50)
-
-        # print(search_chunks.keys())
-        # print(search_sents.keys())
-        # for item in search_chunks:
 
         sent_metas = search_sents.get("metadatas")
         best_meta = sent_metas[0][0]
@@ -461,11 +436,23 @@ class DocFlow(BaseObject):
                 ret = doc
                 break
 
-        print("type:{}".format(type(ret)))
+        entity_and_rel = self.get_chunk_summary(user_text)
+        entity_and_rel = json.loads(entity_and_rel)
+        if not self.is_empty_triple(entity_and_rel):
+            nodes, relations = self.get_nodes_and_relation(entity_and_rel)
+            nodes = [[item[0].lower(), item[1].lower(), item[-1]] for item in nodes]
+            relations = [[item[0].lower(), item[1].lower(), item[2].lower(), item[-1]] for item in relations]
+
+            self.logger.info("nodes: {}".format(nodes))
+            self.logger.info("rels: {}".format(relations))
+
+
         if type(ret) == str:
             return ret
         else:
             return ret[0]
+
+
 
 dic = {
   "api_key":"61bc1aab37364618ae0df70bf5f340dd",
@@ -480,8 +467,9 @@ dic = {
 
 
 
-doc_flow = DocFlow(size = 1024, **dic)
 path = "example/data/gpt3.pdf"
+
+doc_flow = DocFlow(size = 1024, **dic)
 docs = doc_flow.get_docs([path])
 chunks = doc_flow.get_chunks(docs)
 # print(len(chunks))
@@ -500,4 +488,6 @@ sents = doc_flow.get_sents(chunks)
 
 
 # doc_flow.get_chunks_triples(chunks)
-doc_flow.get_sents_triples(sents)
+doc_flow.get_sents_triples([sents[0]])
+
+doc_flow.get_sents_triples([sents[0]])
