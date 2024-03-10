@@ -146,7 +146,9 @@ class NebulaStorage(kg_storage):
         props_value = "(" + props + ")"
         # query = "'INSERT VERTEX IF NOT EXISTS {}{} VALUES "{}":{}'".format(entity_label, entity_label_props, entity_label_id, props_value)
         # return query
+        return
 
     def add_edge(self, sub_id, obj_id, realtion, desc:str):
         # query = "'INSERT EDGE IF NOT EXISTS {}({}) VALUES "{}"->"{}":("{}")'".format(realtion, desc, str(sub_id), str(obj_id))
         # self.session_pool.excute(query)
+        pass

@@ -31,6 +31,10 @@ from typing import (
     TypeVar,
 )
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 from ananke.base import BaseObject
 from nltk.tokenize import sent_tokenize
 from ananke.data import Entity, Relation, Triple
@@ -154,67 +158,6 @@ def get_uuid():
     _uuid = "".join(_uuid)
     return _uuid
 
-# def set_props(props, uid, doc_id, chunk_id, sent_id, emb_id, genre):
-#     props["id"] = uid
-#     props["uuid"] = get_uuid()
-#     props["doc_id"] = doc_id
-#     props["chunk_id"] = chunk_id
-#     props["sent_id"] = sent_id
-#     props["emb_id"] = emb_id
-#     props["genre"] = genre
-
-#     return props
-
-# def get_entities(doc_id, chunk_id, sent_id, emb_id, nodes):
-#     entities, names = [], {}
-#     for node in nodes:
-#         name, label, propertys = node[0].lower(), node[1].lower(), node[2]
-#         if propertys is None:
-#             propertys = {}
-#         propertys = set_props(propertys, 0, doc_id, chunk_id, sent_id, emb_id, 1)
-#         entity = Entity(label, name, propertys)
-#         names[name] = entity
-#         entities.append(entity)
-#     return entities, names
-
-
-# def get_triples(doc_id, chunk_id, sent_id, emb_id, names, relations):
-#     triple_id = 0
-#     rel_id = {}
-#     triples = []
-#     for rel in relations:
-#         sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
-#         if names.get(sub) is not None and names.get(obj) is not None:
-#             props = set_props(props, rel_id, doc_id, chunk_id, sent_id, emb_id, 0)
-#             sub = names.get(sub)
-#             obj = names.get(obj)
-#             relation = Relation("", rel_name, props)
-#             triple = Triple(triple_id, get_uuid(), sub, relation, obj)
-#             triples.append(triple)
-#         else:
-#             print(rel)
-#     return triples
-
-# def parse_response(doc_id, chunk_id, sentence_id, graph:dict):
-#     nodes, realtion = None, None
-#     for item in graph.keys():
-#         if item.lower() == "nodes":
-#             nodes = graph.get(item, None)
-
-#         if item.lower() == "relationships":
-#             realtion = graph.get(item, None)
-
-#     return (nodes, realtion)
-
-# nodes, relation = parse_response(0, 0, 0, graph_dic)
-# entities, names = get_entities(0, 1, 2, 3, nodes)
-# triples = get_triples(0, 1, 2, 3, names, relation)
-
-# # print(triples)
-# print(len(relation))
-# print(len(triples))
-
-
 import threading
 
 class AutoIds(object):
@@ -304,6 +247,9 @@ class DocFlow(BaseObject):
                 props = json.loads(props)
             except Exception:
                 props = {}
+        elif type(props) == list:
+            props = {}
+
         props["id"] = uid
         props["uuid"] = get_uuid()
         props["doc_id"] = doc_id
@@ -329,13 +275,16 @@ class DocFlow(BaseObject):
         return entities, names
 
 
-    def get_triples(self, doc_id, chunk_id, sent_id, names, relations):
+    def __get_triples__(self, doc_id, chunk_id, sent_id, names, relations):
         triples = []
         if relations is None:
             return triples
 
         start_id = self.id_generator.get_rel_ids(len(relations))
         for rel_id, rel in enumerate(relations, start = start_id):
+            if len(rel) != 3:
+                continue
+
             sub, rel_name, obj, props = rel[0], rel[1], rel[2], rel[-1]
             if names.get(sub) is not None and names.get(obj) is not None:
                 props = self.set_props(props, rel_id, doc_id, chunk_id, sent_id, rel_id, 0)
@@ -361,8 +310,7 @@ class DocFlow(BaseObject):
     def get_chunk_summary(self, text):
         return self.get_entity_response(text)
 
-    def get_nodes_and_relation(self, entity_response:str):
-        nodes_dict = json.loads(entity_response)
+    def get_nodes_and_relation(self, nodes_dict:str):
         nodes, realtion = None, None
         for item in nodes_dict.keys():
             if item.lower() == "nodes":
@@ -373,46 +321,13 @@ class DocFlow(BaseObject):
 
         return nodes, realtion
 
-    def get_chunk_triples(self, chunk_text, doc_id, chunk_id)->(str, List[Entity], List[Triple]):
+    def get_triples(self, nodes_dict, doc_id, chunk_id, sent_id)->(str, List[Entity], List[Triple]):
         triples = []
-        summary = self.get_chunk_summary(chunk_text)
 
-        nodes, relations = self.get_nodes_and_relation(summary)
-        entities, names = self.get_entities(doc_id, chunk_id, -1, nodes)
-        triples  = self.get_triples(doc_id, chunk_id, -1, names, relations)
-        return (summary, entities, triples)        
-
-    def get_chunk_sents(self, chunk_text, doc_id, chunk_id)->List[Sentence]:
-        sents = []
-        sent_texts, sent_ids = [], []
-        sent_embs, sent_metas = [], []
- 
-        raw_sents = sent_tokenize(chunk_text)
-        start_id  = self.id_generator.get_sent_ids(len(raw_sents))
-        for ix, sent_text in enumerate(raw_sents, start = start_id):
-            sent_uuid = get_uuid()
-            summary, entities, triples  = self.get_sent_triples(sent_text, doc_id, chunk_id, ix)
-            sent_texts.append(sent_text)
-            sent_ids.append(ix)
-            sent_emb = self.get_embedding(sent_text)
-            sent_metas.append({"doc_id": doc_id, "chunk_id": chunk_id, "sent_id": ix})
-            sent_embs.append(sent_emb)
-            sent = Sentence(sent_uuid, sent_text, doc_id, chunk_id, ix, ix, triples)
-            sents.append(sent)
-            self.graph.insert(triples)
-
-
-        self.vector.add("all-sent", sent_embs, sent_metas, sent_ids, sent_texts)
-        return sents
-
-    def get_sent_triples(self, sent_text, doc_id, chunk_id, sent_id)->List[Triple]:
-        triples  = []
-        summary  = self.get_sent_summary(sent_text)
-
-        nodes, relations = self.get_nodes_and_relation(summary)
+        nodes, relations = self.get_nodes_and_relation(nodes_dict)
         entities, names = self.get_entities(doc_id, chunk_id, sent_id, nodes)
-        triples  = self.get_triples(doc_id, chunk_id, sent_id, names, relations)
-        return (summary, entities, triples)        
+        triples  = self.__get_triples__(doc_id, chunk_id, sent_id, names, relations)
+        return (entities, triples)        
 
     def get_docs(self, doc_paths:List[str], tenant = "all")-> List[Document]:
         docs =  []
@@ -431,86 +346,126 @@ class DocFlow(BaseObject):
         chunks = []
 
         for doc in docs:
+            doc_chunks = []
             raw_texts = self.splitter.split_text(doc.doc_text)
             chunk_start_id = self.id_generator.get_chunk_ids(len(raw_texts))
             for chunk_id, raw_text in enumerate(raw_texts, start = chunk_start_id):
                 chunk_uuid = get_uuid()
-                chunk_summary = self.get_chunk_summary(raw_text)
-                # chunk_embedding = self.get_embedding(chunk_summary)
-                chunk = Chunk(text, ix, chunk_uuid, chunk_summary, doc.doc_id, sents = None, ix, triples = None) 
-                chunk.append(chunk)
+                chunk = Chunk(chunk_uuid, chunk_id, raw_text, None, chunk_id, doc.doc_id, None, None)
+                doc_chunks.append(chunk)
+                chunks.append(chunk)
+            doc.chunks = doc_chunks
+
         return chunks
 
-    def get_chunk_embeddings(self, chunks:List[Chunk], tenant = "all"):
+    def get_chunks_triples(self, chunks: List[Chunk]):
+        chunk_triples = []
+        for chunk in chunks:
+            summary = self.get_chunk_summary(chunk.chunk_text)
+            summary = json.loads(summary)
+
+            if summary is None or len(summary.keys()) == 0:
+                continue
+            _, triples = self.get_triples(summary, chunk.parent_doc_id, chunk.chunk_id, -1)
+            chunk.triples = triples
+            chunk_triples.extend(triples)
+
+        self.graph.insert(chunk_triples)
+        # return triples
+
+    def get_chunks_embeddings(self, chunks:List[Chunk], tenant = "all"):
         ids = []
-        meatas = []
+        metas = []
         embeddings = []
         texts = []
 
         for chunk in chunks:
-            meata = {"doc_id": doc.doc_id, "chunk_id": ix, "summary": chunk.chunk_summary}
             ids.append(chunk.chunk_id)
             texts.append(chunk.chunk_text)
-            meata.append(meata)
-            embeddings.append(self.get_embedding(chunk.chunk_summary))
+            metas.append({"doc_id": chunk.parent_doc_id, "chunk_id": chunk.chunk_id})
+            embeddings.append(self.get_embedding(chunk.chunk_text))
 
-        self.vector.add("all-chunk", chunk_embs, chunk_metas, chunk_ids, chunk_texts)
-
-    def get_triples(self, summary, doc_id, chunk_id, sent_id)->(str, List[Entity], List[Triple]):
-        triples = []
-
-        nodes, relations = self.get_nodes_and_relation(summary)
-        entities, names = self.get_entities(doc_id, chunk_id, -1, nodes)
-        triples  = self.get_triples(doc_id, chunk_id, -1, names, relations)
-        return (summary, entities, triples)        
-
-    def get_chunk_triples(self, chunks:List[Chunk], tenant = "all")->List[Chunk]:
-        for chunk in chunks:
-            summary, entities, triples = self.get_triples(summary, chunk.doc_id, chunk.chunk_id, -1)
-            pass
+        self.vector.add("all-chunk", embeddings, metas, ids, texts)
 
     def get_sents(self, chunks: List[Chunk], tenant = "all")->(List[Sentence], List[Chunk]):
         sents = []
 
+        for chunk in chunks:
+            chunk_sents = []
+            raw_sents = sent_tokenize(chunk.chunk_text)
+            start_id  = self.id_generator.get_sent_ids(len(raw_sents))
+            for ix, raw_sent in enumerate(raw_sents, start = start_id):
+                sent = Sentence(get_uuid(), ix, raw_sent, ix, chunk.chunk_id, chunk.parent_doc_id, None)
+                chunk_sents.append(sent)
+                sents.append(sent)
+            chunk.sents = chunk_sents
+
         return sents
 
-    def get_chunks_and_sents(self, docs:List[Document], tenant = "all") -> (List[Chunk], List[Sentence]):
-        chunks, sents = [], []
+    def get_sents_embeddings(self, sents:List[Sentence], min_len = 5):
+        ids = []
+        metas = []
+        embeddings = []
+        texts = []
 
-        for doc in docs:
-            doc_chunks = []
-            chunk_ids, chunk_metas = [], []
-            chunk_texts, chunk_embs = [], []
-            texts = self.splitter.split_text(doc.doc_text)
-            start_id = self.id_generator.get_chunk_ids(len(texts))
-            for ix, text in enumerate(texts, start = start_id):
-                chunk_uuid = get_uuid()
-                chunk_summary, entities, chunk_triples = self.get_chunk_triples(text, doc.doc_id, ix)
-                chunk_meta = {"doc_id": doc.doc_id, "chunk_id": ix, "summary": chunk_summary}
-                embedding = self.get_embedding(chunk_summary)
-                chunk_sents = self.get_chunk_sents(text, doc.doc_id, ix)
-                chunk = Chunk(text, ix, chunk_uuid, chunk_summary, doc.doc_id, chunk_sents, ix, triples = chunk_triples)
-                doc_chunks.append(chunk)
-                sents.extend(chunk_sents)
-                chunk_ids.append(ix)
-                chunk_metas.append(chunk_meta)
-                chunk_texts.append(text)
-                chunk_embs.append(embedding)
-                self.graph.insert(chunk_triples)
+        for sent in sents:
+            if len(sent.sent_text) <= min_len:
+                continue
 
-            self.vector.add("all-chunk", chunk_embs, chunk_metas, chunk_ids, chunk_texts)
-            doc.chunks = doc_chunks
-            chunks.extend(doc_chunks)
+            metas.append({"doc_id": sent.parent_doc_id, "chunk_id": sent.parent_chunk_id, "sent_id": sent.sent_id})
+            ids.append(sent.sent_id)
+            embeddings.append(self.get_embedding(sent.sent_text))
+            texts.append(sent.sent_text)
 
-        return (chunks, sents)
+        self.vector.add("all-sent", embeddings, metas, ids, texts)
 
-    def search(self, user_text: str):
+    def get_sents_triples(self, sents:List[Sentence], min_len = 5):
+        sent_trples = []
+        for sent in sents:
+            if len(sent.sent_text) <= min_len:
+                continue
+
+            summary = self.get_sent_summary(sent.sent_text)
+            summary = json.loads(summary)
+
+            if summary is None or len(summary.keys()) == 0:
+                continue
+
+            _, triples = self.get_triples(summary, sent.parent_doc_id, sent.parent_chunk_id, sent.sent_id)
+            sent.triples = triples
+            sent_trples.extend(triples)
+
+        self.graph.insert(sent_trples)
+
+        return sent_trples
+
+
+    def search(self, user_text: str, mode = "and"):
+        ret = None
         user_emb = self.get_embedding(user_text)
         search_chunks = self.vector.query("all-chunk", user_emb, top_n = 50)
         search_sents = self.vector.query("all-sent", user_emb, top_n = 50)
 
-        print(search_chunks)
-        print(search_sents)
+        # print(search_chunks.keys())
+        # print(search_sents.keys())
+        # for item in search_chunks:
+
+        sent_metas = search_sents.get("metadatas")
+        best_meta = sent_metas[0][0]
+        best_sent_id, best_chunk_id, best_doc_id = best_meta.get("sent_id"), best_meta.get("chunk_id"), best_meta.get("doc_id")
+
+        chunk_metas = search_chunks.get("metadatas")[0]
+        chunk_docs  = search_chunks.get("documents")
+        for meta, doc in zip(chunk_metas, chunk_docs):
+            if best_chunk_id == meta.get("chunk_id"):
+                ret = doc
+                break
+
+        print("type:{}".format(type(ret)))
+        if type(ret) == str:
+            return ret
+        else:
+            return ret[0]
 
 dic = {
   "api_key":"61bc1aab37364618ae0df70bf5f340dd",
@@ -524,20 +479,25 @@ dic = {
 }
 
 
+
 doc_flow = DocFlow(size = 1024, **dic)
-
 path = "example/data/gpt3.pdf"
-
 docs = doc_flow.get_docs([path])
-docs = docs[0:1]
-# chunks, sents = doc_flow.get_chunks_and_sents(docs)
+chunks = doc_flow.get_chunks(docs)
+# print(len(chunks))
+chunks = chunks[0:16]
+# chunks_embs = doc_flow.get_chunks_embeddings(chunks)
+sents = doc_flow.get_sents(chunks)
+# print(sents)
+# print(len(sents))
+# sents_embs = doc_flow.get_sents_embeddings(sents[:len(sents) // 2])
 
-# print(chunks[0])
-# print(len(docs))
-# print(docs[-1])
 
-# print(sents[0])
+# user_text = sents[0].sent_text
+# res = doc_flow.search(user_text)
+# print(type(res))
+# print(type(res))
 
-user_text = "alice and Bob"
-print(user_text)
-doc_flow.search(user_text)
+
+# doc_flow.get_chunks_triples(chunks)
+doc_flow.get_sents_triples(sents)
