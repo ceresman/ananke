@@ -31,9 +31,9 @@ from typing import (
     TypeVar,
 )
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# import sys
+# __import__('pysqlite3')
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 from ananke.base import BaseObject
 from nltk.tokenize import sent_tokenize
@@ -488,6 +488,10 @@ sents = doc_flow.get_sents(chunks)
 
 
 # doc_flow.get_chunks_triples(chunks)
-doc_flow.get_sents_triples([sents[0]])
+# doc_flow.get_sents_triples([sents[0]])
+# doc_flow.get_sents_triples([sents[0]])
 
-doc_flow.get_sents_triples([sents[0]])
+
+from ananke.data.math_logic import Agent
+
+agent = Agent(**dic)

@@ -19,7 +19,7 @@ read_expr = Expression.fromstring
 
 class Math(BaseObject):
     def __init__(self, **kwargs):
-        super.__init__();
+        super().__init__()
         pass
 
     def handle_math(self, user_input: str) -> str:
@@ -28,9 +28,8 @@ class Math(BaseObject):
 
 class Logic(BaseObject):
     def __init__(self, **kwargs):
-        super.__init__()
+        super().__init__()
         self.openai_model = Azure(chat_model_name="Ananke3-1106-US-WEST")
-		# pass
 
     def handle_logic(self, user_input: str) -> str:
         input_text = user_input
@@ -70,17 +69,17 @@ class Logic(BaseObject):
         response = {output_list[0].strip('\n'):output_list[1].strip('\n'), 
              output_list[2].strip('\n'):output_list[3].strip('\n')}
         return response
-		# pass
 
 
 class Agent(BaseObject):
-	def __init__(self, **kwargs):
-		self.math = Math(**{})
-		self.logic = Logic(**{})
-		self.conversation_cache = None
-		self.logger.info("agent init")
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.math = Math(**{})
+        self.logic = Logic(**{})
+        self.conversation_cache = None
+        self.logger.info("agent init")
 
-	def handle_conversation(self, conversation_id:str, user_input:str,):
+    def handle_conversation(self, conversation_id:str, user_input:str,):
         logic_parse = self.logic.handle_logic(user_input)
         return {'math': '', 'logic': logic_parse, 'doc_search': ''}
 
