@@ -9,5 +9,7 @@ class LocalModel(BaseLocalLLM):
 class RemoteLLM(BaseRemoteLLM):
     def __init__(self,**kwargs):
         super().__init__()
+        # self.logger.info(str(self.config()))
+
 
 

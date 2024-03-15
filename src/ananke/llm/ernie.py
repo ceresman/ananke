@@ -15,11 +15,19 @@
 import erniebot
 from ananke.llm import RemoteLLM
 
-class ErnieModel(RemoteLLM):
-    def __init__(self, api_type='aistudio', access_token=None):
-        super(ErnieModel, self).__init__()
-        erniebot.api_type = api_type
-        erniebot.access_token = access_token
+class Ernie(RemoteLLM):
+    def __init__(self, 
+                 api_type='aistudio',
+                 model_name="ERNIE4",
+                 access_token=None
+                 ):
+        super(Ernie, self).__init__()
+        if access_token is None:
+            erniebot.api_type = self.config()["ERNIE"][model_name]["API_TYPE"]
+            erniebot.access_token =self.config()["ERNIE"][model_name]["API_KEY"]
+        else:
+            erniebot.api_type = api_type
+            erniebot.access_token = access_token
 
     def chat(self, model, messages):
         response = erniebot.ChatCompletion.create(model=model, messages=messages)

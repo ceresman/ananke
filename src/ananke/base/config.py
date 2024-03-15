@@ -30,7 +30,8 @@ class YAMLCONFIG():
             self.config_file=kwargs.get("config_file",None)
         with open(self.config_file, 'r') as file:
             self.config = yaml.safe_load(file)
-            pprint(self.config, width=30)
+            # pprint(self.config, width=30)
 
         
-            
+    def __call__(self):
+        return self.config

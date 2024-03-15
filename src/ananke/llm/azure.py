@@ -22,12 +22,14 @@ import numpy as np
 import tiktoken
 from typing import List
 from openai import AzureOpenAI
+import base64
+from mimetypes import guess_type
 
 # ------------------------------------- - ------------------------------------ #
 from ananke.llm import RemoteLLM
 
 
-class AzureOpenAI(RemoteLLM):
+class Azure(RemoteLLM):
     def __init__(
         self,
         api_key=None,
@@ -35,13 +37,22 @@ class AzureOpenAI(RemoteLLM):
         azure_endpoint=None,
         tokenizer=None,
         max_token=8192,
-        chat_model_name="Ananke",
-        embedding_model_name="AnankeEmbedding",
+        chat_model_name="Ananke3-1106-US-WEST",
+        embedding_model_name="AnankeEmbedding-US-WEST",
         system_prompt="You are a helpful assistant.",
     ):
-        self.api_key = api_key
-        self.api_version = api_version
-        self.azure_endpoint = azure_endpoint
+        super().__init__()
+        if api_key is None:
+       
+            self.logger.debug("azure",self.config()["OPENAI"][chat_model_name])
+            self.api_key = self.config()["OPENAI"][chat_model_name]["KEY"]
+            self.api_version = self.config()["OPENAI"][chat_model_name]["API_VERSION"]
+            self.azure_endpoint = self.config()["OPENAI"][chat_model_name]["ENDPOINT"]
+        else:
+            self.api_key = api_key
+            self.api_version = api_version
+            self.azure_endpoint = azure_endpoint
+        
         self.client = AzureOpenAI(
             api_key=self.api_key,
             api_version=self.api_version,
@@ -53,6 +64,16 @@ class AzureOpenAI(RemoteLLM):
         self.max_token = max_token
         self.chat_model = chat_model_name
         self.embedding_model = embedding_model_name
+
+
+# ---------------------------------- VISION ---------------------------------- #
+        self.headers = {
+            "Content-Type": "application/json",
+            "api-key": self.api_key,
+        }
+        self.vision_endpoint = "https://anankesweden.openai.azure.com/openai/deployments/{VISION_MODEL}/chat/completions?api-version=2023-07-01-preview".format(VISION_MODEL=chat_model_name)
+
+
 
     def chat(self, user_input):
         self.conversation.append({"role": "user", "content": user_input})
@@ -120,4 +141,77 @@ class AzureOpenAI(RemoteLLM):
         print(df)
         res = df.sort_values("similarities", ascending=False).head(top_n)
         return res
+    
+    def request_with_url_image(self, image_url, prompt):
+        payload = self._build_payload_with_image_url(image_url, prompt)
+        return self._send_request(payload)
 
+    def request_with_local_image(self, image_path, prompt):
+        payload = self._build_payload_with_local_image(image_path, prompt)
+        return self._send_request(payload)
+    
+
+    def _build_payload_with_image_url(self, image_url, prompt):
+        payload = {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": prompt
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": image_url
+                            }
+                        }
+                    ]
+                }
+            ],
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "max_tokens": 800
+        }
+        return payload
+
+    def _build_payload_with_local_image(self, image_path, prompt):
+        mime_type, _ = guess_type(image_path)
+        if mime_type is None:
+            mime_type = 'application/octet-stream'
+
+        with open(image_path, "rb") as image_file:
+            base64_encoded_data = base64.b64encode(image_file.read()).decode('utf-8')
+
+        payload = {
+            "messages": [
+                {
+                    "role": "system",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": prompt
+                        },
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:{mime_type};base64,{base64_encoded_data}"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "temperature": 0.7,
+            "top_p": 0.95,
+            "max_tokens": 800
+        }
+        return payload
+
+    def _send_request(self, payload):
+        try:
+            response = requests.post(self.vision_endpoint, headers=self.headers, json=payload)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as e:
+            raise SystemExit(f"Failed to make the request. Error: {e}")
