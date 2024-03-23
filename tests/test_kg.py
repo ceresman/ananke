@@ -162,12 +162,9 @@ class AutoIds(object):
         item.get("lock").acquire()
         start_id =  item["id"]
         item["id"] += length
-        # print(self.names2id.get(key).get("id"))
         item.get("lock").release()
 
         return start_id
-
-
 
 # auto_ids = AutoIds()
 # doc_id = auto_ids.get_doc_ids(10)
@@ -320,14 +317,28 @@ class DocFlow(BaseObject):
 
         return chunks
 
+    def illegal_summary(self, summary: dict)->bool:
+        cnt = 0
+        nodes = summary.get("Nodes")
+        rels = summary.get("Relationships")
+
+        for node in nodes:
+            if "alice" in node or "bob" in node:
+                cnt += 1
+        if cnt:
+            return False
+
+        return True
+    
     def get_chunks_triples(self, chunks: List[Chunk]):
         chunk_triples = []
         for chunk in chunks:
             summary = self.get_chunk_summary(chunk.chunk_text)
             summary = json.loads(summary)
 
-            if summary is None or len(summary.keys()) == 0:
+            if summary is None or len(summary.keys()) == 0 or not self.illegal_summary(summary):
                 continue
+
             _, triples = self.get_triples(summary, chunk.parent_doc_id, chunk.chunk_id, -1)
             chunk.triples = triples
             chunk_triples.extend(triples)
@@ -464,8 +475,6 @@ dic = {
   "kg_passwd": "123456", 
   "kg_db": "neo4j"
 }
-
-
 
 path = "example/data/gpt3.pdf"
 

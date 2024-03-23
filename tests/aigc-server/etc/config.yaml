@@ -1,0 +1,40 @@
+port: 8080
+redis-cluster:
+  -
+    host: 172.16.20.36
+    port: 47001
+  -
+    host: 172.16.20.36
+    port: 47002
+  -
+    host: 172.16.20.36
+    port: 47003
+  -
+    host: 172.16.20.36
+    port: 47004
+  -
+    host: 172.16.20.36
+    port: 47005
+  -
+    host: 172.16.20.36
+    port: 47006
+
+kafka-cluster:
+  - 111.231.61.7:9091
+  - 111.231.61.7:9092
+  - 111.231.61.7:9093
+kafka-topic: Bot
+kafka-timeout: 20
+redis-password: "AhspHJ2l0ychcves"
+robot_pub: g0O95r2+iQoDtgGrVH2pxu4LUKORGX7YArYrAKgDyeU
+robot_private: 5b2593c53bf5ebf24c6a6e38e1424493
+micro_pub: g0O95r2+iQoDtgGrVH2pxu4LUKORGX7YArYrAKgDyeU
+micro_private: 5b2593c53bf5ebf24c6a6e38e1424493
+bot_url: http://172.16.20.36:8000/common/query
+version: 1
+robot_url:
+micro_url:
+kafka_appName: ""
+kafka_appToken: ""
+kafka_appTopic: ""
+kafka_url: "http://ip:port/kafkamr-proxy/kafka/produce"
