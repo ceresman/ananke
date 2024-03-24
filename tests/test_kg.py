@@ -512,112 +512,17 @@ from minio import Minio
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 url = client.presigned_get_object("data", "gpt3.pdf")
 
-#!/usr/bin/env python
-import requests
-import json
+file_url = "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf"
+file_type = "pdf"
+request_id = "111111"
 
-headers = {
-    "app_id": "prismer_eb9b69_0f28c4",
-    "app_key": "2796ffd82e527755f9f593ac2091d4bf76036534ca2ca2e39532814f5f75ff00",
-    "Content-type": "application/json"
+data = {
+    "request_id": request_id,
+    "file_path": file_url,
+    "file_type": file_type,
+    "callback_url": "http://",
 }
 
-
-def process_pdf_by_mathpix(pdf_url):
-    url = "https://api.mathpix.com/v3/pdf"
-    headers = {
-        "app_id": "prismer_eb9b69_0f28c4",
-        "app_key": "2796ffd82e527755f9f593ac2091d4bf76036534ca2ca2e39532814f5f75ff00",
-        "Content-type": "application/json"
-    }
-
-    data = {
-        "url": pdf_url,
-        "conversion_formats": {
-            "docx": True,
-            "tex.zip": True,
-            "html": True
-        }
-    }
-
-    print(data)
-    req = requests.post(url, json = data, headers = headers)
-    return json.loads(req.content)
-
-def get_process_status(pdf_id):
-    url = "https://api.mathpix.com/v3/pdf/{}".format(pdf_id)
-    req = requests.get(url, headers = headers)
-    return json.loads(req.content)
-
-def get_conversion_status(pdf_id):
-    url = "https://api.mathpix.com/v3/converter/{}".format(pdf_id)
-    req = requests.get(url, headers = headers)
-    return json.loads(req.content)
-
-# url = "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf"
-# req_dict = process_pdf_by_mathpix(url)
-# pdf_id = req_dict.get("pdf_id")
-pdf_id = "2024_03_24_cfc7ecd05c02d28a9158g"
-# status = get_process_status(pdf_id)
-# print(url)
-# print(pdf_id)
-# print(status)
-
-# status = get_conversion_status(pdf_id)
-# print(status)
-
-def get_pdf_html_data(pdf_id):
-    url = "https://api.mathpix.com/v3/pdf/" + pdf_id + ".html"
-    response = requests.get(url, headers=headers)
-    # with open(pdf_id + ".html", "wb") as f:
-    #     f.write(response.content)
-    return (response.content)
-
-def get_pdf_lines_data(pdf_id):
-    url = "https://api.mathpix.com/v3/pdf/" + pdf_id + ".lines.json"
-    response = requests.get(url, headers = headers)
-    with open(pdf_id + ".lines.json", "w") as f:
-        json.dump(json.loads(response.content), f, indent = 4)
-    return json.loads(response.content)
-    # with open(pdf_id + ".lines.json", "w") as f:
-    #     f.write(response.text)
-
-lines_data = get_pdf_lines_data(pdf_id)
-
-
-def get_page_data(lines_data):
-    page_data = {}
-    for page in lines_data.get("pages", []):
-        page_text = ""
-        page_id = page.get("page")
-        lines = page.get("lines", [])
-        for line in lines:
-            page_text = page_text + " " + line.get("text", "")
-
-        page_text.strip(" ")
-        page_data[page_id] = page_text
-    return page_data
-
-page_data = get_page_data(lines_data)
-print(page_data[1])
-
-import nltk
-
-def get_np_from_text(page_data):
-    np_dict = {}
-    for key in page_data.keys():
-        page_text = page_data[key]
-        page_text_word = nltk.word_tokenize(page_text)
-        word_tags = nltk.pos_tag(page_text_word)
-        for word_tag in word_tags:
-            word, tag = word_tag
-            if "NP" in tag:
-                np_dict.setdefault(word, [])
-                np_dict[word].append(key)
-
-    np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
-    return np_dict
-
-
-np_dict = get_np_from_text(page_data)
-# print(np_dict)
+url = "http://127.0.0.1:8080/aigc/upload_doc"
+req = requests.post(url, json = data)
+print(req.content)

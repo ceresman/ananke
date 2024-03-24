@@ -17,7 +17,26 @@ def dump_json(path_dir, data:dict):
 	with open(path_dir, 'w+', encoding='utf8') as fp:
 		json.dump(data, fp, ensure_ascii=False, indent = 4)
 
-def init_redis(startup_nodes:list, password:str):
+
+def init_redis_single(hostport:dict, password:str):
+	try:
+		ip = hostport.get("ip", None)
+		port = hostport.get("port", None)
+		if ip is None or port is None:
+			logger.error("redissingle ip:{} or port:{} missing!".format(ip, port))
+			sys.exit(1)
+		else:
+			pool = redis.ConnectionPool(host = ip, port = port, password=password, decode_responses=True)
+			redis_conn = redis.Redis(connection_pool = pool)
+	except Exception as e:
+		logger.info("redis-single init failed!")
+		sys.exit(1)
+
+	logger.info("redis-single init success!")
+	return redis_conn
+
+
+def init_redis_cluster(startup_nodes:list, password:str):
 	try:
 		redic_conn = RedisCluster(startup_nodes = startup_nodes, skip_full_coverage_check = True,
 				decode_responses = True, password = password)

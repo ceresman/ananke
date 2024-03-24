@@ -7,7 +7,7 @@ from AIGCHandler import application
 import tornado
 import yaml
 
-config_dir = "etc/config.yaml"
+config_dir = "/mnt/e/sides/ananke/aigc-server/etc/config.yaml"
 
 def load_yaml(path_dir):
 	data = {}
@@ -21,12 +21,12 @@ if __name__	 == "__main__":
 	config = load_yaml(config_dir)
 	logger.info("config is {}".format(config))
 	# config = {}
-	# redis_conn = init_redis(config.get("redis-cluster"), config.get("redis-password"))
+	redis_conn = init_redis(config.get("redis-cluster"), config.get("redis-password"))
 
 	# assert(redis_conn != None)
 
 	# client_set("config", config)
-	# client_set("redis", redis_conn)
+	client_set("redis", redis_conn)
 	# client_set("kafka_appName", config.get("kafka_appName"))
 	# client_set("kafka_appToken", config.get("kafka_appToken"))
 	# client_set("kafka_appTopic", config.get("kafka_appTopic"))
