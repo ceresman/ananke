@@ -59,9 +59,6 @@ def get_pdf_lines_data(pdf_id):
     #     json.dump(json.loads(response.content), f, indent = 4)
 
     return json.loads(response.content)
-    # with open(pdf_id + ".lines.json", "w") as f:
-    #     f.write(response.text)
-
 
 def get_page_data(lines_data):
     page_data = {}
@@ -92,8 +89,6 @@ def get_np_from_text(page_data):
 
     np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
     return np_dict
-
-
 
 def __handle_pdf(request_id, file_path, callback_url):
     pdf_id_dic = process_pdf_by_mathpix(file_path)
@@ -133,7 +128,5 @@ def handle_pdf(request_id, file_path, callback_url):
     thread.start()
 
 
-
-
-# __handle_pdf("11111", "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf", "")
-# ps aux | grep swoole |  awk '{print $2}' | xargs kill -9
+__handle_pdf("11111", "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf", "")
+# ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9

@@ -1,99 +1,9 @@
-# Copyright 2023 undefined
-# 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#     http://www.apache.org/licenses/LICENSE-2.0
-# 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-import pytest,json,os,time
-from ananke.data.general  import Paper
-from ananke.llm.azure import Azure
-from py2neo import Graph, Node, Relationship
-from dataclasses import dataclass, asdict
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    ClassVar,
-    Collection,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    TypeVar,
-)
-
-# import sys
-# __import__('pysqlite3')
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
 from ananke.base import BaseObject
 from nltk.tokenize import sent_tokenize
 from ananke.data import Entity, Relation, Triple
 from ananke.data import Chunk, Document,Sentence, Meta
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from ananke.db.vector import ChromaStorage
-
-class Neo4jGraph(object):
-    def __init__(self, **kwargs):
-        self.host = kwargs.get("kg_host")
-        self.port = kwargs.get("kg_port")
-        self.user = kwargs.get("kg_user")
-        self.passwd = kwargs.get("kg_passwd")
-        self.db = kwargs.get("kg_db")
-        self.graph = py2neo.Graph("neo4j://" + self.host + ":" + self.port, auth = (self.user, self.passwd), name = self.db)
-
-    def update_props(self, entity: Entity) -> dict:
-        entity.propertys["label"] = entity.label
-        entity.propertys["name"] = entity.name
-        return entity.propertys
-
-    def insert(self, triples: List[Triple]):
-        for triple in triples:
-            sub_label, sub_name = triple.sub.label, triple.sub.name
-            obj_label, obj_name = triple.obj.label, triple.obj.name
-            sub_props = self.update_props(triple.sub)
-            obj_props = self.update_props(triple.obj)
-            node_sub = Node(sub_label, **sub_props)
-            node_obj = Node(obj_label, **obj_props)
-            self.graph.create(node_sub)
-            self.graph.create(node_obj)
-            realtion = Relationship(node_sub, triple.pred.name, node_obj)
-            self.graph.create(realtion)
-
-    def delete(self,):
-        pass
-
-    def match(self,):
-        pass
-
-
-# graph = Graph("http://localhost:7474/", auth=("neo4j", "123456"), name='neo4j')
-import py2neo
-# graph_3 = py2neo.Graph("neo4j://localhost:7687", auth = ("neo4j", "123456"))
-
-kg_dict = {"kg_host": "localhost", "kg_port": "7687", "kg_user": "neo4j", "kg_passwd": "123456", "kg_db": "neo4j"}
-kg = Neo4jGraph(**kg_dict)
-
-# sub = Entity("英雄", "张无忌", {"hy": [1111111,  2222222]}, "1024", 1, 1)
-# obj = Entity('派别', "明教", {}, "1025", 2, 2)
-# pred = Relation("属于", "一种归属描述", 3, "1025", 3)
-# triple = Triple(11, "11", sub, pred, obj)
-
-# sub2 = Entity("英雄", "张翠山", {}, "1024", 12, 12)
-# obj2 = Entity('派别', "武当山", {}, "1025", 22, 22)
-# pred2 = Relation("属于", "一种归属描述", 32, "10252", 32)
-# triple2 = Triple(22, "22", sub2, pred2, obj2)
-
-# kg.insert([triple, triple2])
 
 entity_prompt = """Your goal is to build a graph database. Your task is to extract information from a given text content and convert it into a graph database.
 Provide a set of Nodes in the form [ENTITY_ID, TYPE, PROPERTIES] and a set of relationships in the form [ENTITY_ID_1, RELATIONSHIP, ENTITY_ID_2, PROPERTIES].
@@ -116,75 +26,20 @@ OK, here is the end of the task example.
 please output with the given example json format. If you understand your mission rules , please handle now.
 """
 
-from uuid import uuid4
 
-def get_uuid():
-    _uuid = str(uuid4())
-    _uuid = _uuid.split("-")
-    _uuid = "".join(_uuid)
-    return _uuid
-
-import threading
-
-class AutoIds(object):
-    def __init__(self, **kwargs):
-        self.doc = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-        self.chunk = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-        self.sent = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-        self.node = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-        self.rel = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-        self.triple = {"id": 0, "emb_id": 0, "lock": threading.Lock()}
-
-        self.names2id = {"doc": self.doc, "chunk": self.chunk, "sent": self.sent,
-                        "node": self.node, "rel": self.rel, "triple": self.triple}
-
-    def get_doc_ids(self, length):
-        return self.get_ids(length, "doc")
-
-    def get_chunk_ids(self, length):
-        return self.get_ids(length, "chunk")
-
-    def get_sent_ids(self, length):
-        return self.get_ids(length, "sent")
-
-    def get_node_ids(self, length):
-        return self.get_ids(length, "node")
-
-    def get_rel_ids(self, length):
-        return self.get_ids(length, "rel")
-
-    def get_triple_ids(self, length):
-        return self.get_ids(length, "triple")
-
-    def get_ids(self, length: int, key = "doc"):
-        start_id = 0
-        item = self.names2id.get(key)
-        item.get("lock").acquire()
-        start_id =  item["id"]
-        item["id"] += length
-        item.get("lock").release()
-
-        return start_id
-
-# auto_ids = AutoIds()
-# doc_id = auto_ids.get_doc_ids(10)
-# print(doc_id)
-
-
-from ananke.utils.arxiv_dump import process_pdf
-import requests
 
 class DocFlow(BaseObject):
-    def __init__(self, **kwargs):
+    def __init__(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""], **kwargs):
         super().__init__(**kwargs)
         self.kwargs  = kwargs 
         self.graph = Neo4jGraph(**kwargs)
         self.vector = ChromaStorage(**kwargs)
         self.id_generator = AutoIds(**kwargs)
+        self.splitter = RecursiveCharacterTextSplitter(chunk_size = 8000, chunk_overlap = 256, separators = ["\n\n", "\n", " ", ""])
         self.entity_prompt = entity_prompt
         self.vector.create_collection("all-chunk")
         self.vector.create_collection("all-sent")
-        self.set_splitter()
+
 
     def set_splitter(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""]):
         self.splitter = RecursiveCharacterTextSplitter(chunk_size = size, chunk_overlap = overlap, separators = seps)
@@ -462,116 +317,3 @@ class DocFlow(BaseObject):
             return ret
         else:
             return ret[0]
-
-
-
-dic = {
-  "api_key":"61bc1aab37364618ae0df70bf5f340dd",
-  "api_version":"2024-02-15-preview",
-  "endpoint":"https://anankeus.openai.azure.com/",
-  "kg_host": "localhost",
-  "kg_port": "7687",
-  "kg_user": "neo4j",
-  "kg_passwd": "123456", 
-  "kg_db": "neo4j"
-}
-
-path = "example/data/gpt3.pdf"
-
-doc_flow = DocFlow(**dic)
-# docs = doc_flow.get_docs([path])
-# chunks = doc_flow.get_chunks(docs)
-# print(len(chunks))
-# chunks = chunks[0:16]
-# chunks_embs = doc_flow.get_chunks_embeddings(chunks)
-# sents = doc_flow.get_sents(chunks)
-# print(sents)
-# print(len(sents))
-# sents_embs = doc_flow.get_sents_embeddings(sents[:len(sents) // 2])
-
-
-# user_text = sents[0].sent_text
-# res = doc_flow.search(user_text)
-# print(type(res))
-# print(type(res))
-
-
-# doc_flow.get_chunks_triples(chunks)
-# doc_flow.get_sents_triples([sents[0]])
-# doc_flow.get_sents_triples([sents[0]])
-
-
-headers = {
-    "app_id": "prismer_eb9b69_0f28c4",
-    "app_key": "2796ffd82e527755f9f593ac2091d4bf76036534ca2ca2e39532814f5f75ff00",
-    "Content-type": "application/json"
-}
-
-pdf_id = "2024_03_25_9ee7aaffb8211eb2dfc7g"
-def get_pdf_lines_data(pdf_id):
-    url = "https://api.mathpix.com/v3/pdf/" + pdf_id + ".lines.json"
-    response = requests.get(url, headers = headers)
-    with open(pdf_id + ".lines.json", "w") as f:
-        json.dump(json.loads(response.content), f, indent = 4)
-
-    return json.loads(response.content)
-
-
-def get_page_data(lines_data):
-    page_data = {}
-    for page in lines_data.get("pages", []):
-        page_text = ""
-        page_id = page.get("page")
-        lines = page.get("lines", [])
-        for line in lines:
-            page_text = page_text + " " + line.get("text", "")
-
-        page_text.strip(" ")
-        page_data[page_id] = page_text
-    return page_data
-
-
-lines_data = get_pdf_lines_data(pdf_id)
-page_data = get_page_data(lines_data)
-
-# tmp = []
-# for key in page_data.keys():
-
-#     texts = doc_flow.splitter.split_text(page_data[key])
-#     for text in texts:
-#         summary = doc_flow.get_chunk_summary(text)
-#         print(summary)
-#         summary = json.loads(summary)
-        
-#         if summary is None or len(summary.keys()) == 0:
-#             continue
-#         tmp.append(summary)
-
-# print(len(tmp))
-# dic = {"triples" : tmp}
-
-def write_json(file_name, data:dict):
-	with open(file_name, 'w' , encoding = 'utf-8') as f:
-		json.dump(data, f, indent = 4)
-
-# write_json("tiples.json", tmp)
-
-import nltk
-
-def get_np_from_text(page_data):
-    np_dict = {}
-    for key in page_data.keys():
-        page_text = page_data[key]
-        page_text_word = nltk.word_tokenize(page_text)
-        word_tags = nltk.pos_tag(page_text_word)
-        for word_tag in word_tags:
-            word, tag = word_tag
-            if tag == "NNP" or tag == "NNPS":
-                np_dict.setdefault(word, [])
-                np_dict[word].append(key)
-
-    np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
-    return np_dict
-
-np_dict = get_np_from_text(page_data)
-write_json("nnp.json", np_dict)

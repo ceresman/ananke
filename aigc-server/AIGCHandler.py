@@ -8,6 +8,7 @@ from utils.client_manager import client_get
 from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
 from utils.mathpix import handle_pdf
+from utils.math_logic import handle_logic
 # from utils.tex import hanld_tex
 
 class AIGCService(MethodDispatcher):
@@ -53,16 +54,13 @@ class AIGCService(MethodDispatcher):
             self.write(json.dumps(data))
             return
 
-        
-
-        
     def search(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
 
         request_id, text, search_type = data.get("request_id", ""), data.get("text", ""), data.get("search_type", "")
-        logger.info("request-id:{}, text:{}, search_type:{}".format(request_id, file_path, search_type))
+        logger.info("request-id:{}, text:{}, search_type:{}".format(request_id, text, search_type))
         if len(request_id) == 0:
             self.set_status(500)
             data = {"msg": "request_id is empty"}       
@@ -93,11 +91,27 @@ class AIGCService(MethodDispatcher):
 
 
     @run_on_executor
-    def handle(self, req_data:dict)->dict:
-        return {"houyu": "hy"}
-        handle_start = time.time()
+    def handle(self, data:dict)->dict:
+        result = {}
+        request_id, user_text, search_type = data.get("request_id", ""), data.get("text", ""), data.get("search_type", "")
+        start = time.time()
+
+        if search_type == "logic":
+            text = handle_logic(user_text)
+            if text is None:
+                result["msg"] = "handle internal error"
+                self.set_status(500)
+                return result
+        elif search_type == "search":
+            pass
+        elif search_type == "math":
+            pass
+        else:
+            self.set_status(500)
+            result["msg"] = "unknown search type"
+
         print(time.time() - handle_start)
-        logger.info("result: {}".format(result))
+        logger.info("handle cost is  {}, result: {}".format(time.time() - start, result))
         return result
 
 
