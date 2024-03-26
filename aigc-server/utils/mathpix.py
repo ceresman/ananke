@@ -1,9 +1,13 @@
 #! /usr/bin/python
 #-*- coding:utf-8 -*-
 import requests, json
-import threading, time
+import threading, time, os
 import nltk
 from utils.log import logger
+from utils.tools import dump_json
+from minio import Minio
+
+client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 
 headers = {
     "app_id": "prismer_eb9b69_0f28c4",
@@ -100,24 +104,35 @@ def __handle_pdf(request_id, file_path, callback_url):
         return
 
     logger.info("request-id: {} 's the pdf_id is {}".format(request_id, pdf_id))
-    for i in range(0, 1000):
-        process_dic = get_process_status(pdf_id)
+    flag = True
+    while flag:
+        process_dic = get_conversion_status(pdf_id)
         if process_dic.get("status", "") == "completed":
-            break
+            logger.info("request-id: {} 's the pdf_id is {}, process is {}".format(request_id, pdf_id, process_dic))
+            status = process_dic.get('conversion_status', {}).get("html", {}).get("status", "")
+            if status == "completed":
+                flag = False
+                break
         time.sleep(3)
 
     lines_data = get_pdf_lines_data(pdf_id)
-    html_data = get_pdf_html_data(pdf_id)
     page_data = get_page_data(lines_data)
     np_dict = get_np_from_text(page_data)
+    get_pdf_html_data(pdf_id)
 
+
+    file_name = pdf_id + ".html"
     data = {
         "request_id": request_id,
         "pages" : lines_data.get("pages", []),
-        "html": html_data,
-        "np_dict": np_dict 
+        "np_dict": np_dict,
+        "bucket": "data",
+        "file_name": file_name
     }
 
+    client.fput_object('data', file_name, file_name)
+    os.remove(file_name)
+    dump_json("query2.json", data)
     req = requests.post(callback_url, json = data)
     logger.info("callback_url-{}, status: {}".format(callback_url, req.status_code))
     return

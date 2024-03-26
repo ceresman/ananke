@@ -15,8 +15,11 @@ data = {
     "callback_url": "http://127.0.0.1:18080/aigc/query",
 }
 
+
 url = "http://127.0.0.1:18080/aigc/upload_doc"
-req = requests.post(url, json = data)
+# url = "http://ele.ink:18080/aigc/upload_doc"
+req = requests.post(url, data = json.dumps(data))
+# req = requests.post(url, json = (data))
 print(req.content)
 
 
