@@ -128,5 +128,5 @@ def handle_pdf(request_id, file_path, callback_url):
     thread.start()
 
 
-__handle_pdf("11111", "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf", "")
+# __handle_pdf("11111", "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf", "")
 # ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9

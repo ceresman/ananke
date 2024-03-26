@@ -557,16 +557,22 @@ def write_json(file_name, data:dict):
 # write_json("tiples.json", tmp)
 
 import nltk
+import spacy
+
+nlp = spacy.load('en_core_web_sm')
+
 
 def get_np_from_text(page_data):
     np_dict = {}
     for key in page_data.keys():
         page_text = page_data[key]
-        page_text_word = nltk.word_tokenize(page_text)
-        word_tags = nltk.pos_tag(page_text_word)
+        # page_text_word = nltk.word_tokenize(page_text)
+        # word_tags = nltk.pos_tag(page_text_word)
+        word_tags = [(token.text, token.pos_) for token in nlp(page_text)]
         for word_tag in word_tags:
             word, tag = word_tag
-            if tag == "NNP" or tag == "NNPS":
+            print(word, tag)
+            if tag == "NNP" or tag == "NNPS" or tag == "PROPN":
                 np_dict.setdefault(word, [])
                 np_dict[word].append(key)
 
@@ -574,4 +580,4 @@ def get_np_from_text(page_data):
     return np_dict
 
 np_dict = get_np_from_text(page_data)
-write_json("nnp.json", np_dict)
+write_json("nnp_spacy.json", np_dict)

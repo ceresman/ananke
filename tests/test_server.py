@@ -12,12 +12,12 @@ data = {
     "request_id": request_id,
     "file_path": file_url,
     "file_type": file_type,
-    "callback_url": "http://",
+    "callback_url": "http://127.0.0.1:18080/aigc/query",
 }
 
-# url = "http://127.0.0.1:18080/aigc/upload_doc"
-# req = requests.post(url, json = data)
-# print(req.content)
+url = "http://127.0.0.1:18080/aigc/upload_doc"
+req = requests.post(url, json = data)
+print(req.content)
 
 
 data = {"request_id": "hhhhhhh", "text": "logic", "search_type": "logic"}
@@ -59,7 +59,7 @@ def get_page_data(lines_data):
     return page_data
 
 
-lines_data = get_pdf_lines_data(pdf_id)
-page_data = get_page_data(lines_data)
-print(page_data)
+# lines_data = get_pdf_lines_data(pdf_id)
+# page_data = get_page_data(lines_data)
+# print(page_data)
 

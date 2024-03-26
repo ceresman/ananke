@@ -9,6 +9,7 @@ from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
 from utils.mathpix import handle_pdf
 from utils.math_logic import handle_logic
+from utils.tools import dump_json
 # from utils.tex import hanld_tex
 
 class AIGCService(MethodDispatcher):
@@ -36,7 +37,7 @@ class AIGCService(MethodDispatcher):
 
         data = {"status": "ok"}
         if file_type == "pdf":
-            data = handle_pdf(request_id, file_path, callback_url)
+            handle_pdf(request_id, file_path, callback_url)
         # else:
         #     data = handle_text(request_id, file_path, callback_url)
 
@@ -78,7 +79,9 @@ class AIGCService(MethodDispatcher):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
-        result = yield self.handle(data, False)
+
+        dump_json("query.json", data)
+        result = {"status": "ok"}
         self.write(json.dumps(result))
 
     def vote(self):
@@ -92,7 +95,7 @@ class AIGCService(MethodDispatcher):
 
     @run_on_executor
     def handle(self, data:dict)->dict:
-        result = {}
+        result = {"math": "", "logic": "", "doc": "", "search_type": data.get("search_type", "")}
         request_id, user_text, search_type = data.get("request_id", ""), data.get("text", ""), data.get("search_type", "")
         start = time.time()
 
@@ -102,6 +105,7 @@ class AIGCService(MethodDispatcher):
                 result["msg"] = "handle internal error"
                 self.set_status(500)
                 return result
+            result["logic"] = text
         elif search_type == "search":
             pass
         elif search_type == "math":
