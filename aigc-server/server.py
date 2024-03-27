@@ -1,7 +1,7 @@
 #! /usr/bin/python
 #-*- coding:utf-8 -*-
 from utils.log import logger
-from utils.tools import load_yaml, init_redis_cluster, init_kafka
+from utils.tools import load_yaml, init_redis_single
 from utils.client_manager import client_init, client_set, client_get
 from AIGCHandler import application
 import tornado, os, yaml
@@ -21,20 +21,15 @@ def load_yaml(path_dir):
 
 
 if __name__	 == "__main__":
-	# client_init()
+	client_init()
 	config = load_yaml(config_dir)
 	logger.info("config is {}".format(config))
-	# redis_conn = init_redis_cluster(config.get("redis-cluster"), config.get("redis-password"))
+	redis_conn = init_redis_single(config.get("redis-hostport"), config.get("redis-password"))
 
-	# assert(redis_conn != None)
+	assert(redis_conn != None)
 
-	# client_set("config", config)
-	# client_set("redis", redis_conn)
-	# client_set("kafka_appName", config.get("kafka_appName"))
-	# client_set("kafka_appToken", config.get("kafka_appToken"))
-	# client_set("kafka_appTopic", config.get("kafka_appTopic"))
-	# client_set("kafka_url", config.get("kafka_url"))
-
+	client_set("redis", redis_conn)
+	client_set("config", config)
 	logger.info("ApiGateWay server start begin!")
 	http_server = tornado.httpserver.HTTPServer(application)
 	http_server.bind(config.get("port", 18080))

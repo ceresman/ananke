@@ -5,6 +5,7 @@ import os, time, sys
 from pathlib import Path
 from utils.log import logger
 from utils.client_manager import client_get
+import redis
 from rediscluster import RedisCluster
 
 def load_yaml(path_dir):
@@ -47,15 +48,6 @@ def init_redis_cluster(startup_nodes:list, password:str):
 	logger.info("rediscluster init success!")
 	return redic_conn
 
-def init_kafka(cluster_nodes:list, ):
-	try:
-		kafka_producer = KafkaProducer(bootstrap_servers = cluster_nodes)
-	except Exception as e:
-		logger.error("KafkaProducer init failed!")
-		sys.exit(1)
-
-	logger.info("KafkaProducer init success!")
-	return kafka_producer
 
 def write_redis(key, value, ex_time = 450):
 	rc = client_get("redis")

@@ -11,6 +11,9 @@ from utils.mathpix import handle_pdf
 from utils.math_logic import handle_logic
 from utils.tools import dump_json
 # from utils.tex import hanld_tex
+from minio import Minio
+
+client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 
 class AIGCService(MethodDispatcher):
     executor = ThreadPoolExecutor(10)
@@ -23,7 +26,7 @@ class AIGCService(MethodDispatcher):
         request_id, callback_url = data.get("request_id", ""), data.get("callback_url", "")
         file_path, file_type = data.get("file_path", ""), data.get("file_type", "")
         logger.info("request-id:{}, file_path:{}, file_type:{}".format(request_id, file_path, file_type))
-        if len(request_id) == 0 or len(callback_url) == 0:
+        if len(request_id) == 0:
             self.set_status(500)
             data = {"msg": "request_id is empty or callback_url is empty"}      
             self.write(json.dumps(data))
@@ -35,25 +38,21 @@ class AIGCService(MethodDispatcher):
             self.write(json.dumps(data))
             return
 
-        data = {"status": "ok"}
         if file_type == "pdf":
-            handle_pdf(request_id, file_path, callback_url)
+            pdf_id = handle_pdf(request_id, file_path, callback_url)
+            if pdf_id is None:
+                data = {"msg": "handle pdf error"}
+                self.set_status(500)
+                self.json.dumps(data)
+            else:
+                url = client.presigned_get_object("data", pdf_id + ".html")
+                data = {"request_id":request_id, "status": "ok", "url": url, "bucket": "data", "file_name": pdf_id + ".html"}
+
         # else:
         #     data = handle_text(request_id, file_path, callback_url)
 
         self.write(json.dumps(data))
-
-    def get_doc_status(self):
-        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
-        if type(data) == str:
-            data = json.loads(data)
-
-        request_id = data.get("request_id")
-        if len(request_id) == 0:
-            self.set_status(500)
-            data = {"msg": "request_id is empty"}
-            self.write(json.dumps(data))
-            return
+        return
 
     def search(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')

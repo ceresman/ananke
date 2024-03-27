@@ -6,6 +6,7 @@ import nltk
 from utils.log import logger
 from utils.tools import dump_json
 from minio import Minio
+from utils.client_manager import client_get
 
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 
@@ -94,19 +95,13 @@ def get_np_from_text(page_data):
     np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
     return np_dict
 
-def __handle_pdf(request_id, file_path, callback_url):
-    pdf_id_dic = process_pdf_by_mathpix(file_path)
-    pdf_id = pdf_id_dic.get("pdf_id", None)
-
-    if pdf_id is None:
-        data = {"request_id" : request_id, "msg": "pdf hanlde error!"}
-        requests.post(callback_url, json = data)
-        return
-
+def __handle_pdf(request_id, file_path, callback_url, pdf_id):
+    client_get("redis").set("process:" + request_id, json.dumps({"status": "processing", "conversion_status": {"html": "processing"}}))
     logger.info("request-id: {} 's the pdf_id is {}".format(request_id, pdf_id))
     flag = True
     while flag:
         process_dic = get_conversion_status(pdf_id)
+        client_get("redis").set("process:" + request_id, json.dumps(process_dic))
         if process_dic.get("status", "") == "completed":
             logger.info("request-id: {} 's the pdf_id is {}, process is {}".format(request_id, pdf_id, process_dic))
             status = process_dic.get('conversion_status', {}).get("html", {}).get("status", "")
@@ -139,8 +134,14 @@ def __handle_pdf(request_id, file_path, callback_url):
 
 
 def handle_pdf(request_id, file_path, callback_url):
-    thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, callback_url), daemon = True)
-    thread.start()
+    pdf_id_dic = process_pdf_by_mathpix(file_path)
+    pdf_id = pdf_id_dic.get("pdf_id", None)
+    
+    if pdf_id is not None:
+        thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, callback_url, pdf_id), daemon = True)
+        thread.start()
+
+    return pdf_id
 
 
 # __handle_pdf("11111", "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf", "")

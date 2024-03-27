@@ -6,7 +6,7 @@ gpt3_url = client.presigned_get_object("data", "gpt3.pdf")
 
 file_url = "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf"
 file_type = "pdf"
-request_id = "111111"
+request_id = "willamhou-doc"
 
 data = {
     "request_id": request_id,
@@ -16,11 +16,11 @@ data = {
 }
 
 
-url = "http://127.0.0.1:18080/aigc/upload_doc"
-# url = "http://ele.ink:18080/aigc/upload_doc"
-req = requests.post(url, data = json.dumps(data))
+# url = "http://127.0.0.1:18080/aigc/upload_doc"
+# # url = "http://ele.ink:18080/aigc/upload_doc"
+# # req = requests.post(url, data = json.dumps(data))
 # req = requests.post(url, json = (data))
-print(req.content)
+# print(req.content)
 
 
 data = {"request_id": "hhhhhhh", "text": "logic", "search_type": "logic"}
@@ -66,3 +66,23 @@ def get_page_data(lines_data):
 # page_data = get_page_data(lines_data)
 # print(page_data)
 
+data = {
+    "request_id": request_id,
+    "file_path": file_url,
+    "file_type": file_type,
+    "callback_url": "http://127.0.0.1:18080/aigc/query",
+}
+
+url = "http://127.0.0.1:18080/aigc/upload_doc"
+# url = "http://ele.ink:18080/aigc/upload_doc"
+req = requests.post(url, data = json.dumps(data))
+# req = requests.post(url, json = (data))
+print(req.content)
+print(json.loads(req.content))
+
+# url = client.presigned_get_object(
+#     "data",
+#     "willamhou-doc.html",
+# )
+
+# print(url)

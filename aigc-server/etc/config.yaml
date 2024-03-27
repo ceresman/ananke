@@ -1,20 +1,4 @@
 port: 18080
-redis-cluster:
-  -
-    host: 172.16.20.36
-    port: 47001
-  -
-    host: 172.16.20.36
-    port: 47002
-  -
-    host: 172.16.20.36
-    port: 47003
-  -
-    host: 172.16.20.36
-    port: 47004
-  -
-    host: 172.16.20.36
-    port: 47005
-  -
-    host: 172.16.20.36
-    port: 47006
+redis-hostport:
+  ip: ele.ink
+  port: 16379

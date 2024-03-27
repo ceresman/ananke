@@ -23,10 +23,8 @@ class MethodDispatcher(tornado.web.RequestHandler):
         if self.request.arguments:
             args = delist_arguments(self.request.arguments)
 
-
         if self.request.uri.endswith('/'):
             func = getattr(self, 'index', None)
-
             if args:
                 return func(**args)
             else:
@@ -37,10 +35,7 @@ class MethodDispatcher(tornado.web.RequestHandler):
         if not method.startswith('_'):
             func = getattr(self, method, None)
             if func:
-                if args:
-                    return func(**args)
-                else:
-                    return func()
+                return func()
             else:
                 raise tornado.web.HTTPError(404)
         else:
