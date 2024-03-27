@@ -77,12 +77,5 @@ url = "http://127.0.0.1:18080/aigc/upload_doc"
 # url = "http://ele.ink:18080/aigc/upload_doc"
 req = requests.post(url, data = json.dumps(data))
 # req = requests.post(url, json = (data))
-print(req.content)
 print(json.loads(req.content))
 
-# url = client.presigned_get_object(
-#     "data",
-#     "willamhou-doc.html",
-# )
-
-# print(url)

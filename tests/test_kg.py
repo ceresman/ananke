@@ -556,10 +556,9 @@ def write_json(file_name, data:dict):
 
 # write_json("tiples.json", tmp)
 
-import nltk
-import spacy
-
-nlp = spacy.load('en_core_web_sm')
+# import nltk
+# import spacy
+# nlp = spacy.load('en_core_web_sm')
 
 
 def get_np_from_text(page_data):
@@ -579,5 +578,25 @@ def get_np_from_text(page_data):
     np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
     return np_dict
 
-np_dict = get_np_from_text(page_data)
-write_json("nnp_spacy.json", np_dict)
+# np_dict = get_np_from_text(page_data)
+# write_json("nnp_spacy.json", np_dict)
+
+triple_dic = None
+with open("tiples.json", 'r') as f:
+    triple_dic = json.load(f)
+
+
+real_items = []
+# print(triple_dic)
+for item in triple_dic:
+    item = {key.lower() : item[key] for key in item.keys()}
+    # print(item.keys())
+    real = True
+    for node in item["nodes"]:
+        if ("alice" in node or "Alice" in node or "bob" in node or "Bob" in node):
+           real = False
+           break
+    if real:
+        real_items.append(item)
+print(real_items) 
+
