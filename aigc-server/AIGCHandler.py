@@ -7,7 +7,7 @@ from utils.dispatcher import MethodDispatcher
 from utils.client_manager import client_get
 from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
-from utils.mathpix import handle_pdf
+from utils.mathpix import handle_pdf, handle_search
 from utils.math_logic import handle_logic
 from utils.tools import dump_json
 # from utils.tex import hanld_tex
@@ -59,20 +59,26 @@ class AIGCService(MethodDispatcher):
         if type(data) == str:
             data = json.loads(data)
 
-        request_id, text, search_type = data.get("request_id", ""), data.get("text", ""), data.get("search_type", "")
+        data = {key:data[key].decode("utf-8") for key in data.keys()}
+        logger.info("req is {}".format(data))
+        text, pdf_id = str(data.get("text", "")), str(data.get("pdf_id", ""))
+        request_id, search_type = data.get("request_id", ""), data.get("search_type", "search")
         logger.info("request-id:{}, text:{}, search_type:{}".format(request_id, text, search_type))
         if len(request_id) == 0:
             self.set_status(500)
             data = {"msg": "request_id is empty"}       
             self.write(json.dumps(data))
+            return
 
         if len(text) == 0 or len(search_type) == 0:
             self.set_status(500)
             data = {"msg": "text is empty or search_type is empty"}     
             self.write(json.dumps(data))
+            return
 
-        result = yield self.handle(data)
-        self.write(json.dumps(result))
+        if search_type == "search":
+            result = handle_search(request_id, pdf_id, text)
+            self.write(json.dumps(result))
 
     def query(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')

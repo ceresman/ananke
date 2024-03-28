@@ -636,12 +636,23 @@ real_items = []
 nodes_dic = {}
 rel_dic = {}
 all_names = {}
+noun_words = []
+
 for item in triple_dic:
     item = {key.lower() : item[key] for key in item.keys()}
     if not is_real_nodes(item):
         continue
     # if is_real_nodes(item):
     update_nodes_rels(nodes_dic, rel_dic, item)
+    for key in nodes_dic.keys():
+        noun_words.append(key)
+        noun_words.extend(list(nodes_dic[key].keys()))
+    for key in rel_dic.keys():
+        noun_words.append(key)
+        noun_words.extend(list(rel_dic[key].keys()))
 
+noun_words = list(set(noun_words))
+print(noun_words)
 write_json("nodes.json", nodes_dic)
 write_json("rels.json", rel_dic)
+

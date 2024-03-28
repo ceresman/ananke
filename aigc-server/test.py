@@ -6,6 +6,7 @@ from utils.client_manager import client_init, client_set, client_get
 from AIGCHandler import application
 import tornado, os, yaml
 import yaml
+from utils.mathpix import handle_search
 
 config_dir = os.environ.get("SERVER_CONFIG")
 
@@ -31,10 +32,9 @@ if __name__	 == "__main__":
 	client_set("redis", redis_conn)
 	client_set("config", config)
 	logger.info("ApiGateWay server start begin!")
-	http_server = tornado.httpserver.HTTPServer(application)
-	http_server.bind(config.get("port", 18080))
-	# http_server.bind(config.get("port", 18080))
-	# http_server.start(0)
-	http_server.start()
-	logger.info("ApiGateWay server start end!")
-	tornado.ioloop.IOLoop.instance().start()
+	pdf_id = "2024_03_28_d918ce007641daed7730g"
+	user_text = "machine learning"
+	user_text = 'Machine Learning Algorithm'
+	# user_text = "classification"
+	result = handle_search("11111111", pdf_id, user_text)
+	print(type(result))

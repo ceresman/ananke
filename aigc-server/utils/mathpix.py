@@ -7,8 +7,22 @@ from utils.log import logger
 from utils.tools import dump_json
 from minio import Minio
 from utils.client_manager import client_get
+from utils.doc_flow import DocFlow
+
+dic = {
+  "api_key":"61bc1aab37364618ae0df70bf5f340dd",
+  "api_version":"2024-02-15-preview",
+  "endpoint":"https://anankeus.openai.azure.com/",
+  "kg_host": "localhost",
+  "kg_port": "7687",
+  "kg_user": "neo4j",
+  "kg_passwd": "123456", 
+  "kg_db": "neo4j"
+}
+
 
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
+doc_flow = DocFlow(**dic)
 
 headers = {
     "app_id": "prismer_eb9b69_0f28c4",
@@ -125,12 +139,13 @@ def __handle_pdf(request_id, file_path, callback_url, pdf_id):
         "file_name": file_name
     }
 
+
+    doc_flow.get_chunks(pdf_id, page_data, "user")
     client.fput_object('data', file_name, file_name)
     os.remove(file_name)
     file_json = pdf_id + ".json"
     dump_json(file_json, data)
-    # req = requests.post(callback_url, json = data)
-    # logger.info("callback_url-{}, status: {}".format(callback_url, req.status_code))
+    logger.info("request-id: {} handle {} pdf end!".format(request_id, pdf_id))
     return
 
 
@@ -144,5 +159,9 @@ def handle_pdf(request_id, file_path, callback_url):
 
     return pdf_id
 
+def handle_search(request_id, pdf_id, user_text):
+    result = doc_flow.search(pdf_id, user_text)
+    result["request_id"] = request_id
+    return result
 
 # ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9

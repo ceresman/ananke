@@ -70,12 +70,24 @@ data = {
     "request_id": request_id,
     "file_path": file_url,
     "file_type": file_type,
-    "callback_url": "http://127.0.0.1:18080/aigc/query",
+    # "callback_url": "http://127.0.0.1:18080/aigc/query",
 }
 
-url = "http://127.0.0.1:18080/aigc/upload_doc"
+# url = "http://127.0.0.1:18080/aigc/upload_doc"
 # url = "http://ele.ink:18080/aigc/upload_doc"
-req = requests.post(url, data = json.dumps(data))
+# req = requests.post(url, data = json.dumps(data))
 # req = requests.post(url, json = (data))
-print(json.loads(req.content))
+# print(req.content)
+# print(json.loads(req.content))
 
+
+url = "http://127.0.0.1:18080/aigc/search"
+
+data = {
+    "request_id" : "willamhou-search",
+    "pdf_id": "2024_03_28_d918ce007641daed7730g",
+    "text": "machine learning"
+}
+
+req = requests.get(url, params = data)
+print(req.content)

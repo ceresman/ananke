@@ -26,6 +26,9 @@ def is_real_nodes(item):
 def update_nodes_rels(nodes_dic, rels_dic, item):
     nodes = item.get("nodes")
     for node in nodes:
+        if len(node) < 3:
+            continue
+
         node_name, node_label, node_property = node[0], node[1], node[2]
         if type(node_property) != dict:
             continue
