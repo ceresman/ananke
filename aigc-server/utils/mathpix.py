@@ -127,9 +127,10 @@ def __handle_pdf(request_id, file_path, callback_url, pdf_id):
 
     client.fput_object('data', file_name, file_name)
     os.remove(file_name)
-    dump_json("query2.json", data)
-    req = requests.post(callback_url, json = data)
-    logger.info("callback_url-{}, status: {}".format(callback_url, req.status_code))
+    file_json = pdf_id + ".json"
+    dump_json(file_json, data)
+    # req = requests.post(callback_url, json = data)
+    # logger.info("callback_url-{}, status: {}".format(callback_url, req.status_code))
     return
 
 

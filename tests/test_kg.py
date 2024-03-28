@@ -534,21 +534,43 @@ def get_page_data(lines_data):
 lines_data = get_pdf_lines_data(pdf_id)
 page_data = get_page_data(lines_data)
 
+def is_real_nodes(item):
+    real = True
+    nodes = item.get("nodes", [])
+    rels = item.get("relationships", [])
+
+    if len(nodes) == 0 and len(rels) == 0:
+        return False
+
+    for node in nodes:
+        if ("alice" in node or "Alice" in node or "bob" in node or "Bob" in node):
+           real = False
+           break
+
+    for rel in rels:
+        if ("alice" in node or "Alice" in node or "bob" in node or "Bob" in node):
+            real = False
+            break
+
+    return real
+
 # tmp = []
 # for key in page_data.keys():
 
 #     texts = doc_flow.splitter.split_text(page_data[key])
 #     for text in texts:
 #         summary = doc_flow.get_chunk_summary(text)
-#         print(summary)
 #         summary = json.loads(summary)
         
-#         if summary is None or len(summary.keys()) == 0:
+#         if summary is None or is_real_nodes(summary) == False:
 #             continue
+        
+        
 #         tmp.append(summary)
 
 # print(len(tmp))
 # dic = {"triples" : tmp}
+
 
 def write_json(file_name, data:dict):
 	with open(file_name, 'w' , encoding = 'utf-8') as f:
@@ -585,18 +607,41 @@ triple_dic = None
 with open("tiples.json", 'r') as f:
     triple_dic = json.load(f)
 
+def update_nodes_rels(nodes_dic, rels_dic, item):
+    nodes = item.get("nodes")
+    for node in nodes:
+        node_name, node_label, node_property = node[0], node[1], node[2]
+        if type(node_property) != dict:
+            continue
+
+        nodes_dic.setdefault(node_label, {})
+        nodes_dic[node_label].setdefault(node_name, node_property)
+        if node_name in nodes_dic[node_label].keys():
+            # print("label is {}, name is {} property: {}".format(node_label, node_name, nodes_dic[node_label].get(node_name)))
+            property = {**node_property, **(nodes_dic[node_label].get(node_name))}
+            nodes_dic[node_label][node_name] = property
+
+    rels = item.get("relationships", [])
+    for rel in rels:
+        if len(rel) < 4:
+            continue
+        sub, rel, obj, property = rel[0], rel[1], rel[2], rel[3]
+        rels_dic.setdefault(sub, {})
+        rels_dic[sub].setdefault(rel, [])
+        rels_dic[sub][rel].append((obj, property))
 
 real_items = []
+
 # print(triple_dic)
+nodes_dic = {}
+rel_dic = {}
+all_names = {}
 for item in triple_dic:
     item = {key.lower() : item[key] for key in item.keys()}
-    # print(item.keys())
-    real = True
-    for node in item["nodes"]:
-        if ("alice" in node or "Alice" in node or "bob" in node or "Bob" in node):
-           real = False
-           break
-    if real:
-        real_items.append(item)
-print(real_items) 
+    if not is_real_nodes(item):
+        continue
+    # if is_real_nodes(item):
+    update_nodes_rels(nodes_dic, rel_dic, item)
 
+write_json("nodes.json", nodes_dic)
+write_json("rels.json", rel_dic)
