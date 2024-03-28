@@ -7,7 +7,7 @@ from utils.dispatcher import MethodDispatcher
 from utils.client_manager import client_get
 from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
-from utils.mathpix import handle_pdf, handle_search
+from utils.mathpix import handle_pdf, handle_search, handle_batch, get_pdf_ids
 from utils.math_logic import handle_logic
 from utils.tools import dump_json
 # from utils.tex import hanld_tex
@@ -80,23 +80,33 @@ class AIGCService(MethodDispatcher):
             result = handle_search(request_id, pdf_id, text)
             self.write(json.dumps(result))
 
-    def query(self):
+    def pdfs(self):
+        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
+        if type(data) == str and len(data) != 0:
+            data = json.loads(data)
+
+        if len(data) == 0:
+            data = {}
+
+        data = {key:data[key].decode("utf-8") for key in data.keys()}
+        request_id = data.get("request_id", "just a get req")
+        logger.info("request-id is {}".format(request_id))
+        tenant = data.get("tenant", "all")
+        pdfs = get_pdf_ids(request_id, tenant)
+        if len(pdfs) != 0:
+            pdfs = [client.presigned_get_object('data', item) for item in pdfs]
+        result = {"pdf":pdfs,  "bucket": "data"}
+        self.write(json.dumps(result))
+
+
+    def upload_batch(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
 
-        dump_json("query.json", data)
-        result = {"status": "ok"}
-        self.write(json.dumps(result))
-
-    def vote(self):
-        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
-        if type(data) == str:
-            data = json.loads(data)
-
-        result = yield self.handle(data, True)
-        self.write(json.dumps(result))
-
+        request_id, file_paths, tenant = data.get("request_id"), data.get("file_paths"), data.get("tenant", "all")
+        pdf_ids = handle_batch(request_id, file_paths, tenant)
+        self.write(json.dumps({"request_id": request_id, "pdfs": pdf_ids, "bucket": "data"}))
 
     @run_on_executor
     def handle(self, data:dict)->dict:

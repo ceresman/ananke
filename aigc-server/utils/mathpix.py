@@ -109,7 +109,7 @@ def get_np_from_text(page_data):
     np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
     return np_dict
 
-def __handle_pdf(request_id, file_path, callback_url, pdf_id):
+def __handle_pdf(request_id, file_path, pdf_id, tenant = "all"):
     client_get("redis").set("process:" + request_id, json.dumps({"status": "processing", "conversion_status": {"html": "processing"}}))
     logger.info("request-id: {} 's the pdf_id is {}".format(request_id, pdf_id))
     flag = True
@@ -140,7 +140,7 @@ def __handle_pdf(request_id, file_path, callback_url, pdf_id):
     }
 
 
-    doc_flow.get_chunks(pdf_id, page_data, "user")
+    doc_flow.get_chunks(pdf_id, page_data, tenant)
     client.fput_object('data', file_name, file_name)
     os.remove(file_name)
     file_json = pdf_id + ".json"
@@ -154,7 +154,7 @@ def handle_pdf(request_id, file_path, callback_url):
     pdf_id = pdf_id_dic.get("pdf_id", None)
     
     if pdf_id is not None:
-        thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, callback_url, pdf_id), daemon = True)
+        thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, pdf_id, "user"), daemon = True)
         thread.start()
 
     return pdf_id
@@ -165,3 +165,37 @@ def handle_search(request_id, pdf_id, user_text):
     return result
 
 # ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9
+
+
+def handle_batch(request_id, file_paths, tenant = "all"):
+    pdf_ids = []
+    for path in file_paths:
+        pdf_id_dic = process_pdf_by_mathpix(path)
+        pdf_id = pdf_id_dic.get("pdf_id", None)
+        pdf_ids.append(pdf_id)
+        if pdf_id is not None:
+            thread = threading.Thread(target = __handle_pdf, args = (request_id, path, pdf_id, tenant), daemon = True)
+            thread.start()
+
+    redis = client_get('redis')
+    source_pdf_ids = redis.get("pdfs:" + tenant)
+    if source_pdf_ids is None:
+        source_pdf_ids = pdf_ids
+    else:
+        source_pdf_ids = json.loads(source_pdf_ids)
+        source_pdf_ids.extend(pdf_ids)
+
+    redis.set("pdfs:" + tenant, json.dumps(source_pdf_ids))
+    return source_pdf_ids
+
+
+def get_pdf_ids(request_id,tenant = "all"):
+    redis = client_get('redis')
+    source_pdf_ids = redis.get("pdfs:" + tenant)
+    if source_pdf_ids is None:
+        source_pdf_ids = []
+    else:
+        source_pdf_ids = json.loads(source_pdf_ids)
+    source_pdf_ids = [item + ".html" for item in source_pdf_ids]
+    return source_pdf_ids
+

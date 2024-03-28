@@ -127,10 +127,15 @@ class DocFlow(BaseObject):
         metas, words, embeddings, emb_ids = [], [], [], []
         start_id = self.id_generator.get_sent_ids(len(noun_words))
         for ix, word in enumerate(noun_words, start = start_id):
-            emb_ids.append(ix)
-            words.append(word)
-            metas.append({"doc_id": doc_id, "word": word})
-            embeddings.append(self.get_embedding(word))
+            try:
+                embedding = self.get_embedding(word)
+
+                embeddings.append(embedding)
+                emb_ids.append(ix)
+                words.append(word)
+                metas.append({"doc_id": doc_id, "word": word})
+            except Exception as e:
+                logger.error("Exception is {}, word is {}".format(e, word))
 
         self.vector.add(tenant + "-phase", embeddings, metas, emb_ids, words)
         return noun_words
@@ -151,24 +156,29 @@ class DocFlow(BaseObject):
                 embeddings.append(self.get_embedding(raw_text))
 
                 summary = self.get_chunk_summary(raw_text)
-                summary = json.loads(summary)
                 if summary is None:
                     logger.info("summary is {}".format(summary))
                     continue
 
-                summary = {key.lower() : summary[key] for key in summary.keys()}
-                if not is_real_nodes(summary):
-                    continue
+                try:
+                    summary = json.loads(summary)
+                    summary = {key.lower() : summary[key] for key in summary.keys()}
+                    if not is_real_nodes(summary):
+                        continue
 
-                logger.info("summary is {}".format(summary))
-                update_nodes_rels(nodes_dic, rels_dic, summary)
+                    update_nodes_rels(nodes_dic, rels_dic, summary)
+                except Exception as e:
+                    logger.info("chunk except is {}, summary is {}".format(e, summary))
+
         
         self.vector.add(tenant + "-chunk", embeddings, metas, emb_ids, texts)
         noun_words = self.get_noun_words(pdf_id, nodes_dic, rels_dic, tenant)
         self.datas[pdf_id] = [noun_words, nodes_dic, rels_dic]
 
         redis = client_get("redis")
-        redis.set("data:" + pdf_id, json.dumps(self.datas[pdf_id]))
+        redis.set("data:nodes" + pdf_id, json.dumps(nodes_dic))
+        redis.set("data:rels" + pdf_id, json.dumps(rels_dic))
+        redis.set("data:words" + pdf_id, json.dumps(noun_words))
 
 
     def get_relevant(self, searchs, threshold):
@@ -183,16 +193,31 @@ class DocFlow(BaseObject):
 
         return result
 
-    def search(self, pdf_id:str, text:str, threshold = 0.2):
-        logger.info("pdf_id is {}, text is {}".format(pdf_id, text))
+    def get_nodes_rels_words(self, pdf_id):
         redis = client_get("redis")
-        data = redis.get("data:" + pdf_id)
-        if data is not None:
-            data = json.loads(data)
+        try:
+            nodes = redis.get("data:nodes" + pdf_id)
+            rels = redis.get("data:rels" + pdf_id)
+            words = redis.get("data:words" + pdf_id)
+        except Exception as e:
+            config = client_get.get("config")
+            
 
+
+        if nodes is not None:
+            nodes = json.loads(nodes)
+
+        if rels is not None:
+            rels = json.loads(rels)
+
+        if words is not None:
+            words = json.loads(words)
+
+        return nodes, rels, words
         
-        if data is not None:
-            noun_words, nodes_dic, rels_dic = data
+    def search(self, pdf_id:str, text:str, threshold = 0.2):
+        logger.info("pdf_id is {}, text is {}".format(pdf_id, text))        
+        nodes_dic, rels_dic, noun_words = self.get_nodes_rels_words(pdf_id)
 
         user_emb = self.get_embedding(text)
         user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50, filters = {"doc_id": pdf_id})
@@ -201,10 +226,9 @@ class DocFlow(BaseObject):
         all_words = self.vector.query("all-phase", user_emb, top_n = 50)
 
         # logger.info("user-chunk: {}".format(user_chunks.get("distances")))
-        logger.info("user-words: {}".format(type(user_words)))
+        # logger.info("user-words: {}".format(type(user_words)))
         # logger.info("all-chunk: {}".format(all_words.get("distances")))
         # logger.info("all-words: {}".format(all_chunks.get("distances")))
-
 
         user_chunks = self.get_relevant(user_chunks, threshold)
         user_words = self.get_relevant(user_words, threshold)
