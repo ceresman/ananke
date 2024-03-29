@@ -188,13 +188,13 @@ class DocFlow(BaseObject):
                 redis.set(redis_key, value)
             except Exception as e:
                 logger.info("set except e:{}".format(e))
-                config = client_get.get("config")
+                config = client_get("config")
                 redis = init_redis_single(config.get("redis-hostport"), config.get("redis-password"))
                 time.sleep(3)
                 client_set("redis", redis)
 
     def get_from_redis(self, key, pdf_id):
-        redis = client_get.get("redis")
+        redis = client_get("redis")
         for i in range(0, 3):
             try:
                 redis_key = "data:" + key + ":" + pdf_id
@@ -206,7 +206,7 @@ class DocFlow(BaseObject):
 
                 return value
             except Exception as e:
-                config = client_get.get("config")
+                config = client_get("config")
                 redis = init_redis_single(config.get("redis-hostport"), config.get("redis-password"))
                 time.sleep(3)
                 client_set("redis", redis)
