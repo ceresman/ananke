@@ -29,6 +29,7 @@ if __name__	 == "__main__":
 
 	assert(redis_conn != None)
 
+	redis_conn.flushall()
 	client_set("redis", redis_conn)
 	client_set("config", config)
 	logger.info("ApiGateWay server start begin!")

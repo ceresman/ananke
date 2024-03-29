@@ -96,15 +96,16 @@ print(req.content)
 
 url = "http://127.0.0.1:18080/aigc/pdfs"
 url = "http://ele.ink:18080/aigc/pdfs"
-req = requests.get(url)
-print(req.content)
-
-
-# url = "http://127.0.0.1:18080/aigc/upload_batch"
-# data = {
-#     "request_id": "willamhou-batch",
-#     "file_paths": [gpt3_url],
-# }
-
-# req = requests.post(url, json = data)
+# req = requests.get(url)
 # print(req.content)
+
+
+url = "http://127.0.0.1:18080/aigc/upload_batch"
+url = "http://ele.ink:18080/aigc/upload_batch"
+data = {
+    "request_id": "willamhou-batch",
+    "file_paths": [gpt3_url],
+}
+
+req = requests.post(url, json = data)
+print(req.content)
