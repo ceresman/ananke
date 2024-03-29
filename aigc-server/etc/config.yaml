@@ -1,4 +1,0 @@
-port: 18080
-redis-hostport:
-  ip: ele.ink
-  port: 16379

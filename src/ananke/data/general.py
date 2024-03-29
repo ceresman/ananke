@@ -15,13 +15,12 @@
 #                           Current DataType Support                           #
 # ---------------------------------------------------------------------------- #
 from ananke.base import BaseDocument
-from ananke.utils.arxiv_dump import process_pdf
+
 
 class Paper(BaseDocument):
     def __init__(self,**kwargs):
         super().__init__()
         self.type = "Paper"
-        self.text = None
         
     def read(self,filename):
         """academy article reader
@@ -29,13 +28,11 @@ class Paper(BaseDocument):
         Args:
             filename (_type_): _description_
         """
-        self.logger.debug(str(self.__class__.__name__) + " module read : " + str(filename))
-        data = process_pdf(filename)
-        self.text = data
-        return data
+        self.logger.debug(str(self.__class__.__name__)+" module read : "+str(filename))
+        pass
     
     def write(self,outputname):
-        self.logger.debug(str(self.__class__.__name__) + " module write : " + str(outputname))
+        self.logger.debug(str(self.__class__.__name__)+" module write : "+str(outputname))
         pass
         
 class WordDocument(BaseDocument):
@@ -48,6 +45,8 @@ class PowerPointDocument(BaseDocument):
     def __init__(self,**kwargs):
         super().__init__()
         self.type = "PowerPointDocument"
+        
+        
         
         
 class PDFDocument(BaseDocument):
