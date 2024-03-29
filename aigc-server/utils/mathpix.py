@@ -145,6 +145,7 @@ def __handle_pdf(request_id, file_path, pdf_id, tenant = "all"):
     os.remove(file_name)
     file_json = pdf_id + ".json"
     dump_json(file_json, data)
+    client.fput_object('data', file_json)
     logger.info("request-id: {} handle {} pdf end!".format(request_id, pdf_id))
     return
 

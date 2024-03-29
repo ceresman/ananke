@@ -5,8 +5,9 @@ from ananke.data import Chunk, Document,Sentence, Meta
 from ananke.llm.azure import Azure
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from ananke.db.vector import ChromaStorage
-from utils.client_manager import client_get
+from utils.client_manager import client_get, client_set
 from utils.nodes import is_real_nodes, update_nodes_rels
+from utils.tools import init_redis_single
 from utils.log import logger
 import threading, json
 
@@ -175,11 +176,41 @@ class DocFlow(BaseObject):
         noun_words = self.get_noun_words(pdf_id, nodes_dic, rels_dic, tenant)
         self.datas[pdf_id] = [noun_words, nodes_dic, rels_dic]
 
-        redis = client_get("redis")
-        redis.set("data:nodes" + pdf_id, json.dumps(nodes_dic))
-        redis.set("data:rels" + pdf_id, json.dumps(rels_dic))
-        redis.set("data:words" + pdf_id, json.dumps(noun_words))
+        self.set2redis("nodes", pdf_id, json.dumps(nodes_dic))
+        self.set2redis("rels", pdf_id, json.dumps(rels_dic))
+        self.set2redis("words", pdf_id, json.dumps(noun_words))
 
+    def set2redis(self, key, pdf_id, value):
+        redis = client_get("redis")
+        for i in range(0, 3):
+            try:
+                redis_key = "data:" + key + ":" + pdf_id 
+                redis.set(redis_key, value)
+            except Exception as e:
+                logger.info("set except e:{}".format(e))
+                config = client_get.get("config")
+                redis = init_redis_single(config.get("redis-hostport"), config.get("redis-password"))
+                time.sleep(3)
+                client_set("redis", redis)
+
+    def get_from_redis(self, key, pdf_id):
+        redis = client_get.get("redis")
+        for i in range(0, 3):
+            try:
+                redis_key = "data:" + key + ":" + pdf_id
+                value = redis.get(redis_key)
+                if value is not None:
+                    value = json.loads(value)
+                else:
+                    value = {}
+
+                return value
+            except Exception as e:
+                config = client_get.get("config")
+                redis = init_redis_single(config.get("redis-hostport"), config.get("redis-password"))
+                time.sleep(3)
+                client_set("redis", redis)
+        return {}
 
     def get_relevant(self, searchs, threshold):
         result = []
@@ -192,32 +223,13 @@ class DocFlow(BaseObject):
                 result.append({"id": ids[ix], "metadata": metas[ix], "dis": distances[ix], "documents": documents[ix]})
 
         return result
-
-    def get_nodes_rels_words(self, pdf_id):
-        redis = client_get("redis")
-        try:
-            nodes = redis.get("data:nodes" + pdf_id)
-            rels = redis.get("data:rels" + pdf_id)
-            words = redis.get("data:words" + pdf_id)
-        except Exception as e:
-            config = client_get.get("config")
-            
-
-
-        if nodes is not None:
-            nodes = json.loads(nodes)
-
-        if rels is not None:
-            rels = json.loads(rels)
-
-        if words is not None:
-            words = json.loads(words)
-
-        return nodes, rels, words
         
     def search(self, pdf_id:str, text:str, threshold = 0.2):
         logger.info("pdf_id is {}, text is {}".format(pdf_id, text))        
-        nodes_dic, rels_dic, noun_words = self.get_nodes_rels_words(pdf_id)
+
+        nodes_dic = self.get_from_redis("nodes", pdf_id)
+        rels_dic = self.get_from_redis("rels", pdf_id)
+        words = self.get_from_redis("words", pdf_id)
 
         user_emb = self.get_embedding(text)
         user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50, filters = {"doc_id": pdf_id})
