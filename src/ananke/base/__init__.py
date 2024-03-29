@@ -31,7 +31,7 @@ from ananke.base.config import YAMLCONFIG
 
 class BaseObject(ABC):
     def __init__(self, **kwargs):
-        self.config = YAMLCONFIG(**kwargs)
+        self.config = YAMLCONFIG()
         self.logger = self.setup_logger()
 
     def setup_logger(self):
@@ -84,42 +84,21 @@ class BaseObject(ABC):
 # ---------------------------------------------------------------------------- #
 #                             Basic Data Structure                             #
 # ---------------------------------------------------------------------------- #
+
+
+
 class BaseContext(BaseObject):
     """Base class for all Context in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
 
-class BaseLogical(BaseObject):
-    def __init__(self,**kwargs):
-        super().__init__()
-
-class BaseMath(BaseObject):
-    def __init__(self,**kwargs):
-        super().__init__()
-
-class BaseSentence(BaseObject):
-    """Base class for all sentence in Ananke."""
-    def __init__(self,**kwargs):
-        super().__init__()
-        self.sentece_id = ""
-        self.sentece_text = ""
-        self.embedding_id:long = 0
-        self.sentece_math: BaseMath = None
-        self.sentece_logical: BaseLogical = None
 
 class BaseChunk(BaseObject):
     """Base class for all chunks in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
-        self.chunk_id = ""
-        self.chunk_text = ""
-        self.embedding_id:long = 0
-        self.sentences: List[BaseSentence] = None
-        self.chunk_graph: BaseGraph = None
-        self.chunk_logical: BaseLogical = None
-        self.chunk_math: BaseMath = None
 
 class BaseDocument(BaseObject):
     """Base class for all documents in Ananke."""
@@ -127,24 +106,7 @@ class BaseDocument(BaseObject):
     def __init__(self,**kwargs):
         super().__init__()
         self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
-        self.document_id = ""
-        self.document_text = ""
-        self.chunks:List[BaseChunk] = None
-        self.chunk_emb_collection = None
-        self.sentence_emb_collection = None
-
-# class BaseTriple(BaseObject):
-#     """Base class for all documents in Ananke."""
-
-#     def __init__(self,**kwargs):
-#         super().__init__()
-#         self.logger.debug(">>Document Init with : "+str(self.__class__.__name__))
-#         self.document_id = ""
-#         self.document_text = ""
-#         self.chunks:List[BaseChunk] = None
-#         self.chunk_emb_collection = None
-#         self.sentence_emb_collection = None
-
+        
 
 class BaseMeta(BaseObject):
     """Base class for all meta in Ananke."""
@@ -153,31 +115,23 @@ class BaseMeta(BaseObject):
         super().__init__()
 
 
+class BaseGraph(BaseObject):
+    """Base class for all graphs in Ananke."""
+
+    def __init__(self,**kwargs):
+        super().__init__()
+
 class BaseNode(BaseObject):
     """Base class for all nodes in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
-        self.node_name : str = ""
-        self.node_type : str = ""
-        self.node_uuid : str = ""
-        self.property : dict = {}
 
 class BaseRelation(BaseObject):
     """Base class for all relations in Ananke."""
 
     def __init__(self,**kwargs):
         super().__init__()
-        self.relation_name : str = ""
-        self.relation_type : str = ""
-        self.relation_uuid : str = ""
-
-class BaseGraph(BaseObject):
-    """Base class for all graphs in Ananke."""
-
-    def __init__(self,**kwargs):
-        super().__init__()
-        self.nodes  = []
 
 class BaseVector(BaseObject):
     """Base class for all vectors in Ananke."""
