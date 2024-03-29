@@ -27,7 +27,7 @@ from mimetypes import guess_type
 
 # ------------------------------------- - ------------------------------------ #
 from ananke.llm import RemoteLLM
-
+# from ananke.base.config import YAMLCONFIG
 
 class Azure(RemoteLLM):
     def __init__(
@@ -43,7 +43,6 @@ class Azure(RemoteLLM):
     ):
         super().__init__()
         if api_key is None:
-       
             self.logger.debug("azure",self.config()["OPENAI"][chat_model_name])
             self.api_key = self.config()["OPENAI"][chat_model_name]["KEY"]
             self.api_version = self.config()["OPENAI"][chat_model_name]["API_VERSION"]
@@ -64,7 +63,7 @@ class Azure(RemoteLLM):
         self.max_token = max_token
         self.chat_model = chat_model_name
         self.embedding_model = embedding_model_name
-
+        self.system_prompt = system_prompt
 
 # ---------------------------------- VISION ---------------------------------- #
         self.headers = {
@@ -74,12 +73,22 @@ class Azure(RemoteLLM):
         self.vision_endpoint = "https://anankesweden.openai.azure.com/openai/deployments/{VISION_MODEL}/chat/completions?api-version=2023-07-01-preview".format(VISION_MODEL=chat_model_name)
 
 
+    def get_entity(self, user_input:str):
+        conversation = [{"role": "system", "content": self.system_prompt}, {"role": "user", "content": user_input}]
+        response = self.client.chat.completions.create(
+            model = self.chat_model, messages = conversation, response_format = {"type": "json_object"},
+        )
+
+        return response.choices[0].message.content
 
     def chat(self, user_input):
         self.conversation.append({"role": "user", "content": user_input})
 
+        # response = self.client.chat.completions.create(
+        #     model=self.chat_model, messages=self.conversation, response_format={"type": "json_object"},
+        # )
         response = self.client.chat.completions.create(
-            model=self.chat_model, messages=self.conversation
+            model=self.chat_model, messages=self.conversation,
         )
 
         self.conversation.append(

@@ -1,0 +1,1095 @@
+{
+    "Section": {
+        "introduction": {},
+        "approach": {},
+        "results": {},
+        "measuring_and_preventing_memorization_of_benchmarks": {},
+        "limitations": {},
+        "broader_impacts": {},
+        "related_work": {},
+        "conclusion": {}
+    },
+    "Subsection": {
+        "model_and_architectures": {},
+        "training_dataset": {},
+        "training_process": {},
+        "evaluation": {},
+        "language_modeling_cloze_and_completion_tasks": {},
+        "closed_book_question_answering": {},
+        "translation": {},
+        "winograd_style_tasks": {},
+        "common_sense_reasoning": {},
+        "reading_comprehension": {},
+        "superglue": {},
+        "nli": {},
+        "synthetic_and_qualitative_tasks": {},
+        "misuse_of_language_models": {},
+        "fairness_bias_and_representation": {},
+        "energy_usage": {}
+    },
+    "Appendix": {
+        "details_of_common_crawl_filtering": {},
+        "details_of_model_training": {},
+        "details_of_test_set_contamination_studies": {},
+        "total_compute_used_to_train_language_models": {},
+        "human_quality_assessment_of_synthetic_news_articles": {},
+        "additional_samples_from_gpt_3": {},
+        "details_of_task_phrasing_and_specifications": {},
+        "results_on_all_tasks_for_all_model_sizes": {}
+    },
+    "Representation": {
+        "word vectors": {},
+        "RNNs": {},
+        "contextual state": {}
+    },
+    "LanguageModel": {
+        "pre-trained recurrent or transformer language models": {},
+        "GPT-3": {
+            "name": "GPT-3"
+        }
+    },
+    "Dataset": {
+        "task-specific datasets": {},
+        "supervised training dataset": {},
+        "large supervised datasets": {},
+        "Common Crawl": {
+            "technique": "improve quality",
+            "description": "A dataset that potentially includes content from test datasets"
+        },
+        "WebText": {
+            "quality": "high-quality"
+        },
+        "Positive Examples": {
+            "source": "WebText, Wikiedia, web books corpus"
+        },
+        "Negative Examples": {
+            "source": "unfiltered Common Crawl"
+        },
+        "Benchmark Datasets": {
+            "description": "benchmark datasets from Appendix C"
+        }
+    },
+    "ArchitecturesAndAlgorithms": {
+        "arcs and algorithms": {}
+    },
+    "Data": {
+        "training distribution": {},
+        "spurious correlations": {},
+        "Test Set": {
+            "method": "contamination studies"
+        }
+    },
+    "Approach": {
+        "pre-training plus fine-tuning paradigm": {}
+    },
+    "Skills": {
+        "develops a broad set of skills and pattern recognition abilities": {}
+    },
+    "Inference": {
+        "rapidly adapt to or recognize the desired task": {}
+    },
+    "Process": {
+        "in-context learning": {}
+    },
+    "Entity": {
+        "language_model": {},
+        "task": {
+            "name": "Task"
+        },
+        "in-context_learning": {},
+        "scaling": {},
+        "meta-learning": {},
+        "skills": {},
+        "pattern_recognition": {},
+        "training": {},
+        "inference": {},
+        "human": {
+            "name": "Human"
+        },
+        "benchmark": {
+            "name": "Benchmark"
+        },
+        "benchmark_contamination_analysis": {},
+        "data": {},
+        "x-axis": {},
+        "y-axis": {},
+        "performance": {},
+        "results": {},
+        "overlay_analysis": {},
+        "training_set": {},
+        "differential": {},
+        "subset": {},
+        "section_3": {},
+        "asterisk": {},
+        "reading_comprehension": {},
+        "analysis": {},
+        "task_examples": {},
+        "quac": {},
+        "squad2": {},
+        "drop": {},
+        "text": {},
+        "question_answer_pairs": {},
+        "german_translation": {},
+        "wmt16_german_english_test_set": {},
+        "example": {},
+        "total_effect_size": {},
+        "bleu": {},
+        "reversed_words": {},
+        "anagrams": {},
+        "short_length_tasks": {},
+        "grams": {},
+        "symbol_insertion_task": {},
+        "piqa": {},
+        "examples": {},
+        "web_pages": {},
+        "crowdsourced_dataset_creators": {},
+        "shift": {},
+        "memorization": {},
+        "statistical_bias": {},
+        "winograd": {},
+        "manual_inspection": {},
+        "overlapping_data_point": {},
+        "winograd_schemas": {},
+        "model": {},
+        "language_models": {
+            "topic": "language models"
+        },
+        "misuse_applications": {
+            "topic": "potential misuse applications"
+        },
+        "threat_actors": {
+            "topic": "threat actor analysis"
+        },
+        "incentive_structures": {
+            "topic": "external incentive structures"
+        },
+        "Classifier": {
+            "type": "logistic regression"
+        },
+        "Training Data": {
+            "preprocessing": "remove benchmark text"
+        }
+    },
+    "Model": {
+        "GPT-3": {
+            "training": "Adam with beta1=0.9, beta2=0.95, epsilon=1e-8, clip gradient norm at 1.0, cosine decay",
+            "tokens": "260 billion",
+            "LR warmup": "linear",
+            "batch size": "gradually increased",
+            "parameters": "175 billion",
+            "description": "A large language model with high capacity",
+            "parameter_count": 175000000000
+        },
+        "smaller models": {
+            "description": "Range from 125 million parameters to 13 billion parameters"
+        },
+        "language_model": {
+            "name": "Language Model"
+        }
+    },
+    "NLPTaskBenchmark": {
+        "SuperGLUE": {},
+        "CoQA": {},
+        "TriviaQA": {},
+        "RACE": {},
+        "QuAC": {},
+        "ANLI": {}
+    },
+    "Concept": {
+        "data contamination": {
+            "description": "Growing problem when training high capacity models on datasets"
+        },
+        "tasks": {
+            "description": "Tasks used for evaluating model performance"
+        },
+        "model capacity": {
+            "description": "The size of the model in terms of parameters and capabilities"
+        },
+        "occupation": {},
+        "gender": {},
+        "bias": {
+            "type": "model"
+        },
+        "stereotype": {},
+        "prejudice": {},
+        "representation": {},
+        "limitation": {
+            "type": "model"
+        }
+    },
+    "Setting": {
+        "zero-shot": {
+            "type": "Zero-Shot"
+        },
+        "one-shot": {
+            "type": "One-Shot"
+        },
+        "few-shot": {
+            "type": "Few-Shot"
+        }
+    },
+    "Task": {
+        "translation": {
+            "name": "Translation"
+        }
+    },
+    "Language": {
+        "english": {
+            "name": "English"
+        },
+        "french": {
+            "name": "French"
+        }
+    },
+    "Attribute": {
+        "sample_efficiency": {
+            "name": "Sample Efficiency"
+        },
+        "state-of-the-art": {
+            "name": "State of the Art"
+        },
+        "performance": {
+            "name": "Performance"
+        }
+    },
+    "Organization": {
+        "united_methodist_church": {
+            "name": "United Methodist Church"
+        },
+        "new_denomination": {
+            "name": "Christian Methodist denomination"
+        },
+        "evangelical_united_brethren_church": {
+            "name": "Evangelical United Brethren Church"
+        },
+        "Roman Catholic Church": {}
+    },
+    "Person": {
+        "megyn_kelly": {
+            "name": "Megyn Kelly"
+        },
+        "joaquin_phoenix": {
+            "name": "Joaquin Phoenix"
+        },
+        "Ryan Lowe": {
+            "role": "feedback provider"
+        },
+        "Jakub Pachocki": {
+            "contribution": "task suggestion"
+        },
+        "Szymon Sidor": {
+            "contribution": "task suggestion"
+        },
+        "Greg Brockman": {
+            "role": "evaluation support"
+        },
+        "Michael Petrov": {
+            "role": "evaluation support"
+        },
+        "Brooke Chan": {
+            "role": "evaluation support"
+        },
+        "Chelsea Voss": {
+            "role": "evaluation support"
+        },
+        "David Luan": {
+            "role": "project support"
+        },
+        "Irene Solaiman": {
+            "discussion": "bias evaluation"
+        },
+        "Harrison Edwards": {
+            "discussion": "in-context learning"
+        },
+        "Yura Burda": {
+            "discussion": "in-context learning"
+        },
+        "Geoffrey Irving": {
+            "discussion": "language model scaling"
+        },
+        "Paul Christiano": {
+            "discussion": "language model scaling"
+        },
+        "Long Ouyang": {
+            "advice": "human evaluation experiments"
+        },
+        "Chris Hallacy": {
+            "discussion": "data collection"
+        },
+        "Shan Carter": {
+            "support": "visual design"
+        },
+        "Tom Brown": {
+            "role": "contributor"
+        },
+        "Ben Mann": {
+            "role": "contributor"
+        },
+        "Prafulla Dhariwal": {
+            "role": "contributor"
+        },
+        "Dario Amodei": {
+            "role": "contributor"
+        },
+        "Nick Ryder": {
+            "role": "contributor"
+        },
+        "Daniel M Ziegler": {
+            "role": "contributor"
+        },
+        "Jeffrey Wu": {
+            "role": "contributor"
+        },
+        "Alec Radford": {
+            "role": "contributor"
+        },
+        "Melanie Subbiah": {
+            "role": "contributor"
+        },
+        "Jared Kaplan": {
+            "role": "contributor"
+        },
+        "Sam McCandlish": {
+            "role": "contributor"
+        },
+        "Tom Henighan": {
+            "role": "contributor"
+        },
+        "Girish Sastry": {
+            "role": "contributor"
+        },
+        "Rewon Child": {
+            "role": "contributor"
+        },
+        "Mark Chen": {
+            "role": "contributor"
+        },
+        "Scott Gray": {
+            "role": "contributor"
+        },
+        "Aditya Ramesh": {
+            "role": "contributor"
+        },
+        "Arvind Neelakantan": {
+            "role": "contributor"
+        },
+        "Pranav Shyam": {
+            "role": "contributor"
+        },
+        "Sandhini Agarwal": {
+            "role": "contributor"
+        },
+        "Amanda Askell": {
+            "role": "contributor"
+        },
+        "Ariel Herbert-Voss": {
+            "role": "contributor"
+        },
+        "Gretchen Krueger": {
+            "role": "contributor"
+        },
+        "Benjamin Chess": {
+            "role": "contributor"
+        },
+        "Clemens Winter": {
+            "role": "contributor"
+        },
+        "Eric Sigler": {
+            "role": "contributor"
+        },
+        "Christopher Hesse": {
+            "role": "contributor"
+        },
+        "Mateusz Litwin": {
+            "role": "contributor"
+        },
+        "Christopher Berner": {
+            "role": "contributor"
+        },
+        "Jack Clark": {
+            "role": "contributor"
+        },
+        "Ilya Sutskever": {
+            "role": "contributor"
+        },
+        "Johnny": {
+            "likes": [
+                "fruits",
+                "vegetables"
+            ]
+        },
+        "St Jean de Brebeuf": {
+            "nationality": "French",
+            "occupation": "Jesuit missionary"
+        },
+        "daniel_ziegler": {
+            "role": "Author",
+            "name": "Daniel M. Ziegler"
+        },
+        "nisan_stiennon": {
+            "role": "Author",
+            "name": "Nisan Stiennon"
+        },
+        "jeffrey_wu": {
+            "role": "Author",
+            "name": "Jeffrey Wu"
+        },
+        "tom_brown": {
+            "role": "Author",
+            "name": "Tom B. Brown"
+        },
+        "alec_radford": {
+            "role": "Author",
+            "name": "Alec Radford"
+        },
+        "dario_amodei": {
+            "role": "Author",
+            "name": "Dario Amodei"
+        },
+        "paul_christiano": {
+            "role": "Author",
+            "name": "Paul Christiano"
+        },
+        "geoffrey_irving": {
+            "role": "Author",
+            "name": "Geoffrey Irving"
+        }
+    },
+    "Event": {
+        "golden_globes": {
+            "name": "Golden Globes"
+        },
+        "the_tonight_show": {
+            "name": "The Tonight Show"
+        },
+        "oscars": {
+            "name": "Oscars"
+        },
+        "PASCAL recognising textual entailment challenge": {
+            "year": 2006
+        },
+        "The third PASCAL recognizing textual entailment challenge": {
+            "year": 2007
+        },
+        "Ai and efficiency": {
+            "month": "May",
+            "year": 2020
+        }
+    },
+    "Animal": {
+        "whatpu": {
+            "location": "Tanzania"
+        }
+    },
+    "Action": {
+        "farduddle": {
+            "description": "jump up and down really fast"
+        },
+        "screeg": {
+            "description": "to swing a sword at something"
+        }
+    },
+    "Vegetable": {
+        "yalubalu": {
+            "description": "looks like a big pumpkin"
+        }
+    },
+    "Vehicle": {
+        "Burringo": {
+            "description": "car with very fast acceleration"
+        }
+    },
+    "MusicalInstrument": {
+        "Gigamuru": {
+            "description": "Japanese musical instrument"
+        }
+    },
+    "Topic": {
+        "misinformation": {
+            "description": "socially harmful activity"
+        },
+        "spam": {
+            "description": "unsolicited messages"
+        },
+        "phishing": {
+            "description": "fraudulent attempts to obtain sensitive information"
+        },
+        "abuse_legal_processes": {
+            "description": "exploitation of legal processes"
+        },
+        "fraudulent_essay_writing": {
+            "description": "academic dishonesty"
+        },
+        "social_engineering": {
+            "description": "psychological manipulation"
+        },
+        "malware": {
+            "description": "malicious software"
+        }
+    },
+    "ThreatActor": {
+        "threat_actors_low": {
+            "skill_level": "low"
+        },
+        "threat_actors_moderate": {
+            "skill_level": "moderate"
+        },
+        "threat_actors_APTs": {
+            "description": "advanced persistent threats"
+        }
+    },
+    "Source": {
+        "forums": {
+            "description": "online discussion platform"
+        }
+    },
+    "ThreatActorGroup": {
+        "APT": {
+            "description": "advanced persistent threats"
+        }
+    },
+    "Profession": {
+        "professional_analysts": {
+            "description": "professional threat analysts"
+        },
+        "AI_researchers": {
+            "description": "researchers in the field of artificial intelligence"
+        }
+    },
+    "TTP": {
+        "phishing": {
+            "description": "low-cost, low-effort, high-yield method of data theft"
+        }
+    },
+    "Platform": {
+        "social_media": {
+            "description": "online social networking"
+        }
+    },
+    "Bot": {
+        "disinformation_bot": {
+            "description": "automated system for spreading disinformation"
+        }
+    },
+    "Community": {
+        "research_community": {
+            "description": "research community"
+        },
+        "millions of people": {}
+    },
+    "Research": {
+        "mitigation_research": {
+            "focus": "mitigation"
+        }
+    },
+    "Development": {
+        "prototyping": {
+            "approach": "prototyping"
+        }
+    },
+    "Group": {
+        "people": {},
+        "Huron": {},
+        "Iroquois": {}
+    },
+    "Bias": {
+        "stereotype": {}
+    },
+    "Team": {
+        "OpenAI infrastructure and supercomputing teams": {
+            "contribution": "enabling training at scale"
+        }
+    },
+    "Tool": {
+        "Spark": {
+            "features": "tokenizer and HashingTF"
+        }
+    },
+    "Algorithm": {
+        "MinHashLSH": {
+            "hashes": 10
+        }
+    },
+    "Optimizer": {
+        "Adam": {
+            "parameters": "beta1=0.9, beta2=0.95, epsilon=1e-8"
+        }
+    },
+    "Metric": {
+        "Dataset Size": {
+            "decrease": "10%"
+        },
+        "Learning Rate": {
+            "cosine decay": "10%",
+            "LR warmup": "linear"
+        }
+    },
+    "Procedure": {
+        "Methodology": {
+            "details": "Initial training set filtering by searching for 13-gram overlaps, colliding 13-gram removal, splitting into pieces, and discarding short pieces"
+        }
+    },
+    "HotelCasino": {
+        "GoldCoastHotelCasino": {
+            "location": "Paradise, Nevada",
+            "ownedBy": "Boyd Gaming",
+            "street": "West Flamingo Road"
+        },
+        "PalmsCasinoResort": {},
+        "RioAllSuiteHotelCasino": {}
+    },
+    "Company": {
+        "BoydGaming": {}
+    },
+    "Food": {
+        "fruits": {
+            "attribute": "sweet"
+        },
+        "vegetables": {
+            "attribute": "healthy"
+        }
+    },
+    "Diet": {
+        "keto diet": {}
+    },
+    "Place": {
+        "New France": {},
+        "Huron village": {}
+    },
+    "Publication": {
+        "Universal transformers": {
+            "year": 2018
+        },
+        "Edinburgh's phrase-based machine translation systems for wmt-14": {
+            "year": 2014
+        },
+        "Semi-supervised sequence learning": {
+            "year": 2015
+        },
+        "Transformer-xl: Attentive language models beyond a fixed-length context": {
+            "year": 2019
+        },
+        "Understanding back-translation at scale": {
+            "year": 2018
+        },
+        "Model-agnostic meta-learning for fast adaptation of deep networks": {
+            "year": 2017
+        },
+        "Lipstick on a pig: Debiasing methods cover up systematic gender biases in word embeddings but do not remove them": {
+            "year": 2019
+        },
+        "Realm: Retrieval-augmented language model pre-training": {
+            "year": 2020
+        },
+        "Adaptive computation time for recurrent neural networks": {
+            "year": 2016
+        },
+        "Annotation artifacts in natural language inference data": {
+            "year": 2018
+        },
+        "Gltr: Statistical detection and visualization of generated text": {
+            "year": 2019
+        },
+        "Meta-learning for low-resource neural machine translation": {
+            "year": 2018
+        },
+        "The curious case of neural text degeneration": {
+            "year": 2019
+        },
+        "Pretrained transformers improve out of distribution robustness": {
+            "year": 2020
+        },
+        "fine-tuning_language_models_from_human_preferences": {
+            "title": "Fine-tuning language models from human preferences",
+            "arXiv_id": "1909.08593",
+            "year": 2019
+        }
+    },
+    "Resource": {
+        "CommitmentBank": {
+            "year": 2019,
+            "source": "https://github.com/mcdm/CommitmentBank/"
+        },
+        "Drop": {
+            "year": 2019,
+            "source": "https://arxiv.org/abs/1903.00161"
+        }
+    },
+    "Author": {
+        "Joel Hestness": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Sharan Narang": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Newsha Ardalani": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Gregory Diamos": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Heewoo Jun": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Hassan Kianinejad": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Md. Mostofa Ali Patwary": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Yang Yang": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Yanqi Zhou": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "Jeremy Howard": {
+            "publication": "Universal language model fine-tuning for text classification."
+        },
+        "Sebastian Ruder": {
+            "publication": "Universal language model fine-tuning for text classification."
+        },
+        "Geoffrey Hinton": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "Oriol Vinyals": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "Jeff Dean": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "Sepp Hochreiter": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "A Steven Younger": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "Peter R Conwell": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "Po-Sen Huang": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Huan Zhang": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Ray Jiang": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Robert Stanforth": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Johannes Welbl": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Jack Rae": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Vishal Maini": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Dani Yogatama": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Pushmeet Kohli": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "Mohit Iyyer": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "Jordan Boyd-Graber": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "Leonardo Claudino": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "Richard Socher": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "Hal Daum\u00e9 III": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "Daphne Ippolito": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "Daniel Duckworth": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "Chris Callison-Burch": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "Douglas Eck": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "Mandar Joshi": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "Eunsol Choi": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "Daniel S. Weld": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "Luke Zettlemoyer": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "Zheng Junyuan": {
+            "publication": "Numeric transformer - albert, March 2020."
+        },
+        "Rafal Jozefowicz": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "Mike Schuster": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "Noam Shazeer": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "Yonghui Wu": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "Xiaoqi Jiao": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Yichun Yin": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Lifeng Shang": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Xin Jiang": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Xiao Chen": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Linlin Li": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Fang Wang": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Qun Liu": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "Ying Ju": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Fubang Zhao": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Shijie Chen": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Bowen Zheng": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Xuefeng Yang": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Yunfeng Liu": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "Daniel Khashabi": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "Snigdha Chaturvedi": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "Michael Roth": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "Shyam Upadhyay": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "Dan Roth": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "Sarah E. Kreps": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "Miles McCain": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "Miles Brundage": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "Jared Kaplan": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Sam McCandlish": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Tom Henighan": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Tom B. Brown": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Benjamin Chess": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Rewon Child": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Scott Gray": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Alec Radford": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Jeffrey Wu": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Dario Amodei": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "Yoon Kim": {
+            "publication": "Sequence-level knowledge distillation."
+        },
+        "Alexander M. Rush": {
+            "publication": "Sequence-level knowledge distillation."
+        },
+        "Edward Loper": {
+            "publication": "Nltk: The natural language toolkit, 2002."
+        },
+        "Steven Bird": {
+            "publication": "Nltk: The natural language toolkit, 2002."
+        },
+        "Guillaume Lample": {
+            "publication": "Cross-lingual language model pretraining."
+        },
+        "Alexis Conneau": {
+            "publication": "Cross-lingual language model pretraining."
+        },
+        "Jeffrey Pennington": {
+            "publication": "GloVe: Global vectors for word representation"
+        },
+        "Christopher Manning": {
+            "publication": "GloVe: Global vectors for word representation"
+        },
+        "QIANXIN": {
+            "publication": "Sa-net on albert (ensemble)"
+        },
+        "Yusu Qian": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "Urwa Muaz": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "Ben Zhang": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "Jae Won Hyun": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "Melissa Roemmele": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "Cosmin Adrian Bejan": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "Andrew S Gordon": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "Siva Reddy": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "Danqi Chen": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "Christopher D Manning": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "Scott Reed": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "Yutian Chen": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "Thomas Paine": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "A\u00e4ron van den Oord": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "SM Eslami": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "Danilo Rezende": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "Nando de Freitas": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "Pranav Rajpurkar": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "Robin Jia": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "Percy Liang": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "Sachin Ravi": {
+            "publication": "Optimization as a model for few-shot learning"
+        },
+        "Hugo Larochelle": {
+            "publication": "Optimization as a model for few-shot learning"
+        },
+        "Qiu Ran": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "Yankai Lin": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "Peng Li": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "Jie Zhou": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "Zhiyuan Liu": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "Rachel Rudinger": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "Jason Naradowsky": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "Brian Leonard": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "Benjamin Van Durme": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "Karthik Narasimhan": {
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "Tim Salimans": {
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "Ilya Sutskever": {
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "R.S. Ross": {
+            "publication": "Guide for conducting risk assessments"
+        },
+        "Jonathan S. Rosenfeld": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "Amir Rosenfeld": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "Yonatan Belinkov": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "Nir Shavit": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "Adam Roberts": {
+            "publication": "How much knowledge can you pack into the parameters of a language model?"
+        }
+    }
+}

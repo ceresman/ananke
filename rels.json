@@ -1,0 +1,1000 @@
+{
+    "language_model": {
+        "in-context_learning": [
+            [
+                "in-context_learning",
+                {}
+            ]
+        ],
+        "training": [
+            [
+                "training",
+                {}
+            ]
+        ],
+        "performs": [
+            [
+                "task",
+                {}
+            ]
+        ],
+        "performs_task": [
+            [
+                "translation",
+                {}
+            ]
+        ]
+    },
+    "in-context_learning": {
+        "scaling": [
+            [
+                "scaling",
+                {}
+            ]
+        ],
+        "skills": [
+            [
+                "skills",
+                {}
+            ]
+        ]
+    },
+    "meta-learning": {
+        "training": [
+            [
+                "training",
+                {}
+            ]
+        ],
+        "inference": [
+            [
+                "inference",
+                {}
+            ]
+        ],
+        "pattern_recognition": [
+            [
+                "pattern_recognition",
+                {}
+            ]
+        ],
+        "skills": [
+            [
+                "skills",
+                {}
+            ]
+        ]
+    },
+    "GPT-3": {
+        "tested_on": [
+            [
+                "SuperGLUE",
+                {}
+            ],
+            [
+                "CoQA",
+                {}
+            ],
+            [
+                "TriviaQA",
+                {}
+            ],
+            [
+                "RACE",
+                {}
+            ],
+            [
+                "QuAC",
+                {}
+            ],
+            [
+                "ANLI",
+                {}
+            ]
+        ],
+        "has": [
+            [
+                "occupation",
+                {
+                    "bias_type": "gender"
+                }
+            ],
+            [
+                "bias",
+                {
+                    "type": "model"
+                }
+            ]
+        ],
+        "trained on": [
+            [
+                "Training Data",
+                {}
+            ]
+        ],
+        "utilizes": [
+            [
+                "Adam",
+                {}
+            ]
+        ]
+    },
+    "data contamination": {
+        "affects": [
+            [
+                "Common Crawl",
+                {}
+            ],
+            [
+                "GPT-3",
+                {}
+            ]
+        ]
+    },
+    "smaller models": {
+        "compared to": [
+            [
+                "GPT-3",
+                {}
+            ]
+        ],
+        "range from": [
+            [
+                "125 million",
+                {
+                    "parameters": 125000000
+                }
+            ]
+        ],
+        "range to": [
+            [
+                "13 billion",
+                {
+                    "parameters": 13000000000
+                }
+            ]
+        ]
+    },
+    "tasks": {
+        "used for": [
+            [
+                "GPT-3",
+                {}
+            ]
+        ]
+    },
+    "model capacity": {
+        "affects": [
+            [
+                "tasks",
+                {}
+            ]
+        ]
+    },
+    "task": {
+        "has_setting": [
+            [
+                "zero-shot",
+                {}
+            ],
+            [
+                "one-shot",
+                {}
+            ],
+            [
+                "few-shot",
+                {}
+            ]
+        ],
+        "pertains_to": [
+            [
+                "translation",
+                {}
+            ]
+        ]
+    },
+    "translation": {
+        "involves_language": [
+            [
+                "english",
+                {}
+            ],
+            [
+                "french",
+                {}
+            ]
+        ]
+    },
+    "zero-shot": {
+        "advantages": [
+            [
+                "human",
+                {
+                    "description": "Maximum convenience, potential for robustness, and avoidance of spurious correlations"
+                }
+            ]
+        ]
+    },
+    "one-shot": {
+        "comparison_to": [
+            [
+                "human",
+                {
+                    "description": "Seems like the fairest comparison to human performance and an important target for future work"
+                }
+            ]
+        ]
+    },
+    "few-shot": {
+        "comparison_to": [
+            [
+                "state-of-the-art",
+                {
+                    "description": "Especially highlights results that are only slightly behind state-of-the-art fine-tuned models"
+                }
+            ]
+        ]
+    },
+    "united_methodist_church": {
+        "agreed_to_split": [
+            [
+                "new_denomination",
+                {
+                    "year": 2020
+                }
+            ]
+        ],
+        "was_largest_protestant_denomination": [
+            [
+                "united_methodist_church",
+                {
+                    "year": "early 20th century"
+                }
+            ]
+        ],
+        "split": [
+            [
+                "evangelical_united_brethren_church",
+                {
+                    "year": 1968
+                }
+            ]
+        ]
+    },
+    "megyn_kelly": {
+        "sarcastic_towards": [
+            [
+                "joaquin_phoenix",
+                {
+                    "event": "The Tonight Show"
+                }
+            ]
+        ]
+    },
+    "joaquin_phoenix": {
+        "wore_tuxedo": [
+            [
+                "golden_globes",
+                {
+                    "year": "a year ago"
+                }
+            ]
+        ],
+        "wearing_tuxedo": [
+            [
+                "oscars",
+                {
+                    "year": "current"
+                }
+            ]
+        ]
+    },
+    "language_models": {
+        "involve": [
+            [
+                "misuse_applications",
+                {}
+            ],
+            [
+                "threat_actors",
+                {}
+            ],
+            [
+                "incentive_structures",
+                {}
+            ]
+        ]
+    },
+    "misuse_applications": {
+        "include": [
+            [
+                "misinformation",
+                {}
+            ],
+            [
+                "spam",
+                {}
+            ],
+            [
+                "phishing",
+                {}
+            ],
+            [
+                "abuse_legal_processes",
+                {}
+            ],
+            [
+                "fraudulent_essay_writing",
+                {}
+            ],
+            [
+                "social_engineering",
+                {}
+            ]
+        ],
+        "depend_on": [
+            [
+                "GPT-3",
+                {
+                    "quality_threshold": "high"
+                }
+            ]
+        ]
+    },
+    "threat_actors": {
+        "consist_of": [
+            [
+                "threat_actors_low",
+                {}
+            ],
+            [
+                "threat_actors_moderate",
+                {}
+            ],
+            [
+                "threat_actors_APTs",
+                {}
+            ]
+        ],
+        "use": [
+            [
+                "forums",
+                {}
+            ]
+        ],
+        "lack_interest_in": [
+            [
+                "GPT-2",
+                {}
+            ]
+        ]
+    },
+    "threat_actors_APTs": {
+        "consult_with": [
+            [
+                "professional_analysts",
+                {}
+            ]
+        ]
+    },
+    "incentive_structures": {
+        "influence": [
+            [
+                "phishing",
+                {}
+            ],
+            [
+                "malware",
+                {}
+            ],
+            [
+                "social_media",
+                {}
+            ],
+            [
+                "disinformation_bot",
+                {}
+            ],
+            [
+                "AI_researchers",
+                {}
+            ]
+        ]
+    },
+    "research_community": {
+        "face_challenges_from": [
+            [
+                "malicious_actors",
+                {}
+            ]
+        ],
+        "coordinate_with": [
+            [
+                "AI_researchers",
+                {}
+            ]
+        ],
+        "focus_on": [
+            [
+                "mitigation_research",
+                {}
+            ]
+        ],
+        "use_approach": [
+            [
+                "prototyping",
+                {}
+            ]
+        ]
+    },
+    "bias": {
+        "can lead to": [
+            [
+                "stereotype",
+                {}
+            ],
+            [
+                "prejudice",
+                {}
+            ]
+        ],
+        "can harm": [
+            [
+                "people",
+                {}
+            ]
+        ]
+    },
+    "model": {
+        "reflects": [
+            [
+                "stereotype",
+                {}
+            ],
+            [
+                "bias",
+                {}
+            ],
+            [
+                "representation",
+                {}
+            ]
+        ],
+        "has": [
+            [
+                "limitation",
+                {
+                    "type": "fairness"
+                }
+            ]
+        ]
+    },
+    "Ryan Lowe": {
+        "feedback provider": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Jakub Pachocki": {
+        "task suggestion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Szymon Sidor": {
+        "task suggestion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Greg Brockman": {
+        "evaluation support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Michael Petrov": {
+        "evaluation support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Brooke Chan": {
+        "evaluation support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Chelsea Voss": {
+        "evaluation support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "David Luan": {
+        "project support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Irene Solaiman": {
+        "bias discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Harrison Edwards": {
+        "in-context learning discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Yura Burda": {
+        "in-context learning discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Geoffrey Irving": {
+        "language model scaling discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Paul Christiano": {
+        "language model scaling discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Long Ouyang": {
+        "advice on experiments": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Chris Hallacy": {
+        "data collection discussion": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Shan Carter": {
+        "visual design support": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "OpenAI infrastructure and supercomputing teams": {
+        "enabling training": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "millions of people": {
+        "contribution in training": [
+            [
+                "authors",
+                {}
+            ]
+        ]
+    },
+    "Tom Brown": {
+        "contributes": [
+            [
+                "large-scale models",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "implements": [
+            [
+                "software framework",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Ben Mann": {
+        "contributes": [
+            [
+                "large-scale models",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "collects": [
+            [
+                "training data",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "implements": [
+            [
+                "sampling without replacement",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Prafulla Dhariwal": {
+        "contributes": [
+            [
+                "training infrastructure",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Dario Amodei": {
+        "contributes": [
+            [
+                "model-parallel strategies",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "designs": [
+            [
+                "research",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Nick Ryder": {
+        "contributes": [
+            [
+                "pre-training experiments",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Alec Radford": {
+        "collects": [
+            [
+                "training data",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "demonstrates": [
+            [
+                "few-shot learning",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "advises": [
+            [
+                "project",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Melanie Subbiah": {
+        "implements": [
+            [
+                "downstream tasks",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Jared Kaplan": {
+        "implements": [
+            [
+                "downstream tasks",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "predicts": [
+            [
+                "continued gains",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "studies": [
+            [
+                "in-context learning curves",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Sam McCandlish": {
+        "implements": [
+            [
+                "downstream tasks",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "predicts": [
+            [
+                "continued gains",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ],
+        "studies": [
+            [
+                "in-context learning curves",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Tom Henighan": {
+        "implements": [
+            [
+                "software framework",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Girish Sastry": {
+        "implements": [
+            [
+                "software framework",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Ilya Sutskever": {
+        "advises": [
+            [
+                "project",
+                {
+                    "role": "contributor"
+                }
+            ]
+        ]
+    },
+    "Common Crawl": {
+        "trained using": [
+            [
+                "WebText",
+                {}
+            ]
+        ]
+    },
+    "Classifier": {
+        "trained on": [
+            [
+                "Spark",
+                {}
+            ]
+        ],
+        "used for": [
+            [
+                "Common Crawl",
+                {
+                    "scored documents": "re-sampled"
+                }
+            ]
+        ]
+    },
+    "MinHashLSH": {
+        "used for": [
+            [
+                "Common Crawl",
+                {
+                    "deduplication": "fuzzy removal"
+                }
+            ],
+            [
+                "Spark",
+                {
+                    "features": "HashingTF"
+                }
+            ]
+        ],
+        "removed": [
+            [
+                "WebText",
+                {}
+            ]
+        ]
+    },
+    "GoldCoastHotelCasino": {
+        "locatedNear": [
+            [
+                "PalmsCasinoResort",
+                {}
+            ],
+            [
+                "RioAllSuiteHotelCasino",
+                {}
+            ]
+        ]
+    },
+    "Johnny": {
+        "prefers": [
+            [
+                "fruits",
+                {}
+            ],
+            [
+                "vegetables",
+                {}
+            ]
+        ]
+    },
+    "St Jean de Brebeuf": {
+        "travelled to": [
+            [
+                "New France",
+                {
+                    "year": 1625
+                }
+            ]
+        ],
+        "worked with": [
+            [
+                "Huron",
+                {}
+            ]
+        ],
+        "captured by": [
+            [
+                "Iroquois",
+                {
+                    "event": "raid"
+                }
+            ]
+        ],
+        "beatified in": [
+            [
+                "Roman Catholic Church",
+                {
+                    "year": 1925
+                }
+            ]
+        ],
+        "canonized as": [
+            [
+                "Roman Catholic Church",
+                {
+                    "year": 1930
+                }
+            ]
+        ]
+    },
+    "Huron village": {
+        "occupied by": [
+            [
+                "Iroquois",
+                {
+                    "date": "March 16, 1649"
+                }
+            ]
+        ]
+    },
+    "daniel_ziegler": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "nisan_stiennon": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "jeffrey_wu": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "tom_brown": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "alec_radford": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "dario_amodei": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "paul_christiano": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    },
+    "geoffrey_irving": {
+        "contributed_to": [
+            [
+                "fine-tuning_language_models_from_human_preferences",
+                {}
+            ]
+        ]
+    }
+}

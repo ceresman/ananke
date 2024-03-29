@@ -57,7 +57,8 @@ class LogicExpression(BaseObject):
         expression_sympy (sp.Expr): The logic expression as a SymPy expression.
     """
 
-    expression_id: UUID
+    expression_id: int
+    expression_uuid: str
     expression_z3: z3.ExprRef
     expression_sympy: sp.Expr
 
@@ -90,11 +91,81 @@ class MathExpression(BaseObject):
         expression_wolfram (str): The math expression as a Wolfram language string.
     """
 
-    expression_id: UUID
+    expression_uuid: str
+    expression_id: int
     expression_latex: str
     expression_sympy: sp.Expr
     expression_wolfram: str
 
+@dataclass
+class Props:
+    id: int
+    uid: int
+    uuid: str
+    genre: int # 0 - triple 1 - sub  2 - obj  3 - pred
+    doc_id: int
+    chunk_id: int
+    sent_id: int
+    emb_id: int    
+    descs: List[str] = None
+
+@dataclass
+class Entity:
+    label: str
+    name:  str
+    propertys: dict
+
+@dataclass
+class Relation:
+    label: str
+    name:  str
+    propertys: dict
+
+@dataclass
+class Triple:
+    triple_id: int
+    triple_uuid: str
+    sub: Entity
+    pred: Relation
+    obj: Entity
+
+@dataclass
+class Sentence:
+    sent_uuid: str
+    sent_id: int
+    sent_text: str
+    sent_emb_id: int
+    parent_chunk_id: int
+    parent_doc_id: int
+    triples: List[Triple] = None
+
+@dataclass
+class Chunk:
+    chunk_uuid: str
+    chunk_id : int
+    chunk_text: str
+    chunk_summary: str
+    chunk_emb_id: int
+    parent_doc_id: int
+    sents: List[Sentence] = None
+    triples: List[Triple] = None
+
+@dataclass
+class Meta:
+    meta_id: int
+    meta_uuid: str
+    meta_type: str
+    meta_json: str
+    meta_value: dict
+
+@dataclass
+class Document:
+    doc_uuid: str
+    doc_id : int
+    doc_text: str
+    doc_meta: Meta
+    doc_emb_id: int
+    chunks: List[Chunk] = None
 
 @dataclass
 class EntitySemantic(BaseObject):
@@ -168,22 +239,22 @@ class RelationSymbol(BaseObject):
     semantics: RelationSemantic
 
 
-@dataclass
-class Triple(BaseObject):
-    """
-    Represents a triple in the knowledge graph.
+# @dataclass
+# class Triple(BaseObject):
+#     """
+#     Represents a triple in the knowledge graph.
 
-    Attributes:
-        triple_id (UUID): Unique identifier for the triple.
-        subject (EntitySymbol): The subject entity in the triple.
-        predicate (RelationSymbol): The predicate or relationship between subject and object.
-        obj (EntitySymbol): The object entity in the triple.
-    """
+#     Attributes:
+#         triple_id (UUID): Unique identifier for the triple.
+#         subject (EntitySymbol): The subject entity in the triple.
+#         predicate (RelationSymbol): The predicate or relationship between subject and object.
+#         obj (EntitySymbol): The object entity in the triple.
+#     """
 
-    triple_id: UUID
-    subject: EntitySymbol
-    predicate: RelationSymbol
-    obj: EntitySymbol
+#     triple_id: UUID
+#     subject: EntitySymbol
+#     predicate: RelationSymbol
+#     obj: EntitySymbol
 
 
 # ---------------------------------------------------------------------------- #
@@ -246,23 +317,23 @@ class StructuredChunk(BaseObject):
     # Add more attributes as needed.
 
 
-@dataclass
-class Document(BaseDocument):
-    """
-    Represents a document or a file.
+# @dataclass
+# class Document(BaseDocument):
+#     """
+#     Represents a document or a file.
 
-    Attributes:
-        doc_id (UUID): Unique identifier for the document.
-        meta (StructuredData): Meta information about the document.
-        meta_embedding (np.ndarray): Embedding representation of the meta information.
-        raw_content (str): Raw content of the document.
-    """
+#     Attributes:
+#         doc_id (UUID): Unique identifier for the document.
+#         meta (StructuredData): Meta information about the document.
+#         meta_embedding (np.ndarray): Embedding representation of the meta information.
+#         raw_content (str): Raw content of the document.
+#     """
 
-    id: UUID
-    meta: StructuredData
-    meta_embedding: np.ndarray
-    raw_content: str
-    StructuredChunks: List[StructuredChunk]
+#     id: UUID
+#     meta: StructuredData
+#     meta_embedding: np.ndarray
+#     raw_content: str
+#     StructuredChunks: List[StructuredChunk]
 
 
 # ---------------------------------------------------------------------------- #
