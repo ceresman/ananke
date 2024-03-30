@@ -132,6 +132,89 @@ class AIGCService(MethodDispatcher):
         return result
 
 
+    @run_on_executor
+    def intention_split(self):
+        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
+        if type(data) == str:
+            data = json.loads(data)
+
+        data = {key:data[key].decode("utf-8") for key in data.keys()}
+        logger.info("req is {}".format(data))
+        
+        # Parse UserContext from request input
+        user_context=""
+        
+        functional_dict={
+            "search": self.search,
+            "code_agent": self.code_agent,
+            "math_solver":self.math_solver,
+            "generate":self.generate
+        }
+        
+        # from UserContext to Certainly pipeline
+        
+        # curl -X POST 'https://api.dify.ai/v1/chat-messages' \
+        # --header 'Authorization: Bearer app-4sHHrCOb1jLDfGDwcFLFbLUm' \
+        # --header 'Content-Type: application/json' \
+        # --data-raw '{
+        #     "inputs": {},
+        #     "query": "What are the specs of the iPhone 13 Pro Max?",
+        #     "response_mode": "blocking",
+        #     "conversation_id": "",
+        #     "user": "tomwinshare@gmail.com"
+        # }'
+        
+        import requests
+
+        # 设置API端点
+        url = 'https://api.dify.ai/v1/chat-messages'
+
+        # 设置请求头
+        headers = {
+            'Authorization': 'Bearer app-4sHHrCOb1jLDfGDwcFLFbLUm',
+            'Content-Type': 'application/json'
+        }
+
+        # 设置请求体
+        data = {
+            "inputs": {},
+            "query": "What are the specs of the iPhone 13 Pro Max?",
+            "response_mode": "blocking",
+            "conversation_id": "",
+            "user": "tomwinshare@gmail.com"
+        }
+
+        # 发送POST请求
+        response = requests.post(url, headers=headers, json=data)
+
+        # 打印响应内容
+        print(response.text)
+        
+        
+        
+
+    @run_on_executor
+    def code_agent(self):
+        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
+        if type(data) == str:
+            data = json.loads(data)
+
+    @run_on_executor
+    def math_solver(self):
+        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
+        if type(data) == str:
+            data = json.loads(data)
+
+    @run_on_executor
+    def generate(self):
+        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
+        if type(data) == str:
+            data = json.loads(data)
+
+
+
+
+
 url = [
     (r'/aigc/.*', AIGCService),
 ]
