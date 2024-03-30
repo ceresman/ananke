@@ -120,3 +120,13 @@ data = {
 # str1 = "\\\\".strip("\\")
 # print(str1.strip())
 # print(len(str1.strip()))
+
+
+url = "http://127.0.0.1:18080/aigc/intention_split"
+data = {
+    "request_id": "willamhou-intent",
+    "user_text": "what is the gpt3?"
+}
+
+req = requests.post(url, json = data)
+print(req.content)

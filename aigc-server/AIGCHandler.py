@@ -131,28 +131,33 @@ class AIGCService(MethodDispatcher):
         logger.info("handle cost is  {}, result: {}".format(time.time() - start, result))
         return result
 
+    @run_on_executor
+    def async_search(self, **data):
+        request_id = data.get("request_id", "default_request")
+        text = data.get("user_text")
+
+        result = handle_search(request_id, "", text)
+        return result
 
     @run_on_executor
-    def intention_split(self):
+    def code_agent(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
 
-        data = {key:data[key].decode("utf-8") for key in data.keys()}
-        logger.info("req is {}".format(data))
-        
-        # Parse UserContext from request input
-        user_context=""
-        
-        functional_dict={
-            "search": self.search,
-            "code_agent": self.code_agent,
-            "math_solver":self.math_solver,
-            "generate":self.generate
-        }
-        
+    @run_on_executor
+    def math_solver(self, **data):
+        result = {}
+        return result
+
+
+    @run_on_executor
+    def generate(self, **data):
+        result = {}
+        return result
+
+    def get_intention(self, user_context):
         # from UserContext to Certainly pipeline
-        
         # curl -X POST 'https://api.dify.ai/v1/chat-messages' \
         # --header 'Authorization: Bearer app-4sHHrCOb1jLDfGDwcFLFbLUm' \
         # --header 'Content-Type: application/json' \
@@ -168,7 +173,6 @@ class AIGCService(MethodDispatcher):
 
         # 设置API端点
         url = 'https://api.dify.ai/v1/chat-messages'
-
         # 设置请求头
         headers = {
             'Authorization': 'Bearer app-4sHHrCOb1jLDfGDwcFLFbLUm',
@@ -176,44 +180,45 @@ class AIGCService(MethodDispatcher):
         }
 
         # 设置请求体
-        data = {
+        dify_data = {
             "inputs": {},
-            "query": "What are the specs of the iPhone 13 Pro Max?",
+            "query": user_context,
             "response_mode": "blocking",
             "conversation_id": "",
             "user": "tomwinshare@gmail.com"
         }
 
         # 发送POST请求
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json = dify_data)
+        response_dict = json.loads(response.content)
+        answer = response_dict.get("answer")
+        logger.info("answer type is {}".format(type(answer)))
+        if type(answer) == str:
+            answer = json.loads(answer)
+        answer = answer.get("type")
+        logger.info("answer is {}".format(answer))
+        if answer is None:
+            answer = "search"
+        return answer
 
-        # 打印响应内容
-        print(response.text)
-        
-        
-        
-
-    @run_on_executor
-    def code_agent(self):
+    def intention_split(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
 
-    @run_on_executor
-    def math_solver(self):
-        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
-        if type(data) == str:
-            data = json.loads(data)
-
-    @run_on_executor
-    def generate(self):
-        data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
-        if type(data) == str:
-            data = json.loads(data)
-
-
-
-
+        logger.info("req is {}".format(data))
+        request_id, user_context = data.get("request_id"), data.get("user_text")
+        functional_dict = {
+            "search": self.async_search,
+            "code_agent": self.code_agent,
+            "math_solver":self.math_solver,
+            "generate":self.generate
+        }
+        
+        intention = self.get_intention(user_context)
+        result = yield functional_dict.get(intention, self.async_search)(**data)
+        self.write(json.dumps(result))
+        return
 
 url = [
     (r'/aigc/.*', AIGCService),
