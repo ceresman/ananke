@@ -29,13 +29,15 @@ if __name__	 == "__main__":
 
 	assert(redis_conn != None)
 
-	redis_conn.flushall()
+	# redis_conn.flushall()
 	client_set("redis", redis_conn)
 	client_set("config", config)
 	logger.info("ApiGateWay server start begin!")
+	logger.info("redis ping is {}".format(redis_conn.ping()))
 	pdf_id = "2024_03_28_d918ce007641daed7730g"
 	user_text = "machine learning"
-	user_text = 'Machine Learning Algorithm'
+	# user_text = 'Machine Learning Algorithm'
 	# user_text = "classification"
 	result = handle_search("11111111", pdf_id, user_text)
-	print(type(result))
+	metas = result.get("self").get("metas")	
+	print(metas)

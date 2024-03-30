@@ -80,6 +80,7 @@ class AIGCService(MethodDispatcher):
             result = handle_search(request_id, pdf_id, text)
             self.write(json.dumps(result))
 
+
     def pdfs(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str and len(data) != 0:
@@ -92,10 +93,7 @@ class AIGCService(MethodDispatcher):
         request_id = data.get("request_id", "just a get req")
         logger.info("request-id is {}".format(request_id))
         tenant = data.get("tenant", "all")
-        pdfs = get_pdf_ids(request_id, tenant)
-        if len(pdfs) != 0:
-            pdfs = [client.presigned_get_object('data', item) for item in pdfs]
-        result = {"pdf":pdfs,  "bucket": "data"}
+        result = get_pdf_ids(request_id, tenant)
         self.write(json.dumps(result))
 
 

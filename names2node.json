@@ -1,0 +1,2872 @@
+{
+    "introduction": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "approach": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "results": {
+        "property": {},
+        "label": [
+            "Entity",
+            "Section"
+        ]
+    },
+    "measuring_and_preventing_memorization_of_benchmarks": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "limitations": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "broader_impacts": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "related_work": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "conclusion": {
+        "property": {},
+        "label": [
+            "Section"
+        ]
+    },
+    "model_and_architectures": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "training_dataset": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "training_process": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "evaluation": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "language_modeling_cloze_and_completion_tasks": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "closed_book_question_answering": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "translation": {
+        "property": {
+            "name": "Translation"
+        },
+        "label": [
+            "Task",
+            "Subsection"
+        ]
+    },
+    "winograd_style_tasks": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "common_sense_reasoning": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "reading_comprehension": {
+        "property": {},
+        "label": [
+            "Subsection",
+            "Entity"
+        ]
+    },
+    "superglue": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "nli": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "synthetic_and_qualitative_tasks": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "misuse_of_language_models": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "fairness_bias_and_representation": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "energy_usage": {
+        "property": {},
+        "label": [
+            "Subsection"
+        ]
+    },
+    "details_of_common_crawl_filtering": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "details_of_model_training": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "details_of_test_set_contamination_studies": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "total_compute_used_to_train_language_models": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "human_quality_assessment_of_synthetic_news_articles": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "additional_samples_from_gpt_3": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "details_of_task_phrasing_and_specifications": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "results_on_all_tasks_for_all_model_sizes": {
+        "property": {},
+        "label": [
+            "Appendix"
+        ]
+    },
+    "word vectors": {
+        "property": {},
+        "label": [
+            "Representation"
+        ]
+    },
+    "RNNs": {
+        "property": {},
+        "label": [
+            "Representation"
+        ]
+    },
+    "contextual state": {
+        "property": {},
+        "label": [
+            "Representation"
+        ]
+    },
+    "pre-trained recurrent or transformer language models": {
+        "property": {},
+        "label": [
+            "LanguageModel"
+        ]
+    },
+    "GPT-3": {
+        "property": {
+            "name": "--3",
+            "training": "Adam with beta1=0.9, beta2=0.95, epsilon=1e-8, clip gradient norm at 1.0, cosine decay",
+            "tokens": "260 billion",
+            "LR warmup": "linear",
+            "batch size": "gradually increased",
+            "parameters": "175 billion",
+            "description": "A large language model with high capacity",
+            "parameter_count": 175000000000
+        },
+        "label": [
+            "LanguageModel",
+            "Model"
+        ]
+    },
+    "task-specific datasets": {
+        "property": {},
+        "label": [
+            "Dataset"
+        ]
+    },
+    "supervised training dataset": {
+        "property": {},
+        "label": [
+            "Dataset"
+        ]
+    },
+    "large supervised datasets": {
+        "property": {},
+        "label": [
+            "Dataset"
+        ]
+    },
+    "Common Crawl": {
+        "property": {
+            "technique": "improve quality",
+            "description": "A dataset that potentially includes content from test datasets"
+        },
+        "label": [
+            "Dataset"
+        ]
+    },
+    "WebText": {
+        "property": {
+            "quality": "high-quality"
+        },
+        "label": [
+            "Dataset"
+        ]
+    },
+    "Positive Examples": {
+        "property": {
+            "source": "WebText, Wikiedia, web books corpus"
+        },
+        "label": [
+            "Dataset"
+        ]
+    },
+    "Negative Examples": {
+        "property": {
+            "source": "unfiltered Common Crawl"
+        },
+        "label": [
+            "Dataset"
+        ]
+    },
+    "Benchmark Datasets": {
+        "property": {
+            "description": "benchmark datasets from Appendix C"
+        },
+        "label": [
+            "Dataset"
+        ]
+    },
+    "arcs and algorithms": {
+        "property": {},
+        "label": [
+            "ArchitecturesAndAlgorithms"
+        ]
+    },
+    "training distribution": {
+        "property": {},
+        "label": [
+            "Data"
+        ]
+    },
+    "spurious correlations": {
+        "property": {},
+        "label": [
+            "Data"
+        ]
+    },
+    "Test Set": {
+        "property": {
+            "method": "contamination studies"
+        },
+        "label": [
+            "Data"
+        ]
+    },
+    "pre-training plus fine-tuning paradigm": {
+        "property": {},
+        "label": [
+            "Approach"
+        ]
+    },
+    "develops a broad set of skills and pattern recognition abilities": {
+        "property": {},
+        "label": [
+            "Skills"
+        ]
+    },
+    "rapidly adapt to or recognize the desired task": {
+        "property": {},
+        "label": [
+            "Inference"
+        ]
+    },
+    "in-context learning": {
+        "property": {},
+        "label": [
+            "Process"
+        ]
+    },
+    "language_model": {
+        "property": {
+            "name": "Language Model"
+        },
+        "label": [
+            "Model",
+            "Entity"
+        ]
+    },
+    "task": {
+        "property": {
+            "name": "Task"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "in-context_learning": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "scaling": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "meta-learning": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "skills": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "pattern_recognition": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "training": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "inference": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "human": {
+        "property": {
+            "name": "Human"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "benchmark": {
+        "property": {
+            "name": "Benchmark"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "benchmark_contamination_analysis": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "data": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "x-axis": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "y-axis": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "performance": {
+        "property": {
+            "name": "Performance"
+        },
+        "label": [
+            "Attribute",
+            "Entity"
+        ]
+    },
+    "overlay_analysis": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "training_set": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "differential": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "subset": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "section_3": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "asterisk": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "analysis": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "task_examples": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "quac": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "squad2": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "drop": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "text": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "question_answer_pairs": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "german_translation": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "wmt16_german_english_test_set": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "example": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "total_effect_size": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "bleu": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "reversed_words": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "anagrams": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "short_length_tasks": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "grams": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "symbol_insertion_task": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "piqa": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "examples": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "web_pages": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "crowdsourced_dataset_creators": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "shift": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "memorization": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "statistical_bias": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "winograd": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "manual_inspection": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "overlapping_data_point": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "winograd_schemas": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "model": {
+        "property": {},
+        "label": [
+            "Entity"
+        ]
+    },
+    "language_models": {
+        "property": {
+            "topic": "language models"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "misuse_applications": {
+        "property": {
+            "topic": "potential misuse applications"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "threat_actors": {
+        "property": {
+            "topic": "threat actor analysis"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "incentive_structures": {
+        "property": {
+            "topic": "external incentive structures"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "Classifier": {
+        "property": {
+            "type": "logistic regression"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "Training Data": {
+        "property": {
+            "preprocessing": "remove benchmark text"
+        },
+        "label": [
+            "Entity"
+        ]
+    },
+    "smaller models": {
+        "property": {
+            "description": "Range from 125 million parameters to 13 billion parameters"
+        },
+        "label": [
+            "Model"
+        ]
+    },
+    "SuperGLUE": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "CoQA": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "TriviaQA": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "RACE": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "QuAC": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "ANLI": {
+        "property": {},
+        "label": [
+            "NLPTaskBenchmark"
+        ]
+    },
+    "data contamination": {
+        "property": {
+            "description": "Growing problem when training high capacity models on datasets"
+        },
+        "label": [
+            "Concept"
+        ]
+    },
+    "tasks": {
+        "property": {
+            "description": "Tasks used for evaluating model performance"
+        },
+        "label": [
+            "Concept"
+        ]
+    },
+    "model capacity": {
+        "property": {
+            "description": "The size of the model in terms of parameters and capabilities"
+        },
+        "label": [
+            "Concept"
+        ]
+    },
+    "occupation": {
+        "property": {},
+        "label": [
+            "Concept"
+        ]
+    },
+    "gender": {
+        "property": {},
+        "label": [
+            "Concept"
+        ]
+    },
+    "bias": {
+        "property": {
+            "type": "model"
+        },
+        "label": [
+            "Concept"
+        ]
+    },
+    "stereotype": {
+        "property": {},
+        "label": [
+            "Concept",
+            "Bias"
+        ]
+    },
+    "prejudice": {
+        "property": {},
+        "label": [
+            "Concept"
+        ]
+    },
+    "representation": {
+        "property": {},
+        "label": [
+            "Concept"
+        ]
+    },
+    "limitation": {
+        "property": {
+            "type": "model"
+        },
+        "label": [
+            "Concept"
+        ]
+    },
+    "zero-shot": {
+        "property": {
+            "type": "Zero-Shot"
+        },
+        "label": [
+            "Setting"
+        ]
+    },
+    "one-shot": {
+        "property": {
+            "type": "One-Shot"
+        },
+        "label": [
+            "Setting"
+        ]
+    },
+    "few-shot": {
+        "property": {
+            "type": "Few-Shot"
+        },
+        "label": [
+            "Setting"
+        ]
+    },
+    "english": {
+        "property": {
+            "name": "English"
+        },
+        "label": [
+            "Language"
+        ]
+    },
+    "french": {
+        "property": {
+            "name": "French"
+        },
+        "label": [
+            "Language"
+        ]
+    },
+    "sample_efficiency": {
+        "property": {
+            "name": "Sample Efficiency"
+        },
+        "label": [
+            "Attribute"
+        ]
+    },
+    "state-of-the-art": {
+        "property": {
+            "name": "State of the Art"
+        },
+        "label": [
+            "Attribute"
+        ]
+    },
+    "united_methodist_church": {
+        "property": {
+            "name": "United Methodist Church"
+        },
+        "label": [
+            "Organization"
+        ]
+    },
+    "new_denomination": {
+        "property": {
+            "name": "Christian Methodist denomination"
+        },
+        "label": [
+            "Organization"
+        ]
+    },
+    "evangelical_united_brethren_church": {
+        "property": {
+            "name": "Evangelical United Brethren Church"
+        },
+        "label": [
+            "Organization"
+        ]
+    },
+    "Roman Catholic Church": {
+        "property": {},
+        "label": [
+            "Organization"
+        ]
+    },
+    "megyn_kelly": {
+        "property": {
+            "name": "Megyn Kelly"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "joaquin_phoenix": {
+        "property": {
+            "name": "Joaquin Phoenix"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Ryan Lowe": {
+        "property": {
+            "role": "feedback provider"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Jakub Pachocki": {
+        "property": {
+            "contribution": "task suggestion"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Szymon Sidor": {
+        "property": {
+            "contribution": "task suggestion"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Greg Brockman": {
+        "property": {
+            "role": "evaluation support"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Michael Petrov": {
+        "property": {
+            "role": "evaluation support"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Brooke Chan": {
+        "property": {
+            "role": "evaluation support"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Chelsea Voss": {
+        "property": {
+            "role": "evaluation support"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "David Luan": {
+        "property": {
+            "role": "project support"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Irene Solaiman": {
+        "property": {
+            "discussion": "bias evaluation"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Harrison Edwards": {
+        "property": {
+            "discussion": "in-context learning"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Yura Burda": {
+        "property": {
+            "discussion": "in-context learning"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Geoffrey Irving": {
+        "property": {
+            "discussion": "language model scaling"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Paul Christiano": {
+        "property": {
+            "discussion": "language model scaling"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Long Ouyang": {
+        "property": {
+            "advice": "human evaluation experiments"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Chris Hallacy": {
+        "property": {
+            "discussion": "data collection"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Shan Carter": {
+        "property": {
+            "support": "visual design"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Tom Brown": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Ben Mann": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Prafulla Dhariwal": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Dario Amodei": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Nick Ryder": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Daniel M Ziegler": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Jeffrey Wu": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Alec Radford": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Melanie Subbiah": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Jared Kaplan": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Sam McCandlish": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Tom Henighan": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Girish Sastry": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Rewon Child": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Mark Chen": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Scott Gray": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Aditya Ramesh": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Arvind Neelakantan": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Pranav Shyam": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Sandhini Agarwal": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Amanda Askell": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Ariel Herbert-Voss": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Gretchen Krueger": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Benjamin Chess": {
+        "property": {
+            "role": "contributor",
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Clemens Winter": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Eric Sigler": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Christopher Hesse": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Mateusz Litwin": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Christopher Berner": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Jack Clark": {
+        "property": {
+            "role": "contributor"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "Ilya Sutskever": {
+        "property": {
+            "role": "contributor",
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "label": [
+            "Author",
+            "Person"
+        ]
+    },
+    "Johnny": {
+        "property": {
+            "likes": [
+                "fruits",
+                "vegetables"
+            ]
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "St Jean de Brebeuf": {
+        "property": {
+            "nationality": "French",
+            "occupation": "Jesuit missionary"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "daniel_ziegler": {
+        "property": {
+            "role": "Author",
+            "name": "Daniel M. Ziegler"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "nisan_stiennon": {
+        "property": {
+            "role": "Author",
+            "name": "Nisan Stiennon"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "jeffrey_wu": {
+        "property": {
+            "role": "Author",
+            "name": "Jeffrey Wu"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "tom_brown": {
+        "property": {
+            "role": "Author",
+            "name": "Tom B. Brown"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "alec_radford": {
+        "property": {
+            "role": "Author",
+            "name": "Alec Radford"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "dario_amodei": {
+        "property": {
+            "role": "Author",
+            "name": "Dario Amodei"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "paul_christiano": {
+        "property": {
+            "role": "Author",
+            "name": "Paul Christiano"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "geoffrey_irving": {
+        "property": {
+            "role": "Author",
+            "name": "Geoffrey Irving"
+        },
+        "label": [
+            "Person"
+        ]
+    },
+    "golden_globes": {
+        "property": {
+            "name": "Golden Globes"
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "the_tonight_show": {
+        "property": {
+            "name": "The Tonight Show"
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "oscars": {
+        "property": {
+            "name": "Oscars"
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "PASCAL recognising textual entailment challenge": {
+        "property": {
+            "year": 2006
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "The third PASCAL recognizing textual entailment challenge": {
+        "property": {
+            "year": 2007
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "Ai and efficiency": {
+        "property": {
+            "month": "May",
+            "year": 2020
+        },
+        "label": [
+            "Event"
+        ]
+    },
+    "whatpu": {
+        "property": {
+            "location": "Tanzania"
+        },
+        "label": [
+            "Animal"
+        ]
+    },
+    "farduddle": {
+        "property": {
+            "description": "jump up and down really fast"
+        },
+        "label": [
+            "Action"
+        ]
+    },
+    "screeg": {
+        "property": {
+            "description": "to swing a sword at something"
+        },
+        "label": [
+            "Action"
+        ]
+    },
+    "yalubalu": {
+        "property": {
+            "description": "looks like a big pumpkin"
+        },
+        "label": [
+            "Vegetable"
+        ]
+    },
+    "Burringo": {
+        "property": {
+            "description": "car with very fast acceleration"
+        },
+        "label": [
+            "Vehicle"
+        ]
+    },
+    "Gigamuru": {
+        "property": {
+            "description": "Japanese musical instrument"
+        },
+        "label": [
+            "MusicalInstrument"
+        ]
+    },
+    "misinformation": {
+        "property": {
+            "description": "socially harmful activity"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "spam": {
+        "property": {
+            "description": "unsolicited messages"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "phishing": {
+        "property": {
+            "description": "low-cost, low-effort, high-yield method of data theft"
+        },
+        "label": [
+            "TTP",
+            "Topic"
+        ]
+    },
+    "abuse_legal_processes": {
+        "property": {
+            "description": "exploitation of legal processes"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "fraudulent_essay_writing": {
+        "property": {
+            "description": "academic dishonesty"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "social_engineering": {
+        "property": {
+            "description": "psychological manipulation"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "malware": {
+        "property": {
+            "description": "malicious software"
+        },
+        "label": [
+            "Topic"
+        ]
+    },
+    "threat_actors_low": {
+        "property": {
+            "skill_level": "low"
+        },
+        "label": [
+            "ThreatActor"
+        ]
+    },
+    "threat_actors_moderate": {
+        "property": {
+            "skill_level": "moderate"
+        },
+        "label": [
+            "ThreatActor"
+        ]
+    },
+    "threat_actors_APTs": {
+        "property": {
+            "description": "advanced persistent threats"
+        },
+        "label": [
+            "ThreatActor"
+        ]
+    },
+    "forums": {
+        "property": {
+            "description": "online discussion platform"
+        },
+        "label": [
+            "Source"
+        ]
+    },
+    "APT": {
+        "property": {
+            "description": "advanced persistent threats"
+        },
+        "label": [
+            "ThreatActorGroup"
+        ]
+    },
+    "professional_analysts": {
+        "property": {
+            "description": "professional threat analysts"
+        },
+        "label": [
+            "Profession"
+        ]
+    },
+    "AI_researchers": {
+        "property": {
+            "description": "researchers in the field of artificial intelligence"
+        },
+        "label": [
+            "Profession"
+        ]
+    },
+    "social_media": {
+        "property": {
+            "description": "online social networking"
+        },
+        "label": [
+            "Platform"
+        ]
+    },
+    "disinformation_bot": {
+        "property": {
+            "description": "automated system for spreading disinformation"
+        },
+        "label": [
+            "Bot"
+        ]
+    },
+    "research_community": {
+        "property": {
+            "description": "research community"
+        },
+        "label": [
+            "Community"
+        ]
+    },
+    "millions of people": {
+        "property": {},
+        "label": [
+            "Community"
+        ]
+    },
+    "mitigation_research": {
+        "property": {
+            "focus": "mitigation"
+        },
+        "label": [
+            "Research"
+        ]
+    },
+    "prototyping": {
+        "property": {
+            "approach": "prototyping"
+        },
+        "label": [
+            "Development"
+        ]
+    },
+    "people": {
+        "property": {},
+        "label": [
+            "Group"
+        ]
+    },
+    "Huron": {
+        "property": {},
+        "label": [
+            "Group"
+        ]
+    },
+    "Iroquois": {
+        "property": {},
+        "label": [
+            "Group"
+        ]
+    },
+    "OpenAI infrastructure and supercomputing teams": {
+        "property": {
+            "contribution": "enabling training at scale"
+        },
+        "label": [
+            "Team"
+        ]
+    },
+    "Spark": {
+        "property": {
+            "features": "tokenizer and HashingTF"
+        },
+        "label": [
+            "Tool"
+        ]
+    },
+    "MinHashLSH": {
+        "property": {
+            "hashes": 10
+        },
+        "label": [
+            "Algorithm"
+        ]
+    },
+    "Adam": {
+        "property": {
+            "parameters": "beta1=0.9, beta2=0.95, epsilon=1e-8"
+        },
+        "label": [
+            "Optimizer"
+        ]
+    },
+    "Dataset Size": {
+        "property": {
+            "decrease": "10%"
+        },
+        "label": [
+            "Metric"
+        ]
+    },
+    "Learning Rate": {
+        "property": {
+            "cosine decay": "10%",
+            "LR warmup": "linear"
+        },
+        "label": [
+            "Metric"
+        ]
+    },
+    "Methodology": {
+        "property": {
+            "details": "Initial training set filtering by searching for 13-gram overlaps, colliding 13-gram removal, splitting into pieces, and discarding short pieces"
+        },
+        "label": [
+            "Procedure"
+        ]
+    },
+    "GoldCoastHotelCasino": {
+        "property": {
+            "location": "Paradise, Nevada",
+            "ownedBy": "Boyd Gaming",
+            "street": "West Flamingo Road"
+        },
+        "label": [
+            "HotelCasino"
+        ]
+    },
+    "PalmsCasinoResort": {
+        "property": {},
+        "label": [
+            "HotelCasino"
+        ]
+    },
+    "RioAllSuiteHotelCasino": {
+        "property": {},
+        "label": [
+            "HotelCasino"
+        ]
+    },
+    "BoydGaming": {
+        "property": {},
+        "label": [
+            "Company"
+        ]
+    },
+    "fruits": {
+        "property": {
+            "attribute": "sweet"
+        },
+        "label": [
+            "Food"
+        ]
+    },
+    "vegetables": {
+        "property": {
+            "attribute": "healthy"
+        },
+        "label": [
+            "Food"
+        ]
+    },
+    "keto diet": {
+        "property": {},
+        "label": [
+            "Diet"
+        ]
+    },
+    "New France": {
+        "property": {},
+        "label": [
+            "Place"
+        ]
+    },
+    "Huron village": {
+        "property": {},
+        "label": [
+            "Place"
+        ]
+    },
+    "Universal transformers": {
+        "property": {
+            "year": 2018
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Edinburgh's phrase-based machine translation systems for wmt-14": {
+        "property": {
+            "year": 2014
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Semi-supervised sequence learning": {
+        "property": {
+            "year": 2015
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Transformer-xl: Attentive language models beyond a fixed-length context": {
+        "property": {
+            "year": 2019
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Understanding back-translation at scale": {
+        "property": {
+            "year": 2018
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Model-agnostic meta-learning for fast adaptation of deep networks": {
+        "property": {
+            "year": 2017
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Lipstick on a pig: Debiasing methods cover up systematic gender biases in word embeddings but do not remove them": {
+        "property": {
+            "year": 2019
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Realm: Retrieval-augmented language model pre-training": {
+        "property": {
+            "year": 2020
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Adaptive computation time for recurrent neural networks": {
+        "property": {
+            "year": 2016
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Annotation artifacts in natural language inference data": {
+        "property": {
+            "year": 2018
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Gltr: Statistical detection and visualization of generated text": {
+        "property": {
+            "year": 2019
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Meta-learning for low-resource neural machine translation": {
+        "property": {
+            "year": 2018
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "The curious case of neural text degeneration": {
+        "property": {
+            "year": 2019
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "Pretrained transformers improve out of distribution robustness": {
+        "property": {
+            "year": 2020
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "fine-tuning_language_models_from_human_preferences": {
+        "property": {
+            "title": "Fine-tuning language models from human preferences",
+            "arXiv_id": "1909.08593",
+            "year": 2019
+        },
+        "label": [
+            "Publication"
+        ]
+    },
+    "CommitmentBank": {
+        "property": {
+            "year": 2019,
+            "source": "https://github.com/mcdm/CommitmentBank/"
+        },
+        "label": [
+            "Resource"
+        ]
+    },
+    "Drop": {
+        "property": {
+            "year": 2019,
+            "source": "https://arxiv.org/abs/1903.00161"
+        },
+        "label": [
+            "Resource"
+        ]
+    },
+    "Joel Hestness": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Sharan Narang": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Newsha Ardalani": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Gregory Diamos": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Heewoo Jun": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Hassan Kianinejad": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Md. Mostofa Ali Patwary": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yang Yang": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yanqi Zhou": {
+        "property": {
+            "publication": "Deep learning scaling is predictable, empirically."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jeremy Howard": {
+        "property": {
+            "publication": "Universal language model fine-tuning for text classification."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Sebastian Ruder": {
+        "property": {
+            "publication": "Universal language model fine-tuning for text classification."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Geoffrey Hinton": {
+        "property": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Oriol Vinyals": {
+        "property": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jeff Dean": {
+        "property": {
+            "publication": "Distilling the knowledge in a neural network."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Sepp Hochreiter": {
+        "property": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "A Steven Younger": {
+        "property": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Peter R Conwell": {
+        "property": {
+            "publication": "Learning to Learn Using Gradient Descent."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Po-Sen Huang": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Huan Zhang": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Ray Jiang": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Robert Stanforth": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Johannes Welbl": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jack Rae": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Vishal Maini": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Dani Yogatama": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Pushmeet Kohli": {
+        "property": {
+            "publication": "Reducing sentiment bias in language models via counterfactual evaluation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Mohit Iyyer": {
+        "property": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jordan Boyd-Graber": {
+        "property": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Leonardo Claudino": {
+        "property": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Richard Socher": {
+        "property": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Hal Daum\u00e9 III": {
+        "property": {
+            "publication": "A neural network for factoid question answering over paragraphs."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Daphne Ippolito": {
+        "property": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Daniel Duckworth": {
+        "property": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Chris Callison-Burch": {
+        "property": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Douglas Eck": {
+        "property": {
+            "publication": "Automatic detection of generated text is easiest when humans are fooled."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Mandar Joshi": {
+        "property": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Eunsol Choi": {
+        "property": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Daniel S. Weld": {
+        "property": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Luke Zettlemoyer": {
+        "property": {
+            "publication": "TriviaQA: A large scale distantly supervised challenge dataset for reading comprehension."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Zheng Junyuan": {
+        "property": {
+            "publication": "Numeric transformer - albert, March 2020."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Rafal Jozefowicz": {
+        "property": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Mike Schuster": {
+        "property": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Noam Shazeer": {
+        "property": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yonghui Wu": {
+        "property": {
+            "publication": "Exploring the limits of language modeling."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Xiaoqi Jiao": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yichun Yin": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Lifeng Shang": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Xin Jiang": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Xiao Chen": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Linlin Li": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Fang Wang": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Qun Liu": {
+        "property": {
+            "publication": "TinyBERT: Distilling BERT for natural language understanding."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Ying Ju": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Fubang Zhao": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Shijie Chen": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Bowen Zheng": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Xuefeng Yang": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yunfeng Liu": {
+        "property": {
+            "publication": "Technical report on conversational question answering."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Daniel Khashabi": {
+        "property": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Snigdha Chaturvedi": {
+        "property": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Michael Roth": {
+        "property": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Shyam Upadhyay": {
+        "property": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Dan Roth": {
+        "property": {
+            "publication": "Looking beyond the surface: A challenge set for reading comprehension over multiple sentences."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Sarah E. Kreps": {
+        "property": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Miles McCain": {
+        "property": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Miles Brundage": {
+        "property": {
+            "publication": "All the news that's fit to fabricate: Ai-generated text as a tool of media misinformation, 2020."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Tom B. Brown": {
+        "property": {
+            "publication": "Scaling laws for neural language models, 2020."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yoon Kim": {
+        "property": {
+            "publication": "Sequence-level knowledge distillation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Alexander M. Rush": {
+        "property": {
+            "publication": "Sequence-level knowledge distillation."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Edward Loper": {
+        "property": {
+            "publication": "Nltk: The natural language toolkit, 2002."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Steven Bird": {
+        "property": {
+            "publication": "Nltk: The natural language toolkit, 2002."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Guillaume Lample": {
+        "property": {
+            "publication": "Cross-lingual language model pretraining."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Alexis Conneau": {
+        "property": {
+            "publication": "Cross-lingual language model pretraining."
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jeffrey Pennington": {
+        "property": {
+            "publication": "GloVe: Global vectors for word representation"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Christopher Manning": {
+        "property": {
+            "publication": "GloVe: Global vectors for word representation"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "QIANXIN": {
+        "property": {
+            "publication": "Sa-net on albert (ensemble)"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yusu Qian": {
+        "property": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Urwa Muaz": {
+        "property": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Ben Zhang": {
+        "property": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jae Won Hyun": {
+        "property": {
+            "publication": "Reducing gender bias in word-level language models with a gender-equalizing loss function"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Melissa Roemmele": {
+        "property": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Cosmin Adrian Bejan": {
+        "property": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Andrew S Gordon": {
+        "property": {
+            "publication": "Choice of plausible alternatives: An evaluation of commonsense causal reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Siva Reddy": {
+        "property": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Danqi Chen": {
+        "property": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Christopher D Manning": {
+        "property": {
+            "publication": "Coqa: A conversational question answering challenge"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Scott Reed": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yutian Chen": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Thomas Paine": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "A\u00e4ron van den Oord": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "SM Eslami": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Danilo Rezende": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Nando de Freitas": {
+        "property": {
+            "publication": "Few-shot autoregressive density estimation: Towards learning to learn distributions"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Pranav Rajpurkar": {
+        "property": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Robin Jia": {
+        "property": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Percy Liang": {
+        "property": {
+            "publication": "Know what you don't know: Unanswerable questions for squad"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Sachin Ravi": {
+        "property": {
+            "publication": "Optimization as a model for few-shot learning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Hugo Larochelle": {
+        "property": {
+            "publication": "Optimization as a model for few-shot learning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Qiu Ran": {
+        "property": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yankai Lin": {
+        "property": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Peng Li": {
+        "property": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jie Zhou": {
+        "property": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Zhiyuan Liu": {
+        "property": {
+            "publication": "NumNet: Machine reading comprehension with numerical reasoning"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Rachel Rudinger": {
+        "property": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jason Naradowsky": {
+        "property": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Brian Leonard": {
+        "property": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Benjamin Van Durme": {
+        "property": {
+            "publication": "Gender bias in coreference resolution"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Karthik Narasimhan": {
+        "property": {
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Tim Salimans": {
+        "property": {
+            "publication": "Improving language understanding by generative pre-training"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "R.S. Ross": {
+        "property": {
+            "publication": "Guide for conducting risk assessments"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Jonathan S. Rosenfeld": {
+        "property": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Amir Rosenfeld": {
+        "property": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Yonatan Belinkov": {
+        "property": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Nir Shavit": {
+        "property": {
+            "publication": "A constructive prediction of the generalization error across scales"
+        },
+        "label": [
+            "Author"
+        ]
+    },
+    "Adam Roberts": {
+        "property": {
+            "publication": "How much knowledge can you pack into the parameters of a language model?"
+        },
+        "label": [
+            "Author"
+        ]
+    }
+}

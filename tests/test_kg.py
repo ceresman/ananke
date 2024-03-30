@@ -112,6 +112,75 @@ def write_json(file_name, data:dict):
 	with open(file_name, 'w' , encoding = 'utf-8') as f:
 		json.dump(data, f, indent = 4)
 
+
+def read_json(file_name):
+    with open(file_name, 'r', encoding = 'utf-8') as f:
+        return json.load(f)
+
+label_nodes_dic = read_json("nodes.json")
+rels_dic = read_json("rels.json")
+
 # write_json("nodes.json", nodes_dic)
 # write_json("rels.json", rel_dic)
 
+def get_all_nodes(label_nodes_dic):
+    nodes_name = {}
+    for label in label_nodes_dic.keys():
+        nodes = label_nodes_dic[label]
+        for node in nodes.keys():
+            node_property = nodes[node]
+            if nodes_name.get(node) is None:
+                nodes_name.setdefault(node, {"property": node_property, "label": [label]})
+            else:
+                nodes_name[node]["label"].append(label)
+                nodes_name[node]["label"] = list(set(nodes_name[node]["label"]))
+                nodes_name[node]["property"] = {**nodes_name[node]["property"], **node_property}
+    return nodes_name
+
+
+node_names_dic = get_all_nodes(label_nodes_dic)
+write_json("names2node.json", node_names_dic)
+
+def get_node(key, node_names_dic):
+    node = node_names_dic.get(key, None)
+    if node is None:
+        return node
+    node_property, labels = node['property'], node['label']
+    node_property['name'] = key
+    node = Node(label = labels[0], **node_property)
+    if len(labels) >= 1:
+        for label in labels[1:]:
+            node.add_label(label)
+    return node
+
+def create_nodes_rels(rels_dic, node_names_dic):
+    obj_node_exist = {}
+    for key in rels_dic.keys():
+        sub_node = get_node(key, node_names_dic)
+        rels = rels_dic[key]
+        kg.graph.create(sub_node)
+        obj_node_exist[key] = sub_node
+        for rel in rels.keys():
+            objs = rels[rel]
+            for obj in objs:
+                obj_name, rel_property = obj[0], obj[-1]
+                obj_node = get_node(obj_name, node_names_dic)
+                if obj_node is None:
+                    continue
+
+                if obj_node_exist.get(obj_name) is None:
+                    obj_node_exist[obj_name] = obj_node
+                    kg.graph.create(obj_node)
+                else:
+                    obj_node = obj_node_exist[obj_name]
+
+                realtion = Relationship(sub_node, rel, obj_node, **rel_property)
+                kg.graph.create(realtion)
+
+
+create_nodes_rels(rels_dic, node_names_dic)
+node_names = "GPT-3"
+node_matcher = py2neo.NodeMatcher(kg.graph)
+nodes = node_matcher.match().where(name = node_names)
+for node in nodes:
+    print(node)

@@ -1,33 +1,33 @@
 import io, requests,json    
 from minio import Minio
 
+def write_json(file_name, data:dict):
+    with open(file_name, 'w' , encoding = 'utf-8') as f:
+        json.dump(data, f, indent = 4)
+
+
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 gpt3_url = client.presigned_get_object("data", "gpt3.pdf")
-
+mul_url = client.presigned_get_object("data", "multistage.pdf")
+llama_url = client.presigned_get_object("data", "llama.pdf")
 file_url = "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf"
 file_type = "pdf"
 request_id = "willamhou-doc"
 
 data = {
     "request_id": request_id,
-    "file_path": file_url,
+    "file_path": gpt3_url,
     "file_type": file_type,
     "callback_url": "http://127.0.0.1:18080/aigc/query",
 }
 
 
-# url = "http://127.0.0.1:18080/aigc/upload_doc"
+url = "http://127.0.0.1:18080/aigc/upload_doc"
 # # url = "http://ele.ink:18080/aigc/upload_doc"
 # # req = requests.post(url, data = json.dumps(data))
 # req = requests.post(url, json = (data))
 # print(req.content)
 
-
-data = {"request_id": "hhhhhhh", "text": "logic", "search_type": "logic"}
-
-# url = "http://127.0.0.1:18080/aigc/search"
-# req = requests.post(url, json = data)
-# print(req.content, req.status_code)
 
 
 headers = {
@@ -81,31 +81,43 @@ data = {
 # print(json.loads(req.content))
 
 
-# url = "http://127.0.0.1:18080/aigc/search"
-url = "http://ele.ink:18080/aigc/search"
+
+url = "http://127.0.0.1:18080/aigc/search"
+# url = "http://ele.ink:18080/aigc/search"
 
 data = {
     "request_id" : "willamhou-search",
     # "pdf_id": "2024_03_28_d918ce007641daed7730g",
-    "text": "machine learning"
+    "text": "gpt3"
 }
 
 req = requests.get(url, params = data)
 print(req.content)
 
+write_json("search.json", json.loads(req.content))
 
 url = "http://127.0.0.1:18080/aigc/pdfs"
-url = "http://ele.ink:18080/aigc/pdfs"
+# url = "http://ele.ink:18080/aigc/pdfs"
 # req = requests.get(url)
 # print(req.content)
 
+# write_json("pdfs.json", json.loads(req.content))
 
 url = "http://127.0.0.1:18080/aigc/upload_batch"
-url = "http://ele.ink:18080/aigc/upload_batch"
+# url = "http://ele.ink:18080/aigc/upload_batch"
 data = {
     "request_id": "willamhou-batch",
-    "file_paths": [gpt3_url],
+    "file_paths": [llama_url],
 }
 
-req = requests.post(url, json = data)
-print(req.content)
+# req = requests.post(url, json = data)
+# print(req.content)
+# match (n) detach delete n
+
+
+# str1 = "Syed Waqas Zamir \\\\".strip("\\")
+# print(str1.strip())
+
+# str1 = "\\\\".strip("\\")
+# print(str1.strip())
+# print(len(str1.strip()))
