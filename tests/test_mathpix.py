@@ -30,5 +30,10 @@ def get_page_data(lines_data):
         page_data[page_id] = page_text
     return page_data
 
-lines_data = get_pdf_lines_data(pdf_id)
-page_data = get_page_data(lines_data)
+# lines_data = get_pdf_lines_data(pdf_id)
+# page_data = get_page_data(lines_data)
+
+
+url = "https://api.mathpix.com/v3/converter/2024_03_29_165114d4c14102d0a6acg"
+req = requests.get(url, headers = headers)
+print(req.content)

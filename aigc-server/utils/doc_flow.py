@@ -9,7 +9,7 @@ from utils.client_manager import client_get, client_set
 from utils.nodes import is_real_nodes, update_nodes_rels
 from utils.tools import init_redis_single
 from utils.log import logger
-import threading, json
+import threading, json, time
 
 entity_prompt = """Your goal is to build a graph database. Your task is to extract information from a given text content and convert it into a graph database.
 Provide a set of Nodes in the form [ENTITY_ID, TYPE, PROPERTIES] and a set of relationships in the form [ENTITY_ID_1, RELATIONSHIP, ENTITY_ID_2, PROPERTIES].
@@ -91,20 +91,18 @@ class DocFlow(BaseObject):
         self.vector.create_collection("all-phase")
         self.auto_ids = AutoIds(**kwargs)
         self.datas = {}
+        self.chat_model = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
 
     def set_splitter(self, size = 8000, overlap = 256, seps = ["\n\n", "\n", " ", ""]):
         self.splitter = RecursiveCharacterTextSplitter(chunk_size = size, chunk_overlap = overlap, separators = seps)
 
 
     def get_embedding(self, text):
-        open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
-        embedding = open_ai.embedding(text)
+        embedding = self.chat_model.embedding(text)
         return embedding
 
     def get_entity_response(self, text):
-        open_ai = Azure(self.kwargs.get("api_key"), self.kwargs.get("api_version"), azure_endpoint = self.kwargs.get("endpoint"))
-        # self.logger.info("entity-input:{}".format(self.entity_prompt + text))
-        chat_response = open_ai.get_entity(self.entity_prompt + text)
+        chat_response = self.chat_model.get_entity(self.entity_prompt + text)
         return chat_response
 
     def get_sent_summary(self, text):
@@ -179,6 +177,7 @@ class DocFlow(BaseObject):
         self.set2redis("nodes", pdf_id, json.dumps(nodes_dic))
         self.set2redis("rels", pdf_id, json.dumps(rels_dic))
         self.set2redis("words", pdf_id, json.dumps(noun_words))
+        return noun_words
 
     def set2redis(self, key, pdf_id, value):
         redis = client_get("redis")
@@ -223,7 +222,48 @@ class DocFlow(BaseObject):
                 result.append({"id": ids[ix], "metadata": metas[ix], "dis": distances[ix], "documents": documents[ix]})
 
         return result
+    
+    
+    def get_self_ids(self, user_chunks, user_words):
+        pdf_ids = []
+        for chunk in user_chunks:
+            pdf_id = chunk.get("metadata", {}).get("doc_id")
+            if pdf_id is not None:
+                pdf_ids.append(pdf_id)
+
+        for chunk in user_words:
+            pdf_id = chunk.get("metadata", {}).get("doc_id")
+            if pdf_id is not None:
+                pdf_ids.append(pdf_id)
         
+        return list(set(pdf_ids))
+
+    def get_ohter_ids(self, all_chunks, all_words):
+        pdf_ids = []
+        for chunk in all_chunks:
+            pdf_id = chunk.get("metadata", {}).get("doc_id")
+            if pdf_id is not None:
+                pdf_ids.append(pdf_id)
+
+        for chunk in all_words:
+            pdf_id = chunk.get("metadata", {}).get("doc_id")
+            if pdf_id is not None:
+                pdf_ids.append(pdf_id)
+        
+        return list(set(pdf_ids))
+
+    def get_pdf_metas(self, pdf_ids, tenant = "all"):
+        metas = []
+        redis = client_get("redis")
+        for pdf_id in pdf_ids:
+            key = "meta:" + tenant + ":" + pdf_id
+            value = redis.get(key)
+            if value is not None:
+                value = json.loads(value)
+                value["pdf_id"] = pdf_id
+                metas.append(value)
+        return metas
+
     def search(self, pdf_id:str, text:str, threshold = 0.2):
         logger.info("pdf_id is {}, text is {}".format(pdf_id, text))        
 
@@ -232,22 +272,23 @@ class DocFlow(BaseObject):
         words = self.get_from_redis("words", pdf_id)
 
         user_emb = self.get_embedding(text)
-        user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50, filters = {"doc_id": pdf_id})
-        user_words = self.vector.query("user-phase", user_emb, top_n = 50, filters = {"doc_id": pdf_id})
+        user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50)
+        user_words = self.vector.query("user-phase", user_emb, top_n = 50)
         all_chunks = self.vector.query("all-chunk", user_emb, top_n = 50)
         all_words = self.vector.query("all-phase", user_emb, top_n = 50)
-
-        # logger.info("user-chunk: {}".format(user_chunks.get("distances")))
-        # logger.info("user-words: {}".format(type(user_words)))
-        # logger.info("all-chunk: {}".format(all_words.get("distances")))
-        # logger.info("all-words: {}".format(all_chunks.get("distances")))
 
         user_chunks = self.get_relevant(user_chunks, threshold)
         user_words = self.get_relevant(user_words, threshold)
         all_chunks = self.get_relevant(all_chunks, threshold)
         all_words = self.get_relevant(all_words, threshold)
 
-        result = {"pdf_id": pdf_id, "self": {"chunks": user_chunks, "phase": user_words}, "relevant": {"chunks": all_chunks, "words": all_words}}
+        user_ids = self.get_self_ids(user_chunks, user_words)
+        all_ids = self.get_ohter_ids(all_chunks, all_words)
+        
+        user_metas = self.get_pdf_metas(user_ids, tenant = "user")
+        all_metas = self.get_pdf_metas(all_ids)
+        result = {"self": {"chunks": user_chunks, "phase": user_words, "metas": user_metas}, "relevant": {"chunks": all_chunks, "phase": all_words, "metas": all_metas}}
+
         return result
 
     def get_docs(self, doc_paths, tenant = "all"):
