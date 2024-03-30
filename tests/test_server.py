@@ -122,10 +122,42 @@ data = {
 # print(len(str1.strip()))
 
 
+# SEARCH
+
 url = "http://127.0.0.1:18080/aigc/intention_split"
 data = {
     "request_id": "willamhou-intent",
     "user_text": "what is the gpt3?"
+}
+
+req = requests.post(url, json = data)
+print(req.content)
+
+# GENERATE
+url = "http://127.0.0.1:18080/aigc/intention_split"
+data = {
+    "request_id": "winshare-intent",
+    "user_text": "please introduce gpt3 for me"
+}
+
+req = requests.post(url, json = data)
+print(req.content)
+
+# MATH_SOLVER
+
+url = "http://127.0.0.1:18080/aigc/intention_split"
+
+informal_statement = "Show that if x is even, then x+5 is odd"
+formal_statement = r"""theorem
+fixes x :: int
+assumes h0: "even x"
+shows "odd (x+5)"
+"""
+data = {
+    "request_id": "winshare-intent",
+    "user_text": "Show that if x is even, then x+5 is odd",
+    "informal_statement": informal_statement ,
+    "formal_statement" : formal_statement
 }
 
 req = requests.post(url, json = data)
