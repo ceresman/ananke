@@ -216,7 +216,8 @@ class AIGCService(MethodDispatcher):
         }
         
         intention = self.get_intention(user_context)
-        result = yield functional_dict.get(intention, self.async_search)(**data)
+        intention_result = yield functional_dict.get(intention, self.async_search)(**data)
+        result = {intention: intention_result}
         self.write(json.dumps(result))
         return
 
