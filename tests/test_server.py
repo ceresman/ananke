@@ -91,10 +91,9 @@ data = {
     "text": "gpt3"
 }
 
-req = requests.get(url, params = data)
-print(req.content)
-
-write_json("search.json", json.loads(req.content))
+# req = requests.get(url, params = data)
+# print(req.content)
+# write_json("search.json", json.loads(req.content))
 
 url = "http://127.0.0.1:18080/aigc/pdfs"
 # url = "http://ele.ink:18080/aigc/pdfs"
