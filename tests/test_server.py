@@ -137,7 +137,7 @@ print(req.content)
 url = "http://127.0.0.1:18080/aigc/intention_split"
 data = {
     "request_id": "winshare-intent",
-    "user_text": "please introduce gpt3 for me"
+    "user_text": "please generatea introduce of gpt3 for me"
 }
 
 req = requests.post(url, json = data)

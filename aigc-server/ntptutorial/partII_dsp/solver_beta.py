@@ -314,7 +314,7 @@ import sys
 import os
 sys.path.append('../')
 os.environ['PISA_PATH'] = '/root/Portal-to-ISAbelle/src/main/python'
-from dsp_utils import Checker, LMFunctionAzure_Temp
+from ntptutorial.partII_dsp.dsp_utils import Checker, LMFunctionAzure_Temp
 
 
 

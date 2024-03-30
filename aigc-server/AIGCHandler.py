@@ -8,13 +8,17 @@ from utils.client_manager import client_get
 from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
 from utils.mathpix import handle_pdf, handle_search, handle_batch, get_pdf_ids
-from utils.math_logic import handle_logic
 from utils.tools import dump_json
 # from utils.tex import hanld_tex
 from minio import Minio
 
-client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
+# ------------------------------------- - ------------------------------------ #
+from ananke.llm.azure import Azure
+from ntptutorial.partII_dsp.solver_beta import MathTheoremProvingService
 
+
+client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
+openai_model=Azure(chat_model_name="Ananke3-1106-US-WEST")
 class AIGCService(MethodDispatcher):
     executor = ThreadPoolExecutor(10)
 
@@ -108,27 +112,7 @@ class AIGCService(MethodDispatcher):
 
     @run_on_executor
     def handle(self, data:dict)->dict:
-        result = {"math": "", "logic": "", "doc": "", "search_type": data.get("search_type", "")}
-        request_id, user_text, search_type = data.get("request_id", ""), data.get("text", ""), data.get("search_type", "")
-        start = time.time()
-
-        if search_type == "logic":
-            text = handle_logic(user_text)
-            if text is None:
-                result["msg"] = "handle internal error"
-                self.set_status(500)
-                return result
-            result["logic"] = text
-        elif search_type == "search":
-            pass
-        elif search_type == "math":
-            pass
-        else:
-            self.set_status(500)
-            result["msg"] = "unknown search type"
-
-        print(time.time() - handle_start)
-        logger.info("handle cost is  {}, result: {}".format(time.time() - start, result))
+        result = {}
         return result
 
     @run_on_executor
@@ -144,16 +128,43 @@ class AIGCService(MethodDispatcher):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
+        """ 
+        Not Support Streaming mode
+        """
+        result={"code_agent":"not support this version"}
+        return result
+            
+            
 
     @run_on_executor
     def math_solver(self, **data):
-        result = {}
+        informal_statement=data.get("informal_statement")
+        formal_statement=data.get("formal_statement")
+        isa_path='/root/Isabelle2022'
+        theory_file='/root/Isabelle2022/src/HOL/Examples/Interactive.thy'
+        port=8051
+        service = MathTheoremProvingService(isa_path, theory_file, port)
+
+        theorem_with_proof = service.generate_draft_sketch(informal_statement, formal_statement)
+
+        
+        result = service.check_conjectures(theorem_with_proof)
+        if result['success']:
+                print("Proof successful:")
+                print(result['theorem_and_proof'])
+        else:
+                print("Proof failed.")
+        
+
+        result = {"status":result['success'],"math_solver":result['theorem_and_proof']}
         return result
 
 
     @run_on_executor
     def generate(self, **data):
-        result = {}
+        user_context=data.get("user_text")
+        result_context=openai_model.chat(user_context)
+        result = {"generate":result_context}
         return result
 
     def get_intention(self, user_context):
