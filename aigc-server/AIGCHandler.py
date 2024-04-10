@@ -9,12 +9,10 @@ from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
 from utils.mathpix import handle_pdf, handle_search, handle_batch, get_pdf_ids
 from utils.tools import dump_json
-# from utils.tex import hanld_tex
 from minio import Minio
 
 # ------------------------------------- - ------------------------------------ #
 from ananke.llm.azure import Azure
-from ntptutorial.partII_dsp.solver_beta import MathTheoremProvingService
 
 
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
@@ -138,25 +136,7 @@ class AIGCService(MethodDispatcher):
 
     @run_on_executor
     def math_solver(self, **data):
-        informal_statement=data.get("informal_statement")
-        formal_statement=data.get("formal_statement")
-        isa_path='/root/Isabelle2022'
-        theory_file='/root/Isabelle2022/src/HOL/Examples/Interactive.thy'
-        port=8051
-        service = MathTheoremProvingService(isa_path, theory_file, port)
-
-        theorem_with_proof = service.generate_draft_sketch(informal_statement, formal_statement)
-
-        
-        result = service.check_conjectures(theorem_with_proof)
-        if result['success']:
-                print("Proof successful:")
-                print(result['theorem_and_proof'])
-        else:
-                print("Proof failed.")
-        
-
-        result = {"status":result['success'],"math_solver":result['theorem_and_proof']}
+        result = {"math_solver":"unsupported"}
         return result
 
 
