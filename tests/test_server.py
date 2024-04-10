@@ -130,35 +130,38 @@ data = {
     "user_text": "what is the gpt3?"
 }
 
-req = requests.post(url, json = data)
-print(req.content)
+# req = requests.post(url, json = data)
+# print(req.content)
 
 # GENERATE
-url = "http://127.0.0.1:18080/aigc/intention_split"
+url = "http://127.0.0.1:18080/aigc/intention"
 data = {
     "request_id": "winshare-intent",
     "user_text": "please generatea introduce of gpt3 for me"
 }
 
-req = requests.post(url, json = data)
-print(req.content)
 
+req = requests.post(url, json = data, stream = True)
+print(req.status_code)
+print("req start do!")
+for line in req.iter_lines():
+    print(line)
+req.close()
 # MATH_SOLVER
 
-url = "http://127.0.0.1:18080/aigc/intention_split"
+# url = "http://127.0.0.1:18080/aigc/intention_split"
+# informal_statement = "Show that if x is even, then x+5 is odd"
+# formal_statement = r"""theorem
+# fixes x :: int
+# assumes h0: "even x"
+# shows "odd (x+5)"
+# """
+# data = {
+#     "request_id": "winshare-intent",
+#     "user_text": "Show that if x is even, then x+5 is odd",
+#     "informal_statement": informal_statement ,
+#     "formal_statement" : formal_statement
+# }
 
-informal_statement = "Show that if x is even, then x+5 is odd"
-formal_statement = r"""theorem
-fixes x :: int
-assumes h0: "even x"
-shows "odd (x+5)"
-"""
-data = {
-    "request_id": "winshare-intent",
-    "user_text": "Show that if x is even, then x+5 is odd",
-    "informal_statement": informal_statement ,
-    "formal_statement" : formal_statement
-}
-
-req = requests.post(url, json = data)
-print(req.content)
+# req = requests.post(url, json = data)
+# print(req.content)

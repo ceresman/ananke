@@ -7,7 +7,7 @@ from utils.dispatcher import MethodDispatcher
 from utils.client_manager import client_get
 from tornado.concurrent import run_on_executor
 from concurrent.futures.thread import ThreadPoolExecutor
-from utils.mathpix import handle_pdf, handle_search, handle_batch, get_pdf_ids
+from utils.mathpix import handle_pdf, handle_search, handle_batch, get_pdf_ids, handle_ask
 from utils.tools import dump_json
 from minio import Minio
 
@@ -113,13 +113,14 @@ class AIGCService(MethodDispatcher):
         result = {}
         return result
 
+
     @run_on_executor
-    def async_search(self, **data):
+    def async_ask(self, **data):
         request_id = data.get("request_id", "default_request")
         text = data.get("user_text")
-
-        result = handle_search(request_id, "", text)
-        return result
+        chunk_texts = handle_ask(request_id, "", text)
+        for chunk_text in chunk_texts:
+            yield openai_model.chat(chunk_text + text)
 
     @run_on_executor
     def code_agent(self):
@@ -132,8 +133,6 @@ class AIGCService(MethodDispatcher):
         result={"code_agent":"not support this version"}
         return result
             
-            
-
     @run_on_executor
     def math_solver(self, **data):
         result = {"math_solver":"unsupported"}
@@ -142,10 +141,8 @@ class AIGCService(MethodDispatcher):
 
     @run_on_executor
     def generate(self, **data):
-        user_context=data.get("user_text")
-        result_context=openai_model.chat(user_context)
-        result = {"generate":result_context}
-        return result
+        user_context = data.get("user_text")
+        yield openai_model.chat(user_context)
 
     def get_intention(self, user_context):
         # from UserContext to Certainly pipeline
@@ -179,6 +176,8 @@ class AIGCService(MethodDispatcher):
             "user": "tomwinshare@gmail.com"
         }
 
+        logger.info("get_intention start!")
+
         # 发送POST请求
         response = requests.post(url, headers=headers, json = dify_data)
         response_dict = json.loads(response.content)
@@ -187,12 +186,14 @@ class AIGCService(MethodDispatcher):
         if type(answer) == str:
             answer = json.loads(answer)
         answer = answer.get("type")
+        
         logger.info("answer is {}".format(answer))
         if answer is None:
             answer = "search"
+        logger.info("get_intention end!")
         return answer
 
-    def intention_split(self):
+    def intention(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)
@@ -200,16 +201,19 @@ class AIGCService(MethodDispatcher):
         logger.info("req is {}".format(data))
         request_id, user_context = data.get("request_id"), data.get("user_text")
         functional_dict = {
-            "search": self.async_search,
+            "search": self.async_ask,
             "code_agent": self.code_agent,
             "math_solver":self.math_solver,
             "generate":self.generate
         }
-        
+
         intention = self.get_intention(user_context)
-        intention_result = yield functional_dict.get(intention, self.async_search)(**data)
-        result = {intention: intention_result}
-        self.write(json.dumps(result))
+        result = yield functional_dict.get(intention, self.async_ask)(**data)
+        for data_chunk in result:
+            self.write(data_chunk)
+            self.flush()
+        # 当所有数据发送完毕后，结束响应
+        self.finish()
         return
 
 url = [

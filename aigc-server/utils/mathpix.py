@@ -227,6 +227,8 @@ def handle_search(request_id, pdf_id, user_text):
     result["request_id"] = request_id
     return result
 
+def handle_ask(request_id, pdf_id, user_text):
+    return doc_flow.handle_ask(pdf_id, user_text)
 # ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9
 
 def handle_batch(request_id, file_paths, tenant = "all"):

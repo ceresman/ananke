@@ -287,10 +287,48 @@ class DocFlow(BaseObject):
         
         user_metas = self.get_pdf_metas(user_ids, tenant = "user")
         all_metas = self.get_pdf_metas(all_ids)
+        # user_metas.extend(all_metas)
         result = {"self": {"chunks": user_chunks, "phase": user_words, "metas": user_metas}, "relevant": {"chunks": all_chunks, "phase": all_words, "metas": all_metas}}
 
         return result
 
+    def ask(self, pdf_id:str, text:str, threshold = 0.2):
+        logger.info("handle task pdf_id is {}, text is {}".format(pdf_id, text))        
+
+        nodes_dic = self.get_from_redis("nodes", pdf_id)
+        rels_dic = self.get_from_redis("rels", pdf_id)
+        words = self.get_from_redis("words", pdf_id)
+
+        user_emb = self.get_embedding(text)
+        user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50)
+        user_words = self.vector.query("user-phase", user_emb, top_n = 50)
+        all_chunks = self.vector.query("all-chunk", user_emb, top_n = 50)
+        all_words = self.vector.query("all-phase", user_emb, top_n = 50)
+
+        user_chunks = self.get_relevant(user_chunks, threshold)
+        user_words = self.get_relevant(user_words, threshold)
+        all_chunks = self.get_relevant(all_chunks, threshold)
+        all_words = self.get_relevant(all_words, threshold)
+
+        user_ids = self.get_self_ids(user_chunks, user_words)
+        all_ids = self.get_ohter_ids(all_chunks, all_words)
+        
+        chunk_texts = []
+        for chunk in user_chunks:
+            chunk_text = chunk.get("documents", None)
+            if chunk_text is not None:
+                chunk_texts.append(chunk_text)
+
+        for chunk in all_chunks:
+            chunk_text = chunk.get("documents", None)
+            if chunk_text is not None:
+                chunk_texts.append(chunk_text)
+                
+        # # user_metas.extend(all_metas)
+        # result = {"self": {"chunks": user_chunks, "phase": user_words}, "relevant": {"chunks": all_chunks, "phase": all_words}}
+
+        return chunk_texts
+        
     def get_docs(self, doc_paths, tenant = "all"):
         pass
 
