@@ -10,6 +10,7 @@ from utils.nodes import is_real_nodes, update_nodes_rels
 from utils.tools import init_redis_single
 from utils.log import logger
 import threading, json, time
+from minio import Minio
 
 entity_prompt = """Your goal is to build a graph database. Your task is to extract information from a given text content and convert it into a graph database.
 Provide a set of Nodes in the form [ENTITY_ID, TYPE, PROPERTIES] and a set of relationships in the form [ENTITY_ID_1, RELATIONSHIP, ENTITY_ID_2, PROPERTIES].
@@ -31,6 +32,8 @@ Example Nodes & Relationships Output:
 OK, here is the end of the task example.
 please output with the given example json format. If you understand your mission rules , please handle now.
 """
+
+client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 
 class AutoIds(object):
     def __init__(self, **kwargs):
@@ -261,7 +264,11 @@ class DocFlow(BaseObject):
             if value is not None:
                 value = json.loads(value)
                 value["pdf_id"] = pdf_id
+                table_id = pdf_id + "_table" + ".json"
+                value["table_url"] = client.presigned_get_object('data', table_id)
+                value["table_id"] = table_id
                 metas.append(value)
+
         return metas
 
     def search(self, pdf_id:str, text:str, threshold = 0.2):

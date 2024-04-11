@@ -85,11 +85,15 @@ data = {
 url = "http://127.0.0.1:18080/aigc/search"
 # url = "http://ele.ink:18080/aigc/search"
 
-data = {
-    "request_id" : "willamhou-search",
-    # "pdf_id": "2024_03_28_d918ce007641daed7730g",
-    "text": "gpt3"
-}
+# data = {
+#     "request_id" : "willamhou-search",
+#     # "pdf_id": "2024_03_28_d918ce007641daed7730g",
+#     "text": "gpt3"
+# }
+
+# req = requests.post(url, json = data)
+# print(req.content)
+
 
 # req = requests.get(url, params = data)
 # print(req.content)
@@ -135,18 +139,17 @@ data = {
 
 # GENERATE
 url = "http://127.0.0.1:18080/aigc/intention"
+url = "http://ele.ink:18080/aigc/intention_split"
+
+print(url)
 data = {
     "request_id": "winshare-intent",
     "user_text": "please generatea introduce of gpt3 for me"
 }
 
 
-req = requests.post(url, json = data, stream = True)
-print(req.status_code)
-print("req start do!")
-for line in req.iter_lines():
-    print(line)
-req.close()
+req = requests.post(url, json = data)
+print(req.content)
 # MATH_SOLVER
 
 # url = "http://127.0.0.1:18080/aigc/intention_split"
@@ -164,4 +167,18 @@ req.close()
 # }
 
 # req = requests.post(url, json = data)
+# print(req.content)
+
+
+url = "http://ele.ink:18080/aigc/search"
+
+data = {
+    "request_id" : "willamhou-search",
+    # "pdf_id": "2024_03_28_d918ce007641daed7730g",
+    "text": "tesla"
+}
+
+# print("start")
+# print(url)
+# req = requests.get(url, params = data)
 # print(req.content)

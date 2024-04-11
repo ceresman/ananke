@@ -119,8 +119,15 @@ class AIGCService(MethodDispatcher):
         request_id = data.get("request_id", "default_request")
         text = data.get("user_text")
         chunk_texts = handle_ask(request_id, "", text)
+        result = []
         for chunk_text in chunk_texts:
-            yield openai_model.chat(chunk_text + text)
+            try:
+                result.append({"role": "assitant", "type": "message", "content":openai_model.chat(chunk_text + text)})
+            except Exception as e:
+                logger.info("error {}".format(e))
+                continue
+
+        return result
 
     @run_on_executor
     def code_agent(self):
@@ -130,7 +137,7 @@ class AIGCService(MethodDispatcher):
         """ 
         Not Support Streaming mode
         """
-        result={"code_agent":"not support this version"}
+        result = {"code_agent":"not support this version"}
         return result
             
     @run_on_executor
@@ -141,8 +148,10 @@ class AIGCService(MethodDispatcher):
 
     @run_on_executor
     def generate(self, **data):
+        result = []
         user_context = data.get("user_text")
-        yield openai_model.chat(user_context)
+        result.append({"role": "assitant", "type": "message", "content":openai_model.chat(user_context)})
+        return result
 
     def get_intention(self, user_context):
         # from UserContext to Certainly pipeline
@@ -209,11 +218,8 @@ class AIGCService(MethodDispatcher):
 
         intention = self.get_intention(user_context)
         result = yield functional_dict.get(intention, self.async_ask)(**data)
-        for data_chunk in result:
-            self.write(data_chunk)
-            self.flush()
-        # 当所有数据发送完毕后，结束响应
-        self.finish()
+        intention_result = {"type": intention, "data": result}
+        self.write(json.dumps(intention_result))
         return
 
 url = [

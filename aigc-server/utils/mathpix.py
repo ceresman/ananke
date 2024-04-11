@@ -1,5 +1,6 @@
 #! /usr/bin/python
 #-*- coding:utf-8 -*-
+import tabula
 import requests, json
 import threading, time, os
 import nltk, spacy
@@ -9,6 +10,7 @@ from minio import Minio
 from utils.client_manager import client_get
 from utils.doc_flow import DocFlow
 from utils.tools import init_redis_single
+
 
 dic = {
   "api_key":"61bc1aab37364618ae0df70bf5f340dd",
@@ -215,7 +217,12 @@ def __handle_pdf(request_id, file_path, pdf_id, tenant = "all"):
 def handle_pdf(request_id, file_path, callback_url):
     pdf_id_dic = process_pdf_by_mathpix(file_path)
     pdf_id = pdf_id_dic.get("pdf_id", None)
-    
+    # df = tabula.read_pdf(file_path)
+
+    table_json = pdf_id + "_table" + ".json"
+    tabula.convert_into(pdf_path, table_json, output_format = "json", stream = True)
+    client.fput_object('data', table_json, table_json)
+
     if pdf_id is not None:
         thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, pdf_id, "user"), daemon = True)
         thread.start()
