@@ -8,6 +8,8 @@ def write_json(file_name, data:dict):
 
 client = Minio('ele.ink:19000',access_key='admin_minio',secret_key='admin_minio',secure=False)
 gpt3_url = client.presigned_get_object("data", "gpt3.pdf")
+gpt3_url = client.presigned_get_object("data", "tsla-20221231-gen.pdf")
+
 mul_url = client.presigned_get_object("data", "multistage.pdf")
 llama_url = client.presigned_get_object("data", "llama.pdf")
 file_url = "http://cs229.stanford.edu/notes2020spring/cs229-notes1.pdf"
@@ -25,8 +27,8 @@ data = {
 url = "http://127.0.0.1:18080/aigc/upload_doc"
 # # url = "http://ele.ink:18080/aigc/upload_doc"
 # # req = requests.post(url, data = json.dumps(data))
-# req = requests.post(url, json = (data))
-# print(req.content)
+req = requests.post(url, json = (data))
+print(req.content)
 
 
 
@@ -148,8 +150,8 @@ data = {
 }
 
 
-req = requests.post(url, json = data)
-print(req.content)
+# req = requests.post(url, json = data)
+# print(req.content)
 # MATH_SOLVER
 
 # url = "http://127.0.0.1:18080/aigc/intention_split"

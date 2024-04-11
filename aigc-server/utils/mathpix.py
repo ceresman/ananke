@@ -219,9 +219,11 @@ def handle_pdf(request_id, file_path, callback_url):
     pdf_id = pdf_id_dic.get("pdf_id", None)
     # df = tabula.read_pdf(file_path)
 
+    logger.info("start to handle table!")
     table_json = pdf_id + "_table" + ".json"
-    tabula.convert_into(pdf_path, table_json, output_format = "json", stream = True)
+    tabula.convert_into(file_path, table_json, output_format = "json", stream = True, pages = "all")
     client.fput_object('data', table_json, table_json)
+    logger.info("end to handle table!")
 
     if pdf_id is not None:
         thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, pdf_id, "user"), daemon = True)
