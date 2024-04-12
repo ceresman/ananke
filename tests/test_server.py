@@ -27,8 +27,8 @@ data = {
 url = "http://127.0.0.1:18080/aigc/upload_doc"
 # # url = "http://ele.ink:18080/aigc/upload_doc"
 # # req = requests.post(url, data = json.dumps(data))
-req = requests.post(url, json = (data))
-print(req.content)
+# req = requests.post(url, json = (data))
+# print(req.content)
 
 
 
@@ -131,6 +131,7 @@ data = {
 # SEARCH
 
 url = "http://127.0.0.1:18080/aigc/intention_split"
+url = "http://ele.ink:18080/aigc/intention_split"
 data = {
     "request_id": "willamhou-intent",
     "user_text": "what is the gpt3?"
@@ -140,18 +141,18 @@ data = {
 # print(req.content)
 
 # GENERATE
-url = "http://127.0.0.1:18080/aigc/intention"
+url = "http://127.0.0.1:18080/aigc/intention_split"
 url = "http://ele.ink:18080/aigc/intention_split"
 
 print(url)
 data = {
     "request_id": "winshare-intent",
     "user_text": "please generatea introduce of gpt3 for me"
+    # "user_text": "supervised learning"
 }
 
-
-# req = requests.post(url, json = data)
-# print(req.content)
+req = requests.post(url, json = data)
+print(req.content)
 # MATH_SOLVER
 
 # url = "http://127.0.0.1:18080/aigc/intention_split"

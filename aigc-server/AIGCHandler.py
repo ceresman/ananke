@@ -122,7 +122,7 @@ class AIGCService(MethodDispatcher):
         result = []
         for chunk_text in chunk_texts:
             try:
-                result.append({"role": "assitant", "type": "message", "content":openai_model.chat(chunk_text + text)})
+                result.append({"role": "assitant", "type": "message", "content":openai_model.chat_once(chunk_text + text)})
             except Exception as e:
                 logger.info("error {}".format(e))
                 continue
@@ -142,15 +142,57 @@ class AIGCService(MethodDispatcher):
             
     @run_on_executor
     def math_solver(self, **data):
-        result = {"math_solver":"unsupported"}
-        return result
+        request_id = data.get("request_id", "default_request")
+        user_context = data.get("user_text", "")
 
+        if len(user_context) == 0:
+            return {"msg": "text is empty or search_type is empty"}
+
+        def get_result(role, type, content):
+            return {
+                "role": role,
+                "type": type,
+                "content": content,
+            }
+
+        result = []
+        url = "http://ele.ink:9995/prove"
+
+        payload = json.dumps(
+            {
+                "problem_name": request_id,
+                "category": "unknown",
+                "metadata": {},
+                "informal_statement": user_context,
+                "informal_proof": "",
+                "formal_statement": "",
+                "formal_code": "",
+            }
+        )
+
+        headers = {
+            "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+            "Content-Type": "application/json",
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        raws = response.text.split("data: ")
+
+        task_result = "success"
+        for i in raws:
+            i = i.strip()
+            if "sad!!!!!" in i:
+                task_result = "failed"
+            result.append(get_result("assitant", "message", i))
+        result.append(get_result("assitant", "result", task_result))
+        # print(response.text)
+        return result
 
     @run_on_executor
     def generate(self, **data):
         result = []
         user_context = data.get("user_text")
-        result.append({"role": "assitant", "type": "message", "content":openai_model.chat(user_context)})
+        result.append({"role": "assitant", "type": "message", "content":openai_model.chat_once(user_context)})
         return result
 
     def get_intention(self, user_context):
@@ -202,7 +244,7 @@ class AIGCService(MethodDispatcher):
         logger.info("get_intention end!")
         return answer
 
-    def intention(self):
+    def intention_split(self):
         data = self.request.arguments if self.request.arguments else self.request.body.decode('utf-8')
         if type(data) == str:
             data = json.loads(data)

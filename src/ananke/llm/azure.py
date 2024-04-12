@@ -81,6 +81,14 @@ class Azure(RemoteLLM):
 
         return response.choices[0].message.content
 
+    def chat_once(self, user_input:str):
+        conversation = [{"role": "system", "content": self.system_prompt}, {"role": "user", "content": user_input}]
+        response = self.client.chat.completions.create(
+            model = self.chat_model, messages = conversation,
+        )
+
+        return response.choices[0].message.content
+
     def chat(self, user_input):
         self.conversation.append({"role": "user", "content": user_input})
 

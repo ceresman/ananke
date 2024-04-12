@@ -139,7 +139,8 @@ class DocFlow(BaseObject):
             except Exception as e:
                 logger.error("Exception is {}, word is {}".format(e, word))
 
-        self.vector.add(tenant + "-phase", embeddings, metas, emb_ids, words)
+        if len(emb_ids) != 0:
+            self.vector.add(tenant + "-phase", embeddings, metas, emb_ids, words)
         return noun_words
 
     def get_chunks(self, pdf_id, page_data:dict, tenant = "all"):
@@ -172,7 +173,6 @@ class DocFlow(BaseObject):
                 except Exception as e:
                     logger.info("chunk except is {}, summary is {}".format(e, summary))
 
-        
         self.vector.add(tenant + "-chunk", embeddings, metas, emb_ids, texts)
         noun_words = self.get_noun_words(pdf_id, nodes_dic, rels_dic, tenant)
         self.datas[pdf_id] = [noun_words, nodes_dic, rels_dic]
@@ -294,17 +294,31 @@ class DocFlow(BaseObject):
         
         user_metas = self.get_pdf_metas(user_ids, tenant = "user")
         all_metas = self.get_pdf_metas(all_ids)
-        # user_metas.extend(all_metas)
-        result = {"self": {"chunks": user_chunks, "phase": user_words, "metas": user_metas}, "relevant": {"chunks": all_chunks, "phase": all_words, "metas": all_metas}}
+        user_metas.extend(all_metas)
 
+        pdf_ids = []
+        for chunk in user_chunks:
+            meta = chunk.get("metadata", [])
+            doc_id = meta.get("doc_id")
+            pdf_ids.append(doc_id)
+
+        for chunk in all_chunks:
+            meta = chunk.get("metadata", [])
+            doc_id = meta.get("doc_id")
+            pdf_ids.append(doc_id)
+
+        pdf_ids = list(set(pdf_ids))
+        logger.info("total pdf_ids: {}".format(pdf_ids))
+
+        logger.info("meta pdfs {}".format([meta.get("pdf_id") for meta in user_metas]))
+        metas = [meta for meta in user_metas if meta.get("pdf_id") in pdf_ids]
+        logger.info("filter metas: {}".format(metas))
+
+        result = {"self": {"chunks": [], "phase": [], "metas": metas}, "relevant": {"chunks": [], "phase": [], "metas": []}}
         return result
 
     def ask(self, pdf_id:str, text:str, threshold = 0.2):
         logger.info("handle task pdf_id is {}, text is {}".format(pdf_id, text))        
-
-        nodes_dic = self.get_from_redis("nodes", pdf_id)
-        rels_dic = self.get_from_redis("rels", pdf_id)
-        words = self.get_from_redis("words", pdf_id)
 
         user_emb = self.get_embedding(text)
         user_chunks = self.vector.query("user-chunk", user_emb, top_n = 50)
@@ -317,9 +331,6 @@ class DocFlow(BaseObject):
         all_chunks = self.get_relevant(all_chunks, threshold)
         all_words = self.get_relevant(all_words, threshold)
 
-        user_ids = self.get_self_ids(user_chunks, user_words)
-        all_ids = self.get_ohter_ids(all_chunks, all_words)
-        
         chunk_texts = []
         for chunk in user_chunks:
             chunk_text = chunk.get("documents", None)
@@ -330,15 +341,8 @@ class DocFlow(BaseObject):
             chunk_text = chunk.get("documents", None)
             if chunk_text is not None:
                 chunk_texts.append(chunk_text)
-                
-        # # user_metas.extend(all_metas)
-        # result = {"self": {"chunks": user_chunks, "phase": user_words}, "relevant": {"chunks": all_chunks, "phase": all_words}}
 
         return chunk_texts
         
     def get_docs(self, doc_paths, tenant = "all"):
         pass
-
-
-# //2024_03_28_af0dc41784cf60efecabg
-# 2024_03_28_d918ce007641daed7730g.html

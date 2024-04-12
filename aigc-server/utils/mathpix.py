@@ -89,8 +89,6 @@ def process_pdf_by_mathpix(pdf_url):
     data = {
         "url": pdf_url,
         "conversion_formats": {
-            "docx": True,
-            "tex.zip": True,
             "html": True
         }
     }
@@ -172,14 +170,25 @@ def get_np_from_text(page_data):
     np_dict = {key: list(set(np_dict[key])) for key in np_dict.keys()}
     return np_dict
 
+def get_table_json(file_path, table_json):
+    import os
+    logger.info("start to handle table!")
+    tabula.convert_into(file_path, table_json, output_format = "json", stream = True, pages = "all")
+    client.fput_object('data', table_json, table_json)
+    os.remove(table_json)
+    logger.info("end to handle table!")
+
 def __handle_pdf(request_id, file_path, pdf_id, tenant = "all"):
     logger.info("request-id: {} 's the pdf_id is {}".format(request_id, pdf_id))
+    table_json = pdf_id + "_table" + ".json"
+    get_table_json(file_path, table_json)
+
     flag = True
     while flag:
         process_dic = get_conversion_status(pdf_id)
+        logger.info("request-id: {} 's the pdf_id is {}, process is {}".format(request_id, pdf_id, process_dic))
         get_redis().set("process:" + request_id, json.dumps(process_dic))
         if process_dic.get("status", "") == "completed":
-            logger.info("request-id: {} 's the pdf_id is {}, process is {}".format(request_id, pdf_id, process_dic))
             status = process_dic.get('conversion_status', {}).get("html", {}).get("status", "")
             if status == "completed":
                 flag = False
@@ -219,12 +228,6 @@ def handle_pdf(request_id, file_path, callback_url):
     pdf_id = pdf_id_dic.get("pdf_id", None)
     # df = tabula.read_pdf(file_path)
 
-    logger.info("start to handle table!")
-    table_json = pdf_id + "_table" + ".json"
-    tabula.convert_into(file_path, table_json, output_format = "json", stream = True, pages = "all")
-    client.fput_object('data', table_json, table_json)
-    logger.info("end to handle table!")
-
     if pdf_id is not None:
         thread = threading.Thread(target = __handle_pdf, args = (request_id, file_path, pdf_id, "user"), daemon = True)
         thread.start()
@@ -237,7 +240,7 @@ def handle_search(request_id, pdf_id, user_text):
     return result
 
 def handle_ask(request_id, pdf_id, user_text):
-    return doc_flow.handle_ask(pdf_id, user_text)
+    return doc_flow.ask(pdf_id, user_text)
 # ps aux | grep AIGC |  awk '{print $2}' | xargs kill -9
 
 def handle_batch(request_id, file_paths, tenant = "all"):
