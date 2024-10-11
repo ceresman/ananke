@@ -36,6 +36,7 @@ class Flow(BaseFlow):
         else:
             self.logger.info("Initialized Flow without specifying a name.")
         self.graph = nx.DiGraph()
+        self.module_outputs = {}  # 存储每个模块的输出
 
     def add_module(self, module: Module, index=None):
         """
@@ -51,7 +52,6 @@ class Flow(BaseFlow):
         if not issubclass(module.__class__, Module):
             raise ValueError("Only instances of Module can be added to the flow.")
         module_name = module.name
-        # self.logger.info(f"Adding module '{module_name}' to the flow.")
         if module_name in self.graph.nodes():
             raise ValueError(f"Module with name '{module_name}' already exists in the flow.")
         self.graph.add_node(module_name)
@@ -60,63 +60,34 @@ class Flow(BaseFlow):
 
     def execute(self, **kwargs):
         """
-        Execute the information compression flow by processing the added modules sequentially.
-
-        Args:
-            **kwargs: Input parameters.
+        Execute the information compression flow by processing the added modules in topological order.
         """
-        with ThreadPoolExecutor() as executor:
-            # 获取计算图的拓扑排序
-            sorted_nodes = list(nx.topological_sort(self.graph))
-            # self.logger.info(f"Executing flow in topological order: {sorted_nodes}")
+        sorted_nodes = list(nx.topological_sort(self.graph))
+        self.logger.info(f"Executing flow in topological order: {sorted_nodes}")
 
-            # 分析计算图的并行依赖关系
-            parallel_groups = self._analyze_parallel_dependencies(sorted_nodes)
-            self.logger.info(f"Found {len(parallel_groups)} parallel groups: {parallel_groups}")
-
-            # 在每个组内并行执行模块
-            for parallel_group in parallel_groups:
-                futures = {executor.submit(self.modules[module_name].forward, **kwargs): module_name for module_name in parallel_group}
-                for future in as_completed(futures):
-                    module_name = futures[future]
-                    try:
-                        future.result()
-                        self.logger.info(f"Module '{module_name}' executed successfully.")
-                    except Exception as e:
-                        self.logger.error(f"Module '{module_name}' failed to execute: {e}")
-
-    def _analyze_parallel_dependencies(self, sorted_nodes):
-        """
-        分析计算图的并行依赖关系。
-
-        Args:
-            sorted_nodes: 计算图的拓扑排序。
-
-        Returns:
-            并行组列表。
-        """
-        # TODO : 当前分析算法无效，需要进一步研究
-        paths = dict(nx.all_pairs_shortest_path(self.graph))
-        
-        groups = []
-        for node1 in self.graph.nodes():
-            group = [node1]
-            for node2 in self.graph.nodes():
-                if node1 not in paths[node2]:
-                    group.append(node2)
-            groups.append(group)
+        for module_name in sorted_nodes:
+            module = self.modules[module_name]
+            input_data = self._get_input_data(module_name, kwargs)
             
-        # 用字典存储子数组及其出现次数
-        subarray_counts = defaultdict(int)
-        for subarray in groups:
-            subarray = tuple(sorted(subarray)) # 排序后作为字典键
-            subarray_counts[subarray] += 1
+            try:
+                output = module.forward(**input_data)
+                self.module_outputs[module_name] = output
+                self.logger.info(f"Module '{module_name}' executed successfully.")
+            except Exception as e:
+                self.logger.error(f"Module '{module_name}' failed to execute: {e}")
+                raise
 
-        # 合并结果 
-        merged_groups = []
-        for subarray, count in subarray_counts.items():
-            merged_groups.append(list(subarray))
-        return merged_groups
+        return self.module_outputs[sorted_nodes[-1]]  # 返回最后一个模块的输出
+
+    def _get_input_data(self, module_name, global_inputs):
+        """
+        获取模块的输入数据。
+        """
+        input_data = {}
+        for predecessor in self.graph.predecessors(module_name):
+            input_data.update(self.module_outputs[predecessor])
+        input_data.update(global_inputs)
+        return input_data
 
     def add_edge(self, source: Module, target: Module):
         """
@@ -136,6 +107,53 @@ class Flow(BaseFlow):
             name (str): The name of the module to remove.
         """
         self.graph.remove_node(name)
+        if name in self.modules:
+            del self.modules[name]
+        if name in self.module_outputs:
+            del self.module_outputs[name]
+
+    def get_module(self, name):
+        """
+        获取指定名称的模块。
+        """
+        return self.modules.get(name)
+
+    def get_module_output(self, name):
+        """
+        获取指定模块的输出。
+        """
+        return self.module_outputs.get(name)
+
+    def visualize(self):
+        """
+        可视化计算图。
+        """
+        import matplotlib.pyplot as plt
+        pos = nx.spring_layout(self.graph)
+        nx.draw(self.graph, pos, with_labels=True, node_color='lightblue', 
+                node_size=1500, font_size=10, font_weight='bold')
+        plt.title("Flow Computation Graph")
+        plt.show()
+
+    def save_graph(self, filename):
+        """
+        保存计算图到文件。
+        """
+        nx.write_gpickle(self.graph, filename)
+
+    def load_graph(self, filename):
+        """
+        从文件加载计算图。
+        """
+        self.graph = nx.read_gpickle(filename)
+
+    def clear(self):
+        """
+        清空计算图和所有模块。
+        """
+        self.graph.clear()
+        self.modules.clear()
+        self.module_outputs.clear()
 
     def show(self, debug=False):
         """
@@ -144,4 +162,30 @@ class Flow(BaseFlow):
         Args:
             debug (bool): Whether to print data or not.
         """
-        pass
+        sorted_nodes = list(nx.topological_sort(self.graph))
+        print(f"Modules in topological order:")
+        for i, module_name in enumerate(sorted_nodes):
+            print(f"{i+1}. {module_name}")
+            if debug:
+                module = self.modules[module_name]
+                print(f"   Input shape: {module.input_shape}")
+                print(f"   Output shape: {module.output_shape}")
+                if module_name in self.module_outputs:
+                    print(f"   Output data: {self.module_outputs[module_name]}")
+            print()
+
+    def _analyze_parallel_dependencies(self, sorted_nodes):
+        """
+        分析计算图的并行依赖关系。
+
+        Args:
+            sorted_nodes: 计算图的拓扑排序。
+
+        Returns:
+            并行组列表。
+        """
+        # TODO: 实现更高效的并行依赖分析算法
+        parallel_groups = [[node] for node in sorted_nodes]
+        return parallel_groups
+    
+    
